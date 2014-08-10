@@ -95,9 +95,15 @@ public class Unit {
 		case Quality:
 			break;
 		case Silence:
-			currentHealth = myCard.getHealth();
+			currentHealth = Math.min(myCard.getHealth(), currentHealth);
 			currentDamage = myCard.getDamage();
 			qualities = 0;
+			break;
+		case DamageSetTo:
+			currentDamage = b.value;
+			break;
+		case HealthSetTo:
+			currentHealth = b.value;
 			break;
 		default:
 			break;

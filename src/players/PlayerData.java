@@ -82,7 +82,8 @@ public class PlayerData {
 			if(bc == null) {
 				health -= NOCARDPENALTY;
 				if(!cantPullInformed) {
-					myPlayer.reciveAction("No cards left, taking damage instead");
+					if(myPlayer != null) 
+						myPlayer.reciveAction("No cards left, taking damage instead");
 					cantPullInformed = true;
 				}
 			} else {

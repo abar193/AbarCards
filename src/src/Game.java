@@ -64,12 +64,8 @@ public class Game {
 			add(new UnitCard(2, 1, 2, "Sergeant", "1/2"));
 			add(new UnitCard(3, 3, 3, "Officier", "3/3"));
 			add(new UnitCard(5, 5, 6, "Lieutenant", "5/5"));
-			add(new cards.SpellCard("Buff", "+2 health", 0, new RandomTargeter(0, -1, 3, false), 
-					new BuffUnit(new Buff(BuffType.Health, 2))));
-			add(new cards.SpellCard("Buff", "+2 health", 0, new RandomTargeter(0, -1, 3, false), 
-					new BuffUnit(new Buff(BuffType.Health, 2))));
-			add(new cards.SpellCard("Buff", "+2 health", 0, new RandomTargeter(0, -1, 3, false), 
-					new BuffUnit(new Buff(BuffType.Health, 2))));
+			add(new cards.SpellCard("Buff", "+5 damage", 0, new AllUnitsTargeter(1), 
+					new BuffUnit(new Buff(BuffType.Damage, 5))));
 		}};
 	}
 	
@@ -171,7 +167,8 @@ public class Game {
 		if(c.type == CardType.Unit)
 			return playersData[player].canPlayCard(c);
 		else if(c.type == CardType.Spell)
-			return playersData[player].canPlayCard(c) & ((SpellCard)c).targeter.hasTargets(field);
+			return playersData[player].canPlayCard(c) & ((SpellCard)c).targeter.
+					hasTargets(field, player);
 		else return false;
 	}
 	
@@ -189,7 +186,7 @@ public class Game {
 				field.addUnit(new Unit((UnitCard)c), player);
 			} else if (c.type == CardType.Spell) {
 				SpellCard card = (SpellCard)c;
-				Unit[] arr = card.targeter.selectTargets(field, this);
+				Unit[] arr = card.targeter.selectTargets(field, player);
 				for(AbstractEffect ae : card.effect) {
 					if(ae.type == EffectType.UnitEffect) {
 						for(Unit u : arr) {
@@ -202,6 +199,31 @@ public class Game {
 		}
 	}
 	
+	public Unit askPlayerForTarget(int player) {
+		int p, u;
+		System.out.println("Enter player to target (0 - you, 1 - he):");
+		try {
+			p = System.in.read();
+			while(p != 48 && p != 49) {
+				p = System.in.read();
+			}
+		} catch(java.io.IOException e){
+			p = 0; 
+		}
+		System.out.println("Enter unit to target:");
+		try {
+			u = System.in.read();
+			while(u < 48 || p > 57) {
+				u = System.in.read();
+			}
+		} catch(java.io.IOException e){
+			u = 0; 
+		}
+		p -= 48;
+		u -= 48;
+		return field.playerUnits.get((player + p) % 2).get(u);
+	}
+	
 	/**
 	 * Calls reciveInfo with actual state for both players 
 	 */
@@ -212,8 +234,11 @@ public class Game {
 				playersData[0].craeteOpenData());
 	}
 	
+	public static Game currentGame;
+	
 	public static void main(String[] args) {		
 		Game g = new Game();
+		currentGame = g;
 		g.play();
 	}
 }

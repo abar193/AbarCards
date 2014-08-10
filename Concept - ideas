@@ -17,41 +17,40 @@ Ideas:
 
 What should happen:
     On game start
-        * 2 players are placed, first one is chosen
-        * Player's decks are being shuffled
+        * 2 players are placed, first one is chosen                 DONE
+        * Player's decks are being shuffled                         DONE
 
     Turn start: 
-        * Player gets 1 combat + 1 base card (if there are still some). If there are no cards, player gets penalty (to avoid long games)  
-        * Player gets +1 of total mana (max - *10*)
+        * Player gets 1 combat + 1 base card (if there are still some). If there are no cards, player gets penalty (to avoid long games)  DONE
+        * Player gets +1 of total mana (max - *10*)                 DONE
 
     Turn:
         * Turn lasts max 2 minutes
-        * Player may use his units to attack enemy units/buildings/hero; use buildings to summon units;
+        * Player may use his units to attack enemy units/buildings/hero; use buildings to summon units;     2/3 DONE
             cast spells; summon new units from cards
 
     Game over: 
-        * One player's health drops under 0
-        * Player looses health 
+        * One player's health drops under 0                 
 
 Mechanics:
     
     What can spells do:
-        * Deal damage to unit
-        * Heal unit/heroes
-        * Add new quality to unit
-        * Modify unit's properties (damage, current health, max health)
-        * Remove all buffs/qualities from unit
-        * Destroy unit
-        * Apply those effects to 1 - random number - all units of the player - all units 
+        * Deal damage to unit                                       DONE
+        * Heal unit/heroes                                          1/2 DONE
+        * Add new quality to units                                  DONE
+        * Modify unit's properties (damage, current health, max health) DONE
+        * Remove all buffs/qualities from unit                      DONE
+        * Destroy unit                                              
+        * Apply those effects to 1 - random number - all units of the player - all units 3/4 DONE
 
     What qualities may units have:
-        * Normal unit
-        * Stealth (can't be targeted by direct attacks, looses this quality on attack)
-        * Taunt (other units without this quality may not be attacked)
-        * Charge (attacks as soon as summoned)
+        * Normal unit                                               DONE
+        * Stealth (can't be targeted by direct attacks, looses this quality on attack) 
+        * Taunt (other units without this quality may not be attacked) DONE
+        * Charge (attacks as soon as summoned)                      DONE
 
     What "powers" may unit posess
-        * Battlecry (use ability as soon as he summoned)
+        * Battlecry (use ability as soon as he summoned)    
         * Deathrate (use ability on death)
         * Aura (affects other units, while this one lives)
         * End turn effect
@@ -63,10 +62,10 @@ Mechanics:
         * Add quality
 
     Effects may apply to:
-        * *self*
-        * *target*
-        * randomly chosen unit(s) (w/wo repeats)
-        * player-chosen unit
+        * *self* (on powers)
+        * *target/attacker* (on powers)
+        * randomly chosen unit(s) (w/wo repeats)                    DONE
+        * player-chosen unit    
         * neighbor units
 
     Effects may occur on following events:
@@ -97,11 +96,12 @@ How should it all happen:
     Deck shuffle: on the game start, cards are being validated (no more than *2* cards of each type, etc)
 
     Player uses a spell: 
-        1) Choose target(s)
-        2) Apply spell
+        0) Check unit cost (with all buffs)         1/2 DONE
+        1) Choose target(s)                         
+        2) Apply spell                              1/3 DONE
 
     Player uses unit card: 
-        1) Check unit cost (with all buffs)
+        1) Check unit cost (with all buffs) 
         1.1) Remove mana
         2) Place unit
         3) See, if it triggers some "newly created unit" spell

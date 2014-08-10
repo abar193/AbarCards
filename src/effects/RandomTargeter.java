@@ -3,10 +3,9 @@ package effects;
 import src.FieldSituation;
 import units.Unit;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.ArrayList;
-
-import src.Game;
 
 /**
  * Targeter, who chooses some random targets on field to apply effect to.
@@ -25,29 +24,33 @@ public class RandomTargeter implements Targeter {
 	 * @param maxCount at least 1 at most maxCount
 	 * @param repeatsAllowed true to allow repeating
 	 */
-	public RandomTargeter(int player, int acceptablePlayers, int maxCount, boolean repeatsAllowed) {
+	public RandomTargeter(int acceptablePlayers, int maxCount, boolean repeatsAllowed) {
 		aceptPlayers = acceptablePlayers;
 		this.maxCount = maxCount;
 		repeats = repeatsAllowed;
-		this.player = player;
 	}
 
 	@Override
-	public Unit[] selectTargets(FieldSituation fs, Game g) {
+	public Unit[] selectTargets(FieldSituation fs, int p) {
+		player = p;
 		Random r = new Random();
 		ArrayList<Unit> retValue = new ArrayList<Unit>(maxCount);
 		
 		if(!repeats) {
 			if(aceptPlayers != -1) {
-				if(fs.playerUnits.get(player + aceptPlayers).size() <= maxCount) {
-					return (Unit[])fs.playerUnits.get(player + aceptPlayers).
+				if(fs.playerUnits.get((player + aceptPlayers) % 2).size() <= maxCount) {
+					return (Unit[])fs.playerUnits.get((player + aceptPlayers) % 2).
 							toArray(new Unit[retValue.size()]);
 				}
 			} else {
 				if(fs.playerUnits.get(0).size() + fs.playerUnits.get(1).size() <= maxCount) {
-					ArrayList<Unit> ret = fs.playerUnits.get(0);
-					ret.addAll(fs.playerUnits.get(1));
-					return (Unit[])ret.toArray(new Unit[retValue.size()]);
+					Unit[] u1 = fs.playerUnits.get(0).
+							toArray(new Unit[fs.playerUnits.get(0).size()]);
+					Unit[] u2 = fs.playerUnits.get(1).
+							toArray(new Unit[fs.playerUnits.get(1).size()]);
+					Unit[] result = Arrays.copyOf(u1, u1.length + u2.length);
+					System.arraycopy(u2, 0, result, u1.length, u2.length);
+					return result;
 				}
 			}
 		}
@@ -84,7 +87,7 @@ public class RandomTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(FieldSituation fs) {
+	public boolean hasTargets(FieldSituation fs, int player) {
 		if(aceptPlayers == -1)
 			return fs.playerUnits.get(0).size() > 0 || fs.playerUnits.get(1).size() > 0;
 		else 

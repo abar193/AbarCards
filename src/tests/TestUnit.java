@@ -7,6 +7,7 @@ import org.junit.Test;
 import units.Unit;
 import cards.UnitCard;
 import units.Unit.Quality;
+import cards.QualityUnitCard;
 
 public class TestUnit {
 
@@ -55,8 +56,53 @@ public class TestUnit {
 		assertEquals(false, u.hasQuality(Quality.Charge));
 		assertEquals(false, u.hasQuality(Quality.Stealth));
 		assertEquals(false, u.hasQuality(Quality.Taunt));
-		assertEquals(u.getCurrentDamage(), 5);
-		assertEquals(u.getCurrentHealth(), 4);
+		assertEquals(5, u.getCurrentDamage());
+		assertEquals(3, u.getCurrentHealth());
 	}
 	
-}
+	@Test
+	public void testNewBuffs() {
+		UnitCard uc = new UnitCard(1, 2, 3, "", "");
+		Unit u = new Unit(uc);
+		u.applyBuff(new effects.Buff(effects.BuffType.DamageSetTo, 15));
+		assertEquals(15, u.getCurrentDamage());
+		u.applyBuff(new effects.Buff(effects.BuffType.HealthSetTo, 7));
+		assertEquals(7, u.getCurrentHealth());
+	}
+	
+	@Test 
+	public void testBuffedUnit() {
+		int[] arr = {Quality.Battlecry.getValue(), 
+				Quality.Charge.getValue(), 
+				Quality.Stealth.getValue(), 
+				Quality.Taunt.getValue(), 
+				Quality.Battlecry.getValue() | Quality.Charge.getValue(), //  
+				Quality.Stealth.getValue() | Quality.Taunt.getValue(), //
+				Quality.Battlecry.getValue() | Quality.Taunt.getValue(), //
+				Quality.Stealth.getValue() | Quality.Charge.getValue(),//
+				Quality.Battlecry.getValue() | Quality.Stealth.getValue(), //
+				Quality.Taunt.getValue() | Quality.Charge.getValue(), //
+				Quality.Battlecry.getValue() | Quality.Charge.getValue() | Quality.Taunt.getValue()};
+		Quality[][] controll = { {Quality.Battlecry}, 
+				{Quality.Charge}, 
+				{Quality.Stealth},
+				{Quality.Taunt}, 
+				{Quality.Battlecry, Quality.Charge}, 
+				{Quality.Stealth, Quality.Taunt},
+				{Quality.Battlecry, Quality.Taunt},
+				{Quality.Stealth, Quality.Charge},
+				{Quality.Battlecry, Quality.Stealth},
+				{Quality.Taunt, Quality.Charge},
+				{Quality.Battlecry, Quality.Charge, Quality.Taunt}
+			};
+		
+		for(int i = 0; i < arr.length; i++) {
+			QualityUnitCard qc = new QualityUnitCard(1, 1, 1, "", "", arr[i]);
+			Unit u = new Unit(qc);
+			for(Quality q:controll[i]) {
+				assertEquals(true, u.hasQuality(q));
+			}
+		}
+		}
+	}
+	
