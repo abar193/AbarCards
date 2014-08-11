@@ -97,4 +97,11 @@ public class TestPlayerData {
 			fail("Exception thrown");
 		}
 	}
+	
+	@Test
+	public void testAura() {
+		PlayerData pd = new PlayerData(null, 30, null);
+		pd.addAura(new players.AuraEffect(players.AuraType.UnitDamage, 5, 3));
+		assertEquals(5, pd.modifiersForType(players.AuraType.UnitDamage));
+	}
 }

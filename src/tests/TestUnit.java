@@ -103,6 +103,9 @@ public class TestUnit {
 				assertEquals(true, u.hasQuality(q));
 			}
 		}
-		}
 	}
+	
+}	
+
+
 	
