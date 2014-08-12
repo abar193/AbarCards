@@ -7,18 +7,16 @@ import players.PlayerInterface;
 
 import java.util.ArrayList;
 
-import units.Unit;
-
 /**
  * Stores all the important information about player's state like his deck,
- * hand or health/mana state. Avaailable for the player himself, his opponent should receive 
+ * hand or health/mana state. Available for the player himself, his opponent should receive 
  * 	PlayerOpenData built with createOpenData().
  * @author Abar
  */
 public class PlayerData {
 	/** How many damage should player take, if he has no card to pull */
 	public static final int NOCARDPENALTY = 1;
-	/** Max cards in hand (if exeeded, then the card is dropped */
+	/** Max cards in hand (if exceeded, then the card is dropped */
 	public static int MAXHANDLIMIT = 10;
 	
 	private Deck myDeck;
@@ -31,7 +29,8 @@ public class PlayerData {
 	private PlayerInterface myPlayer;
 	
 	public int playerNumber;
-	public ArrayList<AuraEffect> auras;
+	
+	public AuraStorage auras;
 	
 	/**
 	 * Creates new PlayerData instance with default MAXHANDLIMIT value.
@@ -43,7 +42,7 @@ public class PlayerData {
 		myHand = new ArrayList<BasicCard>(10);
 		myDeck = d;
 		myPlayer = player;
-		auras = new ArrayList<AuraEffect>();
+		auras = new AuraStorage();
 	}
 	
 	/**
@@ -57,7 +56,7 @@ public class PlayerData {
 		myDeck = d;
 		MAXHANDLIMIT = maxHandCards;
 		myPlayer = player;
-		auras = new ArrayList<AuraEffect>();
+		auras = new AuraStorage();
 	}
 	
 	/**
@@ -74,12 +73,7 @@ public class PlayerData {
 	 * Removes outdated auras.
 	 */
 	public void endTurn() {
-		for(int i = 0; i < auras.size(); i++) {
-			if(auras.get(i).shouldBeRemovedIfTurnBased()) {
-				auras.remove(i);
-				i--;
-			}
-		}
+		auras.removeOutdatedAuras();
 	}
 	
 	/**
@@ -135,7 +129,7 @@ public class PlayerData {
 	 * @return true if card can be played
 	 */	
 	public boolean canPlayCard(BasicCard bc) {
-		if(availableMana >= bc.cost) {
+		if(availableMana + auras.getModifiers()[0] >= bc.cost) {
 			if(myHand.contains(bc)) {
 				return true;
 			}
@@ -180,38 +174,6 @@ public class PlayerData {
 	public ArrayList<BasicCard> getHand() {
 		return myHand;
 	}
-	
-	/** 
-	 * Adds aura to list of auras. 
-	 * @param ae
-	 */
-	public void addAura(AuraEffect ae) {
-		auras.add(ae);
-	}
-	
-	/**
-	 * Called when unit dies, to check if any unit-based auras should be removed 
-	 * @param u
-	 */
-	public void unitDies(Unit u) {
-		for(int i = 0; i < auras.size(); i++) {
-			if(u.equals(auras.get(i).unit)) {
-				auras.remove(i);
-				i--;
-			}
-		}
-	}
-	
-	public int modifiersForType(AuraType t) {
-		int r = 0;
-		for(AuraEffect ae : auras) {
-			if(ae.type.equals(t)) {
-				r += ae.value;
-			}
-		}
-		return r;
-	}
-
 	
 	/** 
 	 * Generates PlayerOpenData class, without any "dangerous" information, like hand array, or 

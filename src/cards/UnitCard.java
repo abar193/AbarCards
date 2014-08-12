@@ -1,5 +1,7 @@
 package cards;
 
+import players.AuraEffect;
+
 /**
  * Card used to store unit-relevant information, to create units
  * @author Abar
@@ -7,6 +9,7 @@ package cards;
 public class UnitCard extends BasicCard {
 	private int baseHealth;
 	private int baseDamage;
+	public AuraEffect[] auraEffects;
 	
 	public UnitCard(int health, int damage, int cost, String name, String desc) {
 		super(name, desc, cost);

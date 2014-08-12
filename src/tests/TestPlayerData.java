@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import cards.Deck;
 import cards.TestCard;
 import cards.BasicCard;
+import cards.UnitCard;
+
+import units.Unit;
 
 public class TestPlayerData {
 
@@ -101,7 +104,12 @@ public class TestPlayerData {
 	@Test
 	public void testAura() {
 		PlayerData pd = new PlayerData(null, 30, null);
-		pd.addAura(new players.AuraEffect(players.AuraType.UnitDamage, 5, 3));
-		assertEquals(5, pd.modifiersForType(players.AuraType.UnitDamage));
+		pd.auras.addAura(new players.AuraEffect(players.AuraType.UnitDamage, 5, 3));
+		assertEquals(5, pd.auras.modifiersForType(players.AuraType.UnitDamage));
+		Unit u = new Unit(new UnitCard(1, 1, 1, "", ""));
+		pd.auras.addAura(new players.AuraEffect(players.AuraType.UnitHealth, 4, u));
+		assertEquals(2, pd.auras.aurasCount());
+		pd.auras.unitDies(u);
+		assertEquals(1, pd.auras.aurasCount());
 	}
 }

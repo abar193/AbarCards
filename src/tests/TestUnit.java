@@ -105,6 +105,16 @@ public class TestUnit {
 		}
 	}
 	
+	@Test
+	public void testAttack() {
+		Unit u0 = new Unit(new UnitCard(1, 1, 1, "", ""));
+		assertEquals(false, u0.canAttack());
+		Unit u1 = new Unit(new QualityUnitCard(3, 3, 1, "", "", Quality.Charge.getValue()));
+		assertEquals(true, u1.canAttack());
+		u1.attackUnit(u0);
+		assertEquals(false, u1.canAttack());
+	}
+	
 }	
 
 

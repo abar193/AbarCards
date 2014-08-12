@@ -17,6 +17,7 @@ public class Unit {
 	}
 	
 	public UnitCard myCard;
+	public int modDmg, modHealth;
 	
 	private int currentHealth;
 	private int currentDamage;
@@ -35,6 +36,8 @@ public class Unit {
 		
 		canAttack = false;
 		attackedAlready = false;
+		modHealth = 0;
+		modDmg = 0;
 	}
 	
 	public Unit(UnitCard card, int qualities) {
@@ -45,6 +48,8 @@ public class Unit {
 		
 		canAttack = ((this.qualities & Quality.Charge.value) == 1);
 		attackedAlready = false;
+		modHealth = 0;
+		modDmg = 0;
 	}
 	
 	public void endTurn() {
@@ -57,11 +62,11 @@ public class Unit {
 	}
 	
 	public int getCurrentHealth() {
-		return currentHealth;
+		return currentHealth + modHealth;
 	}
 	
 	public int getCurrentDamage() {
-		return currentDamage;
+		return currentDamage + modDmg;
 	}
 	
 	public boolean hasQuality(Quality q) {
@@ -115,6 +120,7 @@ public class Unit {
 		if(canAttack()) {
 			u.damage(getCurrentDamage());
 			damage(u.getCurrentDamage());
+			attackedAlready = true;
 		}
 	}
 	

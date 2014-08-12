@@ -58,10 +58,13 @@ public class Game {
 	
 	/** Used only for test games now */
 	private ArrayList<BasicCard> generateTestArrayList() {
+		final UnitCard specialCard = new UnitCard(2, 1, 2, "Sergeant", "1/2 +1Aura");
+		specialCard.auraEffects = new players.AuraEffect[1];
+		specialCard.auraEffects[0] = new AuraEffect(AuraType.UnitDamage, 1, 0);
 		return new ArrayList<BasicCard>() {{
 			add(new UnitCard(1, 1, 1, "Private", "1/1")); 
 			add(new QualityUnitCard(1, 2, 1, "Corporal", "2/1", Quality.Charge.getValue()));
-			add(new UnitCard(2, 1, 2, "Sergeant", "1/2"));
+			add(specialCard);
 			add(new UnitCard(3, 3, 3, "Officier", "3/3"));
 			add(new UnitCard(5, 5, 6, "Lieutenant", "5/5"));
 			add(new cards.SpellCard("Buff", "+5 damage", 0, new AllUnitsTargeter(1), 
@@ -89,21 +92,24 @@ public class Game {
 		playersData[1].pullCard(3);
 		
 		FieldSituation fs = new FieldSituation();
-		fs.addUnit(new Unit(new UnitCard(1, 1, 1, "Tank", "Test unit")), bot.playerNumber);
-		fs.addUnit(new Unit(new UnitCard(1, 1, 1, "Cannon", "Test unit")), bot.playerNumber);
-		fs.addUnit(new Unit(new UnitCard(1, 1, 1, "Cannon", "Test unit")), bot.playerNumber);
+		fs.addUnit(new Unit(new UnitCard(3, 5, 1, "Tank", "Test unit")), bot.playerNumber);
+		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
+		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
 		Unit tauntUnit = new Unit(new UnitCard(1, 0, 1, "Home", "Sweet home"));
 		tauntUnit.setQuality(Quality.Taunt);
 		fs.addUnit(tauntUnit, bot.playerNumber);
 		field = fs;
 		field.refreshUnits();
 		for(int i = 0; i < 10; i++) {
+			recalculateFieldModifiers();
 			playersData[i%2].pullCard(1);
 			playersData[i%2].newTurn();
 			players.get(i%2).reciveInfo(playersData[i%2], field, 
 					playersData[(i+1)%2].craeteOpenData());
 			players.get(i%2).makeTurn();
+			playersData[i%2].auras.removeOutdatedAuras();
 			field.refreshUnits();
+			
 		}
 
 	}
@@ -133,17 +139,23 @@ public class Game {
 		if(attackIsValid(a, t, pa, pt)) {
 			Unit attacker = field.unitForPlayer(a, pa);
 			Unit target = field.unitForPlayer(t, pt);
+			
 			String s = attacker.myCard.name + 
 					" VS " + target.myCard.name;
 			informAll(s);
+			
 			attacker.attackUnit(target);
 			if(target.isDead()) {
 				informAll(target.myCard.name + " is dead");
 				field.removeUnitOfPlayer(target, pt);
+				if(playersData[pt].auras.unitDies(target)) 
+					recalculateFieldModifiers();
 			}
 			if(attacker.isDead()) {
 				informAll(attacker.myCard.name + " is dead"); 
 				field.removeUnitOfPlayer(attacker, pa);
+				if(playersData[pa].auras.unitDies(attacker)) 
+					recalculateFieldModifiers();
 			}
 			updateInfoForAll();
 		}
@@ -180,10 +192,20 @@ public class Game {
 	public void playCard(BasicCard c, int player) {
 		if(canPlayCard(c, player)) {
 			playersData[player].playCard(c);
+			// Drawing
 			players.get(player).reciveAction("Playing " + c.name);
 			players.get((player + 1) % 2).reciveAction("Opponent plays" + c.name);
+
 			if(c.type == CardType.Unit) {
-				field.addUnit(new Unit((UnitCard)c), player);
+				UnitCard uc = (UnitCard)c;
+				Unit u = new Unit(uc);
+				field.addUnit(u, player);
+				if(uc.auraEffects != null) {
+					for(AuraEffect ae : uc.auraEffects) {
+						ae.unit = u;
+						playersData[player].auras.addAura(ae);
+					}
+				}
 			} else if (c.type == CardType.Spell) {
 				SpellCard card = (SpellCard)c;
 				Unit[] arr = card.targeter.selectTargets(field, player);
@@ -195,6 +217,8 @@ public class Game {
 					}
 				}
 			}
+			
+			recalculateFieldModifiers();
 			updateInfoForAll();
 		}
 	}
@@ -232,6 +256,23 @@ public class Game {
 				playersData[1].craeteOpenData());
 		players.get(1).reciveInfo(playersData[1], field, 
 				playersData[0].craeteOpenData());
+	}
+	
+	public void recalculateFieldModifiers() {
+		playersData[0].auras.calculateModifiers();
+		playersData[1].auras.calculateModifiers();
+		
+		int[] modifiers = playersData[0].auras.getModifiers();
+		for(Unit u : field.playerUnits.get(0)) {
+			u.modDmg = modifiers[1];
+			u.modHealth = modifiers[2];
+		}
+		
+		modifiers = playersData[1].auras.getModifiers();
+		for(Unit u : field.playerUnits.get(1)) {
+			u.modDmg = modifiers[1];
+			u.modHealth = modifiers[2];
+		}
 	}
 	
 	public static Game currentGame;
