@@ -65,7 +65,7 @@ public class RealPlayer implements PlayerInterface {
 	 */
 	private void displayFieldSide(ArrayList<Unit> arr){
 		for(int i = 0; i < arr.size(); i++) {
-			System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
+			System.out.print(String.format("%d%10s|", i+1, arr.get(i).myCard.name));
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
@@ -86,6 +86,9 @@ public class RealPlayer implements PlayerInterface {
 		System.out.println();
 	}
 
+	/**
+	 * Prints message to console.
+	 */
 	@Override
 	public void reciveAction(String m) {
 		System.out.println("> " + m);
