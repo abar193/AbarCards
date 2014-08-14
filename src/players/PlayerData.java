@@ -124,6 +124,10 @@ public class PlayerData {
 		throw new IllegalArgumentException();
 	}
 	
+	public void takeDamage(int n) {
+		health -= n;
+	}
+	
 	/**
 	 * Checks, if card can be played (sufficient mana, and player hands that card). 
 	 * @return true if card can be played

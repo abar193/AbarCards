@@ -62,7 +62,10 @@ public class FieldSituation {
 	 * Checks if unit exists for player
 	 */
 	public boolean unitExist(int unit, int player) {
-		return playerUnits.get(player).size() > unit;
+		if((player == 0 || player == 1) && unit >= 0 && player >= 0)
+			return playerUnits.get(player).size() > unit;
+		else 
+			return false;
 	}
 	
 	/**

@@ -118,8 +118,10 @@ public class Unit {
 	
 	public void attackUnit(Unit u) {
 		if(canAttack()) {
-			u.damage(getCurrentDamage());
-			damage(u.getCurrentDamage());
+			if(u != null) {
+				u.damage(getCurrentDamage());
+				damage(u.getCurrentDamage());
+			}
 			attackedAlready = true;
 		}
 	}

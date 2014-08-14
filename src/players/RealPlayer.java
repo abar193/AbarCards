@@ -65,7 +65,7 @@ public class RealPlayer implements PlayerInterface {
 	 */
 	private void displayFieldSide(ArrayList<Unit> arr){
 		for(int i = 0; i < arr.size(); i++) {
-			System.out.print(String.format("%d%10s|", i+1, arr.get(i).myCard.name));
+			System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
@@ -108,7 +108,7 @@ public class RealPlayer implements PlayerInterface {
 		while(c != 122) { // z key
 			try {
 				c = System.in.read();
-				if(c >= 48 && c <= 57) {
+				if((c >= 48 && c <= 57) || c == '-') {
 					int i = c - 48;
 					if(!targeting) {
 						if (myArmy.size() > i) {
@@ -117,8 +117,18 @@ public class RealPlayer implements PlayerInterface {
 							selectedUnit = i;
 						}
 					} else {
-						if(hisArmy.size() > i) {
-							targeting = false;
+						targeting = false;
+						if(c == '-') {
+							if(parent.attackIsValid(selectedUnit, -1, me.playerNumber, 
+									opponent.playerNumber)) 
+							{
+								parent.commitAttack(selectedUnit, -1, me.playerNumber, 
+										opponent.playerNumber);
+							} else {
+								reciveAction("Invalid action");
+							}
+							
+						} else if(hisArmy.size() > i) {
 							if(parent.attackIsValid(selectedUnit, i, 
 									me.playerNumber, opponent.playerNumber)) 
 							{

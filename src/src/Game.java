@@ -100,7 +100,8 @@ public class Game {
 		fs.addUnit(tauntUnit, bot.playerNumber);
 		field = fs;
 		field.refreshUnits();
-		for(int i = 0; i < 10; i++) {
+		int i = 0;
+		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
 			recalculateFieldModifiers();
 			playersData[i%2].pullCard(1);
 			playersData[i%2].newTurn();
@@ -109,9 +110,16 @@ public class Game {
 			players.get(i%2).makeTurn();
 			playersData[i%2].auras.removeOutdatedAuras();
 			field.refreshUnits();
-			
+			i++;	
 		}
-
+		
+		if(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
+			informAll("Tie!");
+		} else if(playersData[0].getHealth() > 0) {
+			informAll("Player 2 won!");
+		} else {
+			informAll("Player 1 won!");
+		}
 	}
 	
 	/**
@@ -123,6 +131,12 @@ public class Game {
 	 * @return true if attack is valid
 	 */
 	public boolean attackIsValid(int attacker, int target, int playerA, int playerT) {
+		if(target == -1) {
+			if(field.unitExist(attacker, playerA) && (field.tauntUnitsForPlayer(playerT) == 0)) {
+				return true;
+			} 
+			return false;
+		}
 		if(field.unitExist(attacker, playerA) & field.unitExist(target, playerT)) {
 			if(field.unitForPlayer(target, playerT).hasQuality(Quality.Taunt)
 					|| (field.tauntUnitsForPlayer(playerT) == 0)) 
@@ -138,6 +152,14 @@ public class Game {
 	public void commitAttack(int a, int t, int pa, int pt) {
 		if(attackIsValid(a, t, pa, pt)) {
 			Unit attacker = field.unitForPlayer(a, pa);
+			if(t == -1) {
+				String s = attacker.myCard.name + " VS Hero";
+				informAll(s);
+				playersData[pt].takeDamage(attacker.getCurrentDamage());
+				attacker.attackUnit(null);
+				updateInfoForAll();
+				return;
+			}
 			Unit target = field.unitForPlayer(t, pt);
 			
 			String s = attacker.myCard.name + 
