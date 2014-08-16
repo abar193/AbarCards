@@ -30,10 +30,6 @@ public class Unit {
 		currentDamage = card.getDamage();
 		myCard = card;
 		
-		if(card instanceof cards.QualityUnitCard) {
-			qualities = ((cards.QualityUnitCard)card).qualities;
-		}
-		
 		canAttack = false;
 		attackedAlready = false;
 		modHealth = 0;
@@ -50,6 +46,10 @@ public class Unit {
 		attackedAlready = false;
 		modHealth = 0;
 		modDmg = 0;
+	}
+	
+	public void appyQualities(int q) {
+		qualities = q;
 	}
 	
 	public void endTurn() {

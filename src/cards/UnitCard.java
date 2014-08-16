@@ -9,9 +9,10 @@ import players.AuraEffect;
 public class UnitCard extends BasicCard {
 	private int baseHealth;
 	private int baseDamage;
-	public AuraEffect[] auraEffects;
+	public AuraEffect[] auraEffects; 
+	public int qualities;
 	
-	public UnitCard(int health, int damage, int cost, String name, String desc) {
+	public UnitCard(int damage, int health, int cost, String name, String desc) {
 		super(name, desc, cost);
 		baseHealth = health;
 		baseDamage = damage;

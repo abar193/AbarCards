@@ -4,11 +4,14 @@ import cards.*;
 
 import units.Unit;
 import units.Unit.Quality;
+import units.UnitFactory;
 
 import effects.*;
 
 import java.util.ArrayList;
 import players.*;
+
+
 
 /**
  * Main class, with everything necessary for playing the game. 
@@ -25,6 +28,7 @@ public class Game {
 	private PlayerData[] playersData;
 	/** Field, where all units, building (and heroes?) are standing*/
 	private FieldSituation field;
+	private UnitFactory factory;
 	
 	/**
 	 * Initialises player-relevant variables, and randomly puts chooses Player1 and Player2 from 
@@ -58,16 +62,19 @@ public class Game {
 	
 	/** Used only for test games now */
 	private ArrayList<BasicCard> generateTestArrayList() {
-		final UnitCard specialCard = new UnitCard(2, 1, 2, "Sergeant", "1/2 +1Aura");
+		final UnitCard specialCard = new UnitCard(1, 2, 2, "Sergeant", "1/2 +1Aura");
 		specialCard.auraEffects = new players.AuraEffect[1];
 		specialCard.auraEffects[0] = new AuraEffect(AuraType.UnitDamage, 1, 0);
+		
+		final UnitCard corporal = new UnitCard(2, 1, 2, "Corporal", "");
+		corporal.qualities = Quality.Charge.getValue();
 		return new ArrayList<BasicCard>() {{
 			add(new UnitCard(1, 1, 1, "Private", "1/1")); 
-			add(new QualityUnitCard(1, 2, 1, "Corporal", "2/1", Quality.Charge.getValue()));
+			add(corporal);
 			add(specialCard);
-			add(new UnitCard(3, 3, 3, "Officier", "3/3"));
-			add(new UnitCard(5, 5, 6, "Lieutenant", "5/5"));
-			add(new cards.SpellCard("Buff", "+5 damage", 0, new AllUnitsTargeter(1), 
+			add(new UnitCard(3, 3, 2, "Officier", "3/3"));
+			add(new UnitCard(5, 5, 3, "Lieutenant", "5/5"));
+			add(new cards.SpellCard("Buff", "+5 damage", 0, new AllUnitsTargeter(-1), 
 					new BuffUnit(new Buff(BuffType.Damage, 5))));
 		}};
 	}
@@ -75,6 +82,8 @@ public class Game {
 	/** Launches the game */
 	public void play() {
 		ArrayList<BasicCard> bc = generateTestArrayList(); 
+		
+		factory = new UnitFactory();
 		
 		Deck d1 = new Deck(bc);	
 		d1.shuffleCards();
@@ -92,10 +101,15 @@ public class Game {
 		playersData[1].pullCard(3);
 		
 		FieldSituation fs = new FieldSituation();
-		fs.addUnit(new Unit(new UnitCard(3, 5, 1, "Tank", "Test unit")), bot.playerNumber);
+		fs.addUnit(new Unit(new UnitCard(5, 3, 1, "Tank", "Test unit")), bot.playerNumber);
 		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
 		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
-		Unit tauntUnit = new Unit(new UnitCard(1, 0, 1, "Home", "Sweet home"));
+		
+		SpecialUnitClass su = new SpecialUnitClass(0, 5, 0, "Bear", "A = H");
+		su.specialUnitRef = cards.SpecialUnitClass.SpecialUnit.DmgEqHealth;
+		fs.addUnit(factory.createUnit(su, bot.playerNumber), bot.playerNumber);
+		
+		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Home", "Sweet home"));
 		tauntUnit.setQuality(Quality.Taunt);
 		fs.addUnit(tauntUnit, bot.playerNumber);
 		field = fs;
@@ -222,12 +236,7 @@ public class Game {
 				UnitCard uc = (UnitCard)c;
 				Unit u = new Unit(uc);
 				field.addUnit(u, player);
-				if(uc.auraEffects != null) {
-					for(AuraEffect ae : uc.auraEffects) {
-						ae.unit = u;
-						playersData[player].auras.addAura(ae);
-					}
-				}
+
 			} else if (c.type == CardType.Spell) {
 				SpellCard card = (SpellCard)c;
 				Unit[] arr = card.targeter.selectTargets(field, player);
@@ -243,6 +252,10 @@ public class Game {
 			recalculateFieldModifiers();
 			updateInfoForAll();
 		}
+	}
+	
+	public void addAuraForPlayer(int player, AuraEffect ae) {
+		playersData[player].auras.addAura(ae);
 	}
 	
 	public Unit askPlayerForTarget(int player) {
