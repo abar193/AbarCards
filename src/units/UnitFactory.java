@@ -1,7 +1,7 @@
 package units;
 
-import players.AuraEffect;
 import cards.*;
+import effects.AuraEffect;
 import src.Game;
 
 /** 
@@ -24,8 +24,8 @@ public class UnitFactory {
 	 */
 	public Unit createUnit(UnitCard card, int player) {
 		Unit u;
-		if(card instanceof cards.SpecialUnitClass) {
-			switch(((SpecialUnitClass)card).specialUnitRef) {
+		if(card instanceof cards.SpecialUnitCard) {
+			switch(((SpecialUnitCard)card).specialUnitRef) {
 				case DmgEqHealth:
 					u = new UnitAttackEqToDmg(card);
 					break;

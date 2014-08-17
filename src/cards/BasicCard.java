@@ -11,6 +11,7 @@ public abstract class BasicCard {
 	public CardType type;
 	public String name; 
 	public String description;
+	public String fullDescription;
 	
 	/**
 	 * Creates new instance of BasicCard

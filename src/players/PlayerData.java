@@ -56,7 +56,7 @@ public class PlayerData {
 		myDeck = d;
 		MAXHANDLIMIT = maxHandCards;
 		myPlayer = player;
-		auras = new AuraStorage();
+		auras = new AuraStorage(); 
 	}
 	
 	/**

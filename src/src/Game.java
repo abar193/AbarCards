@@ -1,14 +1,14 @@
 package src;
 
 import cards.*;
-
 import units.Unit;
 import units.Unit.Quality;
 import units.UnitFactory;
-
 import effects.*;
 
 import java.util.ArrayList;
+
+import decks.DeckPackReader;
 import players.*;
 
 
@@ -63,7 +63,7 @@ public class Game {
 	/** Used only for test games now */
 	private ArrayList<BasicCard> generateTestArrayList() {
 		final UnitCard specialCard = new UnitCard(1, 2, 2, "Sergeant", "1/2 +1Aura");
-		specialCard.auraEffects = new players.AuraEffect[1];
+		specialCard.auraEffects = new effects.AuraEffect[1];
 		specialCard.auraEffects[0] = new AuraEffect(AuraType.UnitDamage, 1, 0);
 		
 		final UnitCard corporal = new UnitCard(2, 1, 2, "Corporal", "");
@@ -81,7 +81,8 @@ public class Game {
 	
 	/** Launches the game */
 	public void play() {
-		ArrayList<BasicCard> bc = generateTestArrayList(); 
+		DeckPackReader dpr = new DeckPackReader();
+		ArrayList<BasicCard> bc = dpr.parseFile("C:\\Users\\Abar\\Documents\\Uni\\Workspace\\AbarCards\\src\\decks\\NeutralsDeck.xml");
 		
 		factory = new UnitFactory();
 		
@@ -105,8 +106,8 @@ public class Game {
 		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
 		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
 		
-		SpecialUnitClass su = new SpecialUnitClass(0, 5, 0, "Bear", "A = H");
-		su.specialUnitRef = cards.SpecialUnitClass.SpecialUnit.DmgEqHealth;
+		SpecialUnitCard su = new SpecialUnitCard(0, 5, 0, "Bear", "A = H");
+		su.specialUnitRef = cards.SpecialUnitCard.SpecialUnit.DmgEqHealth;
 		fs.addUnit(factory.createUnit(su, bot.playerNumber), bot.playerNumber);
 		
 		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Home", "Sweet home"));

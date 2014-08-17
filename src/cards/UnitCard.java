@@ -1,6 +1,6 @@
 package cards;
 
-import players.AuraEffect;
+import effects.AuraEffect;
 
 /**
  * Card used to store unit-relevant information, to create units

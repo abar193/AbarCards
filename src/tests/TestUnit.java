@@ -7,7 +7,6 @@ import org.junit.Test;
 import units.Unit;
 import cards.UnitCard;
 import units.Unit.Quality;
-import cards.QualityUnitCard;
 
 public class TestUnit {
 
@@ -20,7 +19,7 @@ public class TestUnit {
 
 	@Test
 	public void testBuffs() {
-		UnitCard uc = new UnitCard(4, 5, 4, "", "");
+		UnitCard uc = new UnitCard(5, 4, 4, "", "");
 		Unit u = new Unit(uc);
 		assertEquals(false, u.hasQuality(Quality.Battlecry));
 		assertEquals(false, u.hasQuality(Quality.Charge));
@@ -97,8 +96,9 @@ public class TestUnit {
 			};
 		
 		for(int i = 0; i < arr.length; i++) {
-			QualityUnitCard qc = new QualityUnitCard(1, 1, 1, "", "", arr[i]);
+			UnitCard qc = new UnitCard(1, 1, 1, "", "");
 			Unit u = new Unit(qc);
+			u.appyQualities(arr[i]);
 			for(Quality q:controll[i]) {
 				assertEquals(true, u.hasQuality(q));
 			}
@@ -109,7 +109,8 @@ public class TestUnit {
 	public void testAttack() {
 		Unit u0 = new Unit(new UnitCard(1, 1, 1, "", ""));
 		assertEquals(false, u0.canAttack());
-		Unit u1 = new Unit(new QualityUnitCard(3, 3, 1, "", "", Quality.Charge.getValue()));
+		Unit u1 = new Unit(new UnitCard(3, 3, 1, "", ""));
+		u1.setQuality(Quality.Charge);
 		assertEquals(true, u1.canAttack());
 		u1.attackUnit(u0);
 		assertEquals(false, u1.canAttack());

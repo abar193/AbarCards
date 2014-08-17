@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Deck>
+	<Unit Name="Private" Description="" Damage="1" Health="1" Cost="1"></Unit>
+	<Unit Name="Corporal" Description="Charge" Damage="2" Health="1" Cost="1">
+		<Quaities v="8"/>
+		<Fulldesc txt="Has charge" />
+	</Unit>
+	<Unit Name="Sergant" Description="A+1D" Damage="1" Health="2" Cost="1">
+		<Aura type="1" value="1"/>
+		<Fulldesc txt="Aura +1 damage for all units" />
+	</Unit>
+	<Unit Name="Cannon" Description="5/3" Damage="5" Health="3" Cost="2"/>
+	<Unit Name="Bear" Description="A=H" Damage="0" Health="5" Cost="2" SpecID="1">
+		<Fulldesc txt="Attack is always equals to health."/>
+	</Unit>
+</Deck>

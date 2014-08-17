@@ -104,10 +104,10 @@ public class TestPlayerData {
 	@Test
 	public void testAura() {
 		PlayerData pd = new PlayerData(null, 30, null);
-		pd.auras.addAura(new players.AuraEffect(players.AuraType.UnitDamage, 5, 3));
-		assertEquals(5, pd.auras.modifiersForType(players.AuraType.UnitDamage));
+		pd.auras.addAura(new effects.AuraEffect(effects.AuraType.UnitDamage, 5, 3));
+		assertEquals(5, pd.auras.modifiersForType(effects.AuraType.UnitDamage));
 		Unit u = new Unit(new UnitCard(1, 1, 1, "", ""));
-		pd.auras.addAura(new players.AuraEffect(players.AuraType.UnitHealth, 4, u));
+		pd.auras.addAura(new effects.AuraEffect(effects.AuraType.UnitHealth, 4, u));
 		assertEquals(2, pd.auras.aurasCount());
 		pd.auras.unitDies(u);
 		assertEquals(1, pd.auras.aurasCount());

@@ -3,6 +3,8 @@ package players;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import effects.AuraEffect;
+import effects.AuraType;
 import units.Unit;
 
 /**
@@ -18,6 +20,7 @@ public class AuraStorage {
 	
 	public AuraStorage() {
 		auras = new ArrayList<AuraEffect>();
+		modifiers = new int[3]; 
 	}
 	
 	/**
