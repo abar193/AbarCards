@@ -52,11 +52,19 @@ public class RealPlayer implements PlayerInterface {
 		
 		int i = 0;
 		for(BasicCard bc : you.getHand()) {
-			System.out.print(String.format("%c%10s, %9s, %5s Cost: %2d|", qwerty[i], bc.name, bc.description, 
+			String s = bc.description; 
+			if(s == null || s == "") {
+				if(bc instanceof UnitCard) {
+					UnitCard c = (UnitCard)bc;
+					s = Integer.toString(c.getDamage()) + "/" + Integer.toString(c.getHealth());
+				}
+			}
+			System.out.print(String.format("%c%10s, %9s, %5s Cost: %2d|", qwerty[i], bc.name, s, 
 					bc.type.toString(), bc.cost));
 			if(++i % 2 == 0) System.out.println();
 		}
-		System.out.println();
+		
+		if(i % 2 != 0) System.out.println();
 	}
 	
 	/**
@@ -69,7 +77,14 @@ public class RealPlayer implements PlayerInterface {
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
-			System.out.print(String.format("|%10s|", arr.get(i).myCard.description));
+			String s;
+			String d = arr.get(i).myCard.fullDescription;
+			if(d != null && d != "") {
+				s = String.format("i%10s|", arr.get(i).myCard.description);
+			} else {
+				s = String.format("|%10s|", arr.get(i).myCard.description);
+			}
+			System.out.print(s);
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
@@ -101,7 +116,7 @@ public class RealPlayer implements PlayerInterface {
 	public void makeTurn() {
 		ArrayList<Unit> myArmy = latestSituation.playerUnits.get(me.playerNumber);
 		//ArrayList<Unit> hisArmy = latestSituation.playerUnits.get(opponent.playerNumber);
-		
+		System.out.println("Type 'i' for info about units, or 'h' for help");
 		int c = 0;
 		boolean targeting = false;
 		int selectedUnit = 0;
@@ -136,6 +151,12 @@ public class RealPlayer implements PlayerInterface {
 								}
 							}
 							break;
+						case 'i': 
+							exploreUnits(); 
+							break;
+						case 'h': 
+							displayHelp();
+							break;
 						case 10: case 13: break;
 						default: break;
 					}
@@ -169,6 +190,32 @@ public class RealPlayer implements PlayerInterface {
 		}
 	}
 
+	/**
+	 * Prints information about every single unit, or handed card with filled fullDescription
+	 */
+	private void exploreUnits() {
+		for(int i = 0; i < 2; i++) {
+			for(Unit u: latestSituation.playerUnits.get((opponent.playerNumber + i) % 2)) {
+				if(u.myCard.fullDescription != null && u.myCard.fullDescription != "") {
+					System.out.format("%s - %s \n", u.myCard.name, u.myCard.fullDescription);
+				}
+			}
+		}
+		
+		for(BasicCard c : me.getHand()) {
+			if(c.fullDescription != null && c.fullDescription != "") {
+				System.out.format("%s: %s \n", c.name, c.fullDescription);
+			}
+		}
+	}
+	
+	private void displayHelp() {
+		System.out.println("Help: \n" +
+				"You may enter orders one at a time, or with a single line, but press enter.\n" +
+				"Type your unit's number to select unit for attack. \n" + 
+				"Select his unit or press '-' to attack hero. " + 
+				"To play your card press it's key (q..t + a..g)");
+	}
 
 	@Override
 	public void setParentGame(Game g) {
