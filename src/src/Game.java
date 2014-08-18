@@ -112,7 +112,9 @@ public class Game {
 		
 		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Home", "Sweet home"));
 		tauntUnit.setQuality(Quality.Taunt);
+		tauntUnit.myCard.fullDescription = "Has taunt";
 		fs.addUnit(tauntUnit, bot.playerNumber);
+		
 		field = fs;
 		field.refreshUnits();
 		int i = 0;
@@ -253,6 +255,10 @@ public class Game {
 			recalculateFieldModifiers();
 			updateInfoForAll();
 		}
+	}
+	
+	public void applySpellToPlayer(int player, AbstractSpell spell) {
+		playersData[player].reciveSpell(spell);
 	}
 	
 	public void addAuraForPlayer(int player, AuraEffect ae) {
