@@ -13,4 +13,30 @@
 	<Unit Name="Bear" Description="A=H" Damage="0" Health="5" Cost="2" SpecID="1">
 		<Fulldesc txt="Attack is always equals to health."/>
 	</Unit>
+	<Spell>
+		<TargedetSpell targeter="player">
+			<BuffSpell>
+				<Buff type="AddDamage" v="4"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell>
+		<TargedetSpell targeter="player">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="Hurt" v="2"/>
+				</BuffSpell>
+				<TargedetSpell targeter="neighbor" o="-1">
+					<BuffSpell>
+						<Buff type="Hurt" v="1"/>
+					</BuffSpell>
+				</TargedetSpell>
+				<TargedetSpell targeter="neighbor" o="1">
+					<BuffSpell>
+						<Buff type="Hurt" v="1"/>
+					</BuffSpell>
+				</TargedetSpell>
+			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
 </Deck>

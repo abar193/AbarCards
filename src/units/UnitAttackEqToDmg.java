@@ -3,9 +3,12 @@ package units;
 import cards.UnitCard;
 
 public class UnitAttackEqToDmg extends Unit {
-
+	
+	boolean silenced;
+	
 	public UnitAttackEqToDmg(UnitCard card) {
 		super(card);
+		silenced = false;
 	}
 
 	public UnitAttackEqToDmg(UnitCard card, int qualities) {
@@ -14,6 +17,16 @@ public class UnitAttackEqToDmg extends Unit {
 
 	@Override
 	public int getCurrentDamage() {
-		return getCurrentHealth();
+		if(!silenced) return getCurrentHealth();
+		else return modDmg;
+	}
+	
+	@Override 
+	public void applyBuff(effects.Buff b) {
+		if(b.type == effects.BuffType.Silence) {
+			silenced = true;
+		} else {
+			super.applyBuff(b);
+		}
 	}
 }
