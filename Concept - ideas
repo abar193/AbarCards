@@ -30,18 +30,18 @@ What should happen:
             cast spells; summon new units from cards
 
     Game over: 
-        * One player's health drops under 0                 
+        * One player's health drops under 0                         DONE
 
 Mechanics:
     
     What can spells do:
         * Deal damage to unit                                       DONE
-        * Heal unit/heroes                                          1/2 DONE
+        * Heal unit/heroes                                          DONE
         * Add new quality to units                                  DONE
         * Modify unit's properties (damage, current health, max health) DONE
         * Remove all buffs/qualities from unit                      DONE
-        * Destroy unit                                              
-        * Apply those effects to 1 - random number - all units of the player - all units 3/4 DONE
+        * Destroy unit                                              DONE
+        * Apply those effects to 1 - random number - all units of the player - all units DONE
 
     What qualities may units have:
         * Normal unit                                               DONE
@@ -56,17 +56,17 @@ Mechanics:
         * End turn effect
 
     Auras:
-        * Change health
-        * Change damage
-        * Change summon cost
-        * Add quality
+        * Change health                                             DONE
+        * Change damage                                             DONE
+        * Change summon cost                                        DONE
+        * Add quality                                               FUCK IT
 
     Effects may apply to:
-        * *self* (on powers)
-        * *target/attacker* (on powers)
+        * *self* (on powers)                                        DONE
+        * *target/attacker* (on powers)                             DONE
         * randomly chosen unit(s) (w/wo repeats)                    DONE
-        * player-chosen unit    
-        * neighbor units
+        * player-chosen unit                                        DONE
+        * neighbor units                                            DONE
 
     Effects may occur on following events:
         * newly created units
@@ -76,15 +76,15 @@ Mechanics:
 Cards: 
 
     Base-cards types: 
-        * Gain mana (active/available from the next turn)
-        * Summon building 
+        * Gain mana (active/available from the next turn)          DONE
+        * Summon building                                           
 
     Combat-cards types:
-        * Cast spell 
-        * Create unit (placed on the left side, or where player chooses him to be)
+        * Cast spell                                                DONE
+        * Create unit (placed on the left side, or where player chooses him to be) 1/2DONE
 
     Units: 
-        * May attack player-chosen units, can't attack allies
+        * May attack player-chosen units, can't attack allies       DONE
 
     Buildings: 
         * May create units on the same turn, or X turns after (if survives)
@@ -96,18 +96,17 @@ How should it all happen:
     Deck shuffle: on the game start, cards are being validated (no more than *2* cards of each type, etc)
 
     Player uses a spell: 
-        0) Check unit cost (with all buffs)         1/2 DONE
-        1) Choose target(s)                         
-        2) Apply spell                              1/3 DONE
+        0) Check unit cost (with all buffs)         DONE
+        1) Choose target(s)                         DONE
+        2) Apply spell                              DONE
 
     Player uses unit card: 
-        1) Check unit cost (with all buffs) 
-        1.1) Remove mana
-        2) Place unit
+        1) Check unit cost (with all buffs)         DONE(?) TEST IT
+        1.1) Remove mana                            DONE
+        2) Place unit                               DONE
         3) See, if it triggers some "newly created unit" spell
-        4) If unit has no charge, disable it's attack ability
-        5) If unit has some battlecry effect, apply it
+        4) If unit has no charge, disable it's attack ability DONE
+        5) If unit has some battlecry effect, apply it  
         
     Unit attacks:
-        1) Check, if target is valid (he has taunt, or no other taunt is in bound)
-        2) 
+        1) Check, if target is valid (he has taunt, or no other taunt is in bound) DONE

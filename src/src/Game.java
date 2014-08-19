@@ -7,6 +7,7 @@ import units.UnitFactory;
 import effects.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import decks.DeckPackReader;
 import players.*;
@@ -62,27 +63,40 @@ public class Game {
 	
 	/** Used only for test games now */
 	private ArrayList<BasicCard> generateTestArrayList() {
-		final UnitCard specialCard = new UnitCard(1, 2, 2, "Sergeant", "1/2 +1Aura");
-		specialCard.auraEffects = new effects.AuraEffect[1];
-		specialCard.auraEffects[0] = new AuraEffect(AuraType.UnitDamage, 1, 0);
+		ArrayList<BasicCard> cards = new ArrayList<>(5);
+		{
+			BuffSpell bs = new BuffSpell(null, 0, new Buff(BuffType.AddDamage, 5));
+			TargedetSpell ts = new TargedetSpell(null, 0, new PlayerTargeter(), bs);
+			SpellCard spell = new SpellCard("+5 d", "", 2, ts);
+			spell.fullDescription = "Buff +5/0 to selected unit";
+			cards.add(spell);
+		} 
+		{
+			BuffSpell ld = new BuffSpell(null, 0, new Buff(BuffType.Hurt, 1));
+			BuffSpell rd = new BuffSpell(null, 0, new Buff(BuffType.Hurt, 1));
+			final BuffSpell bs = new BuffSpell(null, 0, new Buff(BuffType.Hurt, 2));
+			final TargedetSpell ls = new TargedetSpell(null, 0, new NeighborTargeter(-1), ld);
+			final TargedetSpell rs = new TargedetSpell(null, 0, new NeighborTargeter(1), rd);
+			ArrayList<AbstractSpell> arr = new ArrayList<AbstractSpell>(3){{
+				add(ls);
+				add(rs);
+				add(bs);
+			}};
+			SpellContainer sc = new SpellContainer(null, 0, arr);
+			TargedetSpell ts = new TargedetSpell(null, 0, new PlayerTargeter(), sc);
+			SpellCard spell = new cards.SpellCard("1-2-1 Dmg", "", 1, ts);
+			spell.fullDescription = "Deal 2 dmg to center unit, and 1 to adjusted";
+			cards.add(spell);
+		}
 		
-		final UnitCard corporal = new UnitCard(2, 1, 2, "Corporal", "");
-		corporal.qualities = Quality.Charge.getValue();
-		return new ArrayList<BasicCard>() {{
-			add(new UnitCard(1, 1, 1, "Private", "1/1")); 
-			add(corporal);
-			add(specialCard);
-			add(new UnitCard(3, 3, 2, "Officier", "3/3"));
-			add(new UnitCard(5, 5, 3, "Lieutenant", "5/5"));
-			add(new cards.SpellCard("Buff", "+5 damage", 0, new AllUnitsTargeter(-1), 
-					new BuffUnit(new Buff(BuffType.Damage, 5))));
-		}};
+		return cards;
 	}
 	
 	/** Launches the game */
 	public void play() {
 		DeckPackReader dpr = new DeckPackReader();
 		ArrayList<BasicCard> bc = dpr.parseFile("C:\\Users\\Abar\\Documents\\Uni\\Workspace\\AbarCards\\src\\decks\\NeutralsDeck.xml");
+		bc.addAll(generateTestArrayList());
 		
 		factory = new UnitFactory();
 		
@@ -217,9 +231,8 @@ public class Game {
 	public boolean canPlayCard(BasicCard c, int player) {
 		if(c.type == CardType.Unit)
 			return playersData[player].canPlayCard(c);
-		else if(c.type == CardType.Spell)
-			return playersData[player].canPlayCard(c) & ((SpellCard)c).targeter.
-					hasTargets(field, player);
+		else if(c.type == CardType.Spell) 
+			return playersData[player].canPlayCard(c) & ((SpellCard)c).spell.validate();
 		else return false;
 	}
 	
@@ -242,14 +255,7 @@ public class Game {
 
 			} else if (c.type == CardType.Spell) {
 				SpellCard card = (SpellCard)c;
-				Unit[] arr = card.targeter.selectTargets(field, player);
-				for(AbstractEffect ae : card.effect) {
-					if(ae.type == EffectType.UnitEffect) {
-						for(Unit u : arr) {
-							((UnitEffect)ae).applyEffect(u);
-						}
-					}
-				}
+				card.exequte(player);
 			}
 			
 			recalculateFieldModifiers();
@@ -257,10 +263,18 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Passes spell to the chosen player
+	 * @param player 0..1 - id of a player in playersData array
+	 * @param spell spell to be received - instance of PlayerValueSpell 
+	 */
 	public void applySpellToPlayer(int player, AbstractSpell spell) {
 		playersData[player].reciveSpell(spell);
 	}
 	
+	/**
+	 * Adds aura effect to the player
+	 */
 	public void addAuraForPlayer(int player, AuraEffect ae) {
 		playersData[player].auras.addAura(ae);
 	}
@@ -300,21 +314,36 @@ public class Game {
 				playersData[0].craeteOpenData());
 	}
 	
+	/**
+	 * Calculates cost- and health-modifiers based on players auras, and applies them to units.
+	 */
 	public void recalculateFieldModifiers() {
 		playersData[0].auras.calculateModifiers();
 		playersData[1].auras.calculateModifiers();
 		
-		int[] modifiers = playersData[0].auras.getModifiers();
-		for(Unit u : field.playerUnits.get(0)) {
-			u.modDmg = modifiers[1];
-			u.modHealth = modifiers[2];
+		for(int i = 0; i < 2; i++) {
+			int[] modifiers = playersData[i].auras.getModifiers();
+			Iterator<Unit> j = field.playerUnits.get(i).iterator();
+			while(j.hasNext()) {
+				Unit u = j.next();
+				u.modDmg = modifiers[1];
+				u.modHealth = modifiers[2];
+				if(u.isDead()) {
+					informAll(u.myCard.name + " is dead");
+					//field.removeUnitOfPlayer(u, i);
+					j.remove();
+					if(playersData[i].auras.unitDies(u)) { 
+						recalculateFieldModifiers();
+						return;
+					}
+				}
+			}
 		}
-		
-		modifiers = playersData[1].auras.getModifiers();
-		for(Unit u : field.playerUnits.get(1)) {
-			u.modDmg = modifiers[1];
-			u.modHealth = modifiers[2];
-		}
+	}
+	
+	/** Provides current FieldSituation for spell targeters */
+	public FieldSituation provideFieldSituation() {
+		return field;
 	}
 	
 	public static Game currentGame;
@@ -323,5 +352,10 @@ public class Game {
 		Game g = new Game();
 		currentGame = g;
 		g.play();
+	}
+	
+	/** For tests only */
+	public void applyFieldSituation(FieldSituation newField) {
+		field = newField;
 	}
 }

@@ -16,7 +16,8 @@ public class AllUnitsTargeter implements Targeter {
 	}
 
 	@Override
-	public Unit[] selectTargets(FieldSituation fs, int p) {
+	public Unit[] selectTargets(int p, Unit u) {
+		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
 			return fs.playerUnits.get((acceptablePlayers + p) % 2).
 					toArray(new Unit[fs.playerUnits.
@@ -33,7 +34,8 @@ public class AllUnitsTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(FieldSituation fs, int player) {
+	public boolean hasTargets(int player, Unit u) {
+		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
 			return fs.playerUnits.get((acceptablePlayers + player) % 2).size() > 0;
 		} else {

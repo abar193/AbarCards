@@ -21,12 +21,14 @@ public class Unit {
 	
 	private int currentHealth;
 	private int currentDamage;
+	private int maxHealth;
 	private int qualities = 0;
 	
 	private boolean canAttack, attackedAlready;
 	
 	public Unit(UnitCard card) {
 		currentHealth = card.getHealth();
+		maxHealth = currentHealth;
 		currentDamage = card.getDamage();
 		myCard = card;
 		
@@ -38,6 +40,7 @@ public class Unit {
 	
 	public Unit(UnitCard card, int qualities) {
 		currentHealth = card.getHealth();
+		maxHealth = currentHealth;
 		currentDamage = card.getDamage();
 		myCard = card;
 		this.qualities = qualities;
@@ -77,6 +80,11 @@ public class Unit {
 		qualities |= q.getValue();
 	}
 	
+	public void setQuality(int i) {
+		qualities |= i;
+	}
+	
+	
 	public void damage(int d) {
 		currentHealth -= d;
 	}
@@ -91,16 +99,19 @@ public class Unit {
 	
 	public void applyBuff(effects.Buff b) {
 		switch (b.type) {
-		case Damage:
+		case AddDamage:
 			currentDamage += b.value;
 			break;
-		case Health:
+		case AddHealth:
 			currentHealth += b.value;
+			maxHealth += b.value;
 			break;
-		case Quality:
+		case AddQuality:
+			setQuality(b.value);
 			break;
 		case Silence:
 			currentHealth = Math.min(myCard.getHealth(), currentHealth);
+			maxHealth = myCard.getHealth();
 			currentDamage = myCard.getDamage();
 			qualities = 0;
 			break;
@@ -109,6 +120,15 @@ public class Unit {
 			break;
 		case HealthSetTo:
 			currentHealth = b.value;
+			break;
+		case Hurt: 
+			currentHealth -= b.value;
+			break;
+		case Heal:
+			currentHealth = Math.min(maxHealth, currentHealth + b.value);
+			break;
+		case Kill:
+			currentHealth = 0;
 			break;
 		default:
 			break;

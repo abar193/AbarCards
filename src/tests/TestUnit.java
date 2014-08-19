@@ -41,13 +41,13 @@ public class TestUnit {
 		
 		assertEquals(u.getCurrentDamage(), 5);
 		assertEquals(u.getCurrentHealth(), 4);
-		u.applyBuff(new effects.Buff(effects.BuffType.Damage, 5));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddDamage, 5));
 		assertEquals(u.getCurrentDamage(), 10);
-		u.applyBuff(new effects.Buff(effects.BuffType.Health, 2));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddHealth, 2));
 		assertEquals(u.getCurrentHealth(), 6);
-		u.applyBuff(new effects.Buff(effects.BuffType.Damage, -1));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddDamage, -1));
 		assertEquals(u.getCurrentDamage(), 9);
-		u.applyBuff(new effects.Buff(effects.BuffType.Health, -3));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddHealth, -3));
 		assertEquals(u.getCurrentHealth(), 3);
 		
 		u.applyBuff(new effects.Buff(effects.BuffType.Silence, 0));

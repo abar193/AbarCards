@@ -6,5 +6,5 @@ package effects;
  *
  */
 public enum BuffType {
-	Health, Damage, Quality, Silence, HealthSetTo, DamageSetTo; 
+	AddHealth, AddDamage, AddQuality, Silence, HealthSetTo, DamageSetTo, Hurt, Heal, Kill; 
 }

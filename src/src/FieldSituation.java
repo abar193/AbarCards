@@ -105,6 +105,29 @@ public class FieldSituation {
 	}
 	
 	/**
+	 * Returns unit from the same arrayList with u, who's position = u.index + i.
+	 * @param i offset from source unit
+	 * @param u source unit
+	 * @return unit or null, if u.index + i is outside array bounds
+	 */
+	public Unit neighborUnit(int i, Unit u) {
+		ArrayList<Unit> units = (playerUnits.get(0).contains(u)) ? 
+				playerUnits.get(0) : playerUnits.get(1);
+		
+		for(int j = 0; j < units.size(); j++) {
+			if(units.get(j).equals(u)) {
+				int r = j + i;
+				if(r < 0 || r >= units.size()) {
+					return null;
+				} else {
+					return units.get(r);
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Removes unit u of player p.
 	 * @return true if unit has been found and removed
 	 */

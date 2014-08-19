@@ -1,6 +1,8 @@
 package effects;
 
 import src.FieldSituation;
+import src.Game;
+
 import units.Unit;
 
 import java.util.Arrays;
@@ -31,7 +33,8 @@ public class RandomTargeter implements Targeter {
 	}
 
 	@Override
-	public Unit[] selectTargets(FieldSituation fs, int p) {
+	public Unit[] selectTargets(int p, Unit targ) {
+		FieldSituation fs = Game.currentGame.provideFieldSituation(); 
 		player = p;
 		Random r = new Random();
 		ArrayList<Unit> retValue = new ArrayList<Unit>(maxCount);
@@ -87,7 +90,9 @@ public class RandomTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(FieldSituation fs, int player) {
+	public boolean hasTargets(int player, Unit u) {
+		FieldSituation fs = Game.currentGame.provideFieldSituation();
+		
 		if(aceptPlayers == -1)
 			return fs.playerUnits.get(0).size() > 0 || fs.playerUnits.get(1).size() > 0;
 		else 

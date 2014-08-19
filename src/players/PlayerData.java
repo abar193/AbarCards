@@ -5,6 +5,10 @@ import cards.BasicCard;
 
 import players.PlayerInterface;
 
+import effects.AbstractSpell;
+import effects.PlayerValueSpell;
+import effects.PlayerValueModifier;
+
 import java.util.ArrayList;
 
 /**
@@ -74,6 +78,28 @@ public class PlayerData {
 	 */
 	public void endTurn() {
 		auras.removeOutdatedAuras();
+	}
+	
+	public void reciveSpell(AbstractSpell spell) {
+		if(spell instanceof PlayerValueSpell) {
+			PlayerValueSpell ps = (PlayerValueSpell)spell;
+			switch(ps.modifier) {
+				case AddAvailMana: 
+					this.totalMana += ps.value;
+					this.availableMana += ps.value;
+					break;
+				case AddUnavailMana:
+					this.totalMana += ps.value;
+					break;
+				case AddHealth: 
+					this.health += ps.value;
+					break;
+				case RemoveHealth:
+					this.health -= ps.value;
+					break;
+				default:
+			}
+		}
 	}
 	
 	/**
