@@ -13,4 +13,9 @@ public class Buff {
 		type = bt;
 		value = v;
 	}
+	
+	public Buff(String s, int v) {
+		type = BuffType.fromString(s);
+		value = v;
+	}
 }

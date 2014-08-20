@@ -13,14 +13,20 @@
 	<Unit Name="Bear" Description="A=H" Damage="0" Health="5" Cost="2" SpecID="1">
 		<Fulldesc txt="Attack is always equals to health."/>
 	</Unit>
-	<Spell>
+	<Spell Name="Mana" Description="" Cost="0">
+		<Fulldesc txt="Deals 2 damage to selected unit and 1 to adjusted ones."/>
+		<PlayerValueSpell type="AddAvailMana" value="1" acept="0">
+		</PlayerValueSpell>
+	</Spell>
+	<Spell Name="+5/0" Description="" Cost="1">
 		<TargedetSpell targeter="player">
 			<BuffSpell>
 				<Buff type="AddDamage" v="4"/>
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell>
+	<Spell Name="Bomb" Description="1-2-1 D" Cost="1">
+		<Fulldesc txt="Deals 2 damage to selected unit and 1 to adjusted ones."/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
 				<BuffSpell>
@@ -37,6 +43,22 @@
 					</BuffSpell>
 				</TargedetSpell>
 			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Airstrike" Description="" Cost="2">
+		<Fulldesc txt="Deals 1 damage to 5 random enemy targets"/>
+		<TargedetSpell targeter="random" acept="1" targets="5" repeats="1">
+			 <BuffSpell>
+				<Buff type="Hurt" v="1"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Nuke" Description="" Cost="3">
+		<Fulldesc txt="Kills every single unit"/>
+		<TargedetSpell targeter="all" acept="-1">
+			 <BuffSpell>
+				<Buff type="Kill" v="0"/>
+			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
 </Deck>

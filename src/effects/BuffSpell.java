@@ -4,7 +4,7 @@ import units.Unit;
 
 public class BuffSpell extends AbstractSpell {
 
-	Buff buff;
+	public Buff buff;
 	
 	public BuffSpell(Unit t, int p, Buff b) {
 		super(t, p);

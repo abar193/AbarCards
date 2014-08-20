@@ -96,7 +96,7 @@ public class Game {
 	public void play() {
 		DeckPackReader dpr = new DeckPackReader();
 		ArrayList<BasicCard> bc = dpr.parseFile("C:\\Users\\Abar\\Documents\\Uni\\Workspace\\AbarCards\\src\\decks\\NeutralsDeck.xml");
-		bc.addAll(generateTestArrayList());
+		//bc.addAll(generateTestArrayList());
 		
 		factory = new UnitFactory();
 		
@@ -107,8 +107,8 @@ public class Game {
 		RealPlayer p1 = new RealPlayer();
 		PassiveBot p2 = new PassiveBot();
 		
-		PlayerData player = new PlayerData(d1, 30, p1);
-		PlayerData bot = new PlayerData(d2, 30, p2);
+		PlayerData player = new PlayerData(d1, 10, p1);
+		PlayerData bot = new PlayerData(d2, 10, p2);
 		
 		initPlayers((PlayerInterface)p1, (PlayerInterface)p2, player, bot);
 		

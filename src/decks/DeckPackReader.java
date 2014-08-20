@@ -7,14 +7,13 @@ import org.xml.sax.helpers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import java.io.*;
 
 import cards.*;
 import cards.SpecialUnitCard.SpecialUnit;
-
 import effects.AuraEffect;
 import effects.AuraType;
+import effects.AbstractSpell;
 
 /** 
  * Reads XML file with deck info. For example see NeutralsDeck.xml
@@ -26,11 +25,13 @@ public class DeckPackReader extends DefaultHandler {
 	private ArrayList<BasicCard> resultingCard;
 	private UnitCard unit;
 	private SpellCard spell;
+	private SpellXMLBuilder spellBuilder;
 	
 	public DeckPackReader() {
 		resultingCard = new ArrayList<BasicCard>();
 		unit = null;
 		spell = null;
+		spellBuilder = null;
 	}
 	
 
@@ -39,6 +40,7 @@ public class DeckPackReader extends DefaultHandler {
 		resultingCard = new ArrayList<BasicCard>();
 		unit = null;
 		spell = null;
+		spellBuilder = new SpellXMLBuilder();
     }
     
     @Override
@@ -64,12 +66,19 @@ public class DeckPackReader extends DefaultHandler {
     		} else {
     			unit = new UnitCard(dmg, health, cost, n, d);
     		}
-    	} else if(localName.equals("Spell")) {
-    		
+    	} else if(localName.contains("Spell") || localName.contains("Buff")) {
+    		SpellCard sc = spellBuilder.reciveOpenTag(localName, atts);
+    		if(sc != null) {
+    			spell = sc;
+    		}
     	} else if(localName.equals("Qualities")) {
     		unit.qualities = Integer.parseInt(atts.getValue("v"));
     	} else if(localName.equals("Fulldesc")) {
-    		unit.fullDescription = atts.getValue("txt");
+    		if(unit != null) {
+    			unit.fullDescription = atts.getValue("txt");
+    		} else if(spell != null) {
+    			spell.fullDescription = atts.getValue("txt");
+    		}
     	} else if(localName.equals("Aura")) {
     		if(unit.auraEffects == null) {
     			unit.auraEffects = new AuraEffect[1];
@@ -91,9 +100,13 @@ public class DeckPackReader extends DefaultHandler {
     	if(unit != null && localName.equals("Unit")) {
     		resultingCard.add(unit);
     		unit = null;
-    	} else if(spell != null && localName.equals("Spell")) {
-    		resultingCard.add(spell);
-    		spell = null;
+    	} else if(localName.contains("Spell") || localName.contains("Buff")) {
+    		AbstractSpell s = spellBuilder.reciveCloseTag(localName);
+    		if(s != null) {
+    			spell.spell = s;
+    			resultingCard.add(spell);
+    			spell = null;
+    		}
     	}
     }
     
@@ -108,6 +121,7 @@ public class DeckPackReader extends DefaultHandler {
 	        xmlReader.parse(filename);//
 	        return resultingCard;
     	} catch (Exception e) {
+    		System.out.println("Exception " + e.getMessage());
     		return null;
     	}
         
@@ -115,7 +129,11 @@ public class DeckPackReader extends DefaultHandler {
     
 	public static void main(String[] args) throws Exception {
         
-        
+		DeckPackReader dpr = new DeckPackReader();
+		ArrayList<BasicCard> bc = dpr.parseFile("C:\\Users\\Abar\\Documents\\Uni\\Workspace\\AbarCards\\src\\decks\\NeutralsDeck.xml");
+		for(BasicCard c : bc) {
+			System.out.format("%s %s %d\n", c.name, c.fullDescription, c.cost);
+		}
 	}
 
 }

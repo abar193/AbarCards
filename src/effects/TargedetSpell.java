@@ -5,7 +5,7 @@ import units.Unit;
 public class TargedetSpell extends AbstractSpell {
 
 	Targeter targeter;
-	AbstractSpell spell;
+	public AbstractSpell spell;
 	
 	public TargedetSpell(Unit t, int p, Targeter targ, AbstractSpell s) {
 		super(t, p);

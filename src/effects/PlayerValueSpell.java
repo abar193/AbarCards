@@ -14,8 +14,16 @@ public class PlayerValueSpell extends AbstractSpell {
 		super(t, p);
 		this.value = value;
 		this.modifier = mod;
+		this.filter = filter;
 	}
-
+	
+	public PlayerValueSpell(String type, int value, int filter) {
+		super(null, 0);
+		modifier = PlayerValueModifier.fromString(type);
+		this.value = value;
+		this.filter = filter;
+	}
+	
 	@Override
 	public boolean validate() {
 		return true;
