@@ -60,7 +60,7 @@ public class DeckPackReader extends DefaultHandler {
     		int health = Integer.parseInt(atts.getValue("Health"));
     		int cost = Integer.parseInt(atts.getValue("Cost"));
     		if(atts.getValue("SpecID") != null) {
-    			unit = new cards.SpecialUnitCard(health, dmg, cost, n, d);
+    			unit = new cards.SpecialUnitCard(dmg, health, cost, n, d);
     			int i = Integer.parseInt(atts.getValue("SpecID"));
     			((SpecialUnitCard)unit).specialUnitRef = SpecialUnit.fromInteger(i);
     		} else {

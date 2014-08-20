@@ -1,13 +1,10 @@
 package effects;
 
-import units.Unit;
-
 public class BuffSpell extends AbstractSpell {
 
 	public Buff buff;
 	
-	public BuffSpell(Unit t, int p, Buff b) {
-		super(t, p);
+	public BuffSpell(Buff b) {
 		buff = b;
 	}
 
@@ -17,7 +14,8 @@ public class BuffSpell extends AbstractSpell {
 	}
 
 	@Override
-	public void exequte() {
+	public void exequte(int playerNum) {
+		this.playerNum = playerNum;
 		target.applyBuff(buff);
 	}
 

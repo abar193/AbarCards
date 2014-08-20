@@ -7,8 +7,7 @@ public class TargedetSpell extends AbstractSpell {
 	Targeter targeter;
 	public AbstractSpell spell;
 	
-	public TargedetSpell(Unit t, int p, Targeter targ, AbstractSpell s) {
-		super(t, p);
+	public TargedetSpell(Targeter targ, AbstractSpell s) {
 		targeter = targ;
 		spell = s;
 	}
@@ -19,11 +18,12 @@ public class TargedetSpell extends AbstractSpell {
 	}
 
 	@Override
-	public void exequte() {
+	public void exequte(int playerNum) {
+		this.playerNum = playerNum;
 		Unit[] units = targeter.selectTargets(playerNum, target);
 		for(Unit u : units) {
 			spell.target = u;
-			spell.exequte();
+			spell.exequte(playerNum);
 		}
 	}
 

@@ -1,7 +1,5 @@
 package effects;
 
-import units.Unit;
-
 import src.Game;
 
 public class PlayerValueSpell extends AbstractSpell {
@@ -10,15 +8,13 @@ public class PlayerValueSpell extends AbstractSpell {
 	public int value;
 	public int filter;
 	
-	public PlayerValueSpell(Unit t, int p, PlayerValueModifier mod, int value, int filter) {
-		super(t, p);
+	public PlayerValueSpell(PlayerValueModifier mod, int value, int filter) {
 		this.value = value;
 		this.modifier = mod;
 		this.filter = filter;
 	}
 	
 	public PlayerValueSpell(String type, int value, int filter) {
-		super(null, 0);
 		modifier = PlayerValueModifier.fromString(type);
 		this.value = value;
 		this.filter = filter;
@@ -30,7 +26,8 @@ public class PlayerValueSpell extends AbstractSpell {
 	}
 
 	@Override
-	public void exequte() {
+	public void exequte(int playerNum) {
+		this.playerNum = playerNum;
 		Game.currentGame.applySpellToPlayer((playerNum + filter) % 2, this);
 	}
 

@@ -24,7 +24,6 @@ public class SpellCard extends BasicCard {
 	}
 	
 	public void exequte(int player) {
-		spell.playerNum = player;
-		spell.exequte();
+		spell.exequte(player);
 	}
 }

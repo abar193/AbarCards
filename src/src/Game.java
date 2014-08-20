@@ -63,33 +63,7 @@ public class Game {
 	
 	/** Used only for test games now */
 	private ArrayList<BasicCard> generateTestArrayList() {
-		ArrayList<BasicCard> cards = new ArrayList<>(5);
-		{
-			BuffSpell bs = new BuffSpell(null, 0, new Buff(BuffType.AddDamage, 5));
-			TargedetSpell ts = new TargedetSpell(null, 0, new PlayerTargeter(), bs);
-			SpellCard spell = new SpellCard("+5 d", "", 2, ts);
-			spell.fullDescription = "Buff +5/0 to selected unit";
-			cards.add(spell);
-		} 
-		{
-			BuffSpell ld = new BuffSpell(null, 0, new Buff(BuffType.Hurt, 1));
-			BuffSpell rd = new BuffSpell(null, 0, new Buff(BuffType.Hurt, 1));
-			final BuffSpell bs = new BuffSpell(null, 0, new Buff(BuffType.Hurt, 2));
-			final TargedetSpell ls = new TargedetSpell(null, 0, new NeighborTargeter(-1), ld);
-			final TargedetSpell rs = new TargedetSpell(null, 0, new NeighborTargeter(1), rd);
-			ArrayList<AbstractSpell> arr = new ArrayList<AbstractSpell>(3){{
-				add(ls);
-				add(rs);
-				add(bs);
-			}};
-			SpellContainer sc = new SpellContainer(null, 0, arr);
-			TargedetSpell ts = new TargedetSpell(null, 0, new PlayerTargeter(), sc);
-			SpellCard spell = new cards.SpellCard("1-2-1 Dmg", "", 1, ts);
-			spell.fullDescription = "Deal 2 dmg to center unit, and 1 to adjusted";
-			cards.add(spell);
-		}
-		
-		return cards;
+		return null;
 	}
 	
 	/** Launches the game */

@@ -13,11 +13,9 @@ import units.Unit;
 public abstract class AbstractSpell {
 
 	public Unit target;
-	public int playerNum;
+	int playerNum;
 	
-	public AbstractSpell(Unit t, int p) {
-		target = t;
-		playerNum = p;
+	public AbstractSpell() {
 	}
 	
 	/**
@@ -28,6 +26,6 @@ public abstract class AbstractSpell {
 	/**
 	 * Executes spell. 
 	 */
-	public abstract void exequte();
+	public abstract void exequte(int player);
 
 }

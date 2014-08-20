@@ -32,17 +32,17 @@ public class SpellXMLBuilder {
 		case "TargedetSpell": {
 			String targ = att.getValue("targeter");
 			Targeter t = TargeterBuilder.fromName(targ, att);
-			TargedetSpell ts = new TargedetSpell(null, 0, t, null);
+			TargedetSpell ts = new TargedetSpell(t, null);
 			stack.push(ts);
 			break;
 		}
 		case "SpellContainer": {
-			SpellContainer sc = new SpellContainer(null, 0, new ArrayList<AbstractSpell>());
+			SpellContainer sc = new SpellContainer(new ArrayList<AbstractSpell>());
 			stack.push(sc);
 			break;
 		}
 		case "BuffSpell": {
-			BuffSpell bs = new BuffSpell(null, 0, null);
+			BuffSpell bs = new BuffSpell(null);
 			stack.push(bs);
 			break;
 		} 

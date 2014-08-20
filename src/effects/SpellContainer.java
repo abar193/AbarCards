@@ -7,13 +7,11 @@ public class SpellContainer extends AbstractSpell {
 	
 	public ArrayList<AbstractSpell> spells;
 	
-	public SpellContainer(Unit t, int p, ArrayList<AbstractSpell> spells) {
-		super(t, p);
+	public SpellContainer(ArrayList<AbstractSpell> spells) {
 		this.spells = spells;
 	}
 
-	public SpellContainer(Unit t, int p, AbstractSpell spell) {
-		super(t, p);
+	public SpellContainer(AbstractSpell spell) {
 		this.spells = new ArrayList<>();
 		spells.add(spell);
 	}
@@ -28,10 +26,11 @@ public class SpellContainer extends AbstractSpell {
 	}
 
 	@Override
-	public void exequte() {
+	public void exequte(int playerNum) {
+		this.playerNum = playerNum;
 		for(AbstractSpell s : spells) {
 			s.target = target;
-			s.exequte();
+			s.exequte(playerNum);
 		}
 
 	}
