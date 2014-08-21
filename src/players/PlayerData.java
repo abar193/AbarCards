@@ -111,7 +111,7 @@ public class PlayerData {
 	 */
 	public ArrayList<BasicCard> pullCard(int n) {
 		if(myPlayer != null) 
-			myPlayer.reciveAction("You pull " + n + " cards");
+			myPlayer.reciveAction("You pull " + n + " card(s)");
 		boolean cantPullInformed = false;
 		ArrayList<BasicCard> ar = new ArrayList<BasicCard>(n);
 		for(int i = 0; i < n; i++) {

@@ -3,6 +3,7 @@ package players;
 import src.FieldSituation;
 
 import src.Game;
+import units.Unit;
 
 /**
  * Basic interface for Player.
@@ -34,4 +35,6 @@ public interface PlayerInterface {
 	 * Here should player make his decisions and call methods like playCard or commitAttack on Game. 
 	 */
 	public void makeTurn();
+	
+	public Unit selectTarget();
 }

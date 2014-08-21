@@ -7,4 +7,19 @@ package cards;
  */
 public enum CardType {
 	Spell, Unit, Basecard;
+	
+	public String stringValue() {
+		switch(this) {
+			case Spell: {
+				return "Sp";
+			}
+			case Unit: {
+				return "Un";
+			}
+			case Basecard: {
+				return "Bc";
+			}
+			default: return "";
+		}
+	}
 }

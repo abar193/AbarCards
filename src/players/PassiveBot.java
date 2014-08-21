@@ -2,6 +2,7 @@ package players;
 
 import src.FieldSituation;
 import src.Game;
+import units.Unit;
 
 /**
  * Just simple bot, doing nothing
@@ -28,6 +29,12 @@ public class PassiveBot implements PlayerInterface {
 	@Override
 	public void makeTurn() {
 
+	}
+
+	@Override
+	public Unit selectTarget() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

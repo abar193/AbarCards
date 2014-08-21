@@ -71,8 +71,7 @@ public class Game {
 	/** Launches the game */
 	public void play() {
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("C:\\Users\\Abar\\Documents\\Uni\\Workspace\\AbarCards\\src\\decks\\NeutralsDeck.xml");
-		//bc.addAll(generateTestArrayList());
+		ArrayList<BasicCard> bc = dpr.parseFile("bin\\decks\\NeutralsDeck.xml"); 
 		
 		factory = new UnitFactory();
 		
@@ -120,15 +119,24 @@ public class Game {
 		field.refreshUnits();
 		int i = 0;
 		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
+			/* * * Init * * */
 			for(Unit u : field.playerUnits.get(i%2)) {
 				u.startTurn();
 			}
 			recalculateFieldModifiers();
-			playersData[i%2].pullCard(1);
+			ArrayList<BasicCard> cards = playersData[i%2].pullCard(1);
+			if(cards != null) 
+				informLostCards(cards, i%2);
+			
+			/* * * Player * * */
 			playersData[i%2].newTurn();
 			players.get(i%2).reciveInfo(playersData[i%2], field, 
 					playersData[(i+1)%2].craeteOpenData());
+			
+			/* * * Wait for player * * */
 			players.get(i%2).makeTurn();
+			
+			/* * * End turn * * */
 			playersData[i%2].auras.removeOutdatedAuras();
 			for(Unit u : field.playerUnits.get(i%2)) {
 				u.endTurn();
@@ -167,6 +175,16 @@ public class Game {
 					return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Informs both players, that someone lost cards
+	 * @param cards
+	 */
+	public void informLostCards(ArrayList<BasicCard> cards, int player) {
+		for(BasicCard bc : cards) {
+			informAll(String.format("Player %d lost %s card!", player, bc.name));
+		}
 	}
 	
 	/**
@@ -211,8 +229,10 @@ public class Game {
 	 * @param m
 	 */
 	public void informAll(String m) {
-		players.get(0).reciveAction(m);
-		players.get(1).reciveAction(m);
+		if(players != null) {
+			players.get(0).reciveAction(m);
+			players.get(1).reciveAction(m);
+		}
 	}
 	
 	/**
@@ -273,28 +293,7 @@ public class Game {
 	}
 	
 	public Unit askPlayerForTarget(int player) {
-		int p, u;
-		System.out.println("Enter player to target (0 - you, 1 - he):");
-		try {
-			p = System.in.read();
-			while(p != 48 && p != 49) {
-				p = System.in.read();
-			}
-		} catch(java.io.IOException e){
-			p = 0; 
-		}
-		System.out.println("Enter unit to target:");
-		try {
-			u = System.in.read();
-			while(u < 48 || p > 57) {
-				u = System.in.read();
-			}
-		} catch(java.io.IOException e){
-			u = 0; 
-		}
-		p -= 48;
-		u -= 48;
-		return field.playerUnits.get((player + p) % 2).get(u);
+		return players.get(player).selectTarget();
 	}
 	
 	/**

@@ -105,12 +105,28 @@ public class Unit {
 		qualities |= i;
 	}
 	
+	public String descriptionString() {
+		String s = "";
+		for(Quality q : Quality.values()) {
+			if(hasQuality(q)) {
+				s += q.toString().charAt(0);
+			}
+		}
+		if(s.equals("")) 
+			s = myCard.description;
+		else s = "<" + s + ">";
+		return s;
+	}
+	
 	/**
 	 * Applies damage to unit. Method calls OnDamage event.
 	 * @param d
 	 */
 	public void damage(int d) {
 		currentHealth -= d;
+		if(src.Game.currentGame != null)
+			src.Game.currentGame.informAll(String.format("%s takes %d damage", 
+				myCard.name, d));
 		this.respondToEvent(TriggeringCondition.OnDamage);
 	}
 	
@@ -185,7 +201,8 @@ public class Unit {
 	
 	public void respondToEvent(TriggeringCondition e) {
 		if(e == TriggeringCondition.OnDamage) {
-			src.Game.currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
+			if(src.Game.currentGame != null)
+				src.Game.currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
 		}
 		for(UnitPower p : powersMatchingCondition(e)) {
 			src.Game.currentGame.informAll(String.format("%s invokes his power", 

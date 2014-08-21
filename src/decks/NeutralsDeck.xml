@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Deck>
 	<Unit Name="Private" Description="" Damage="1" Health="1" Cost="1"></Unit>
-	<Unit Name="Corporal" Description="Charge" Damage="2" Health="1" Cost="1">
-		<Quaities v="8"/>
-		<Fulldesc txt="Has charge" />
+	<Unit Name="Corporal" Description="" Damage="2" Health="1" Cost="1">
+		<Qualities v="8"/>
+		<Fulldesc txt="Has charge"/>
 	</Unit>
 	<Unit Name="Sergant" Description="A+1D" Damage="1" Health="2" Cost="1">
 		<Aura type="1" value="1"/>
@@ -35,8 +35,8 @@
 	<Unit Name="Bear" Description="A=H" Damage="0" Health="5" Cost="2" SpecID="1">
 		<Fulldesc txt="Attack is always equals to health."/>
 	</Unit>
-	<Spell Name="Mana" Description="" Cost="0">
-		<Fulldesc txt="Deals 2 damage to selected unit and 1 to adjusted ones."/>
+	<Spell Name="Mana" Description="+2$" Cost="0">
+		<Fulldesc txt="Adds 2$ available from this turn for a player"/>
 		<PlayerValueSpell type="AddAvailMana" value="1" acept="0">
 		</PlayerValueSpell>
 	</Spell>
@@ -47,7 +47,7 @@
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Bomb" Description="1-2-1 D" Cost="1">
+	<Spell Name="Bomb" Description="121" Cost="1">
 		<Fulldesc txt="Deals 2 damage to selected unit and 1 to adjusted ones."/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
@@ -67,7 +67,7 @@
 			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Airstrike" Description="" Cost="2">
+	<Spell Name="Airstrike" Description="5rt" Cost="2">
 		<Fulldesc txt="Deals 1 damage to 5 random enemy targets"/>
 		<TargedetSpell targeter="random" acept="1" targets="5" repeats="1">
 			 <BuffSpell>
@@ -75,7 +75,7 @@
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Nuke" Description="" Cost="3">
+	<Spell Name="Nuke" Description="K-a" Cost="3">
 		<Fulldesc txt="Kills every single unit"/>
 		<TargedetSpell targeter="all" acept="-1">
 			 <BuffSpell>

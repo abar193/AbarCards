@@ -21,32 +21,42 @@ public class RealPlayer implements PlayerInterface {
 	private FieldSituation latestSituation;
 	private PlayerData me;
 	private PlayerOpenData opponent;
+	private boolean redrawNeeded;
+	private boolean inProgress;
 	
 	@Override
 	public void reciveInfo(PlayerData you, FieldSituation field, PlayerOpenData enemy) {
 		me = you;
 		latestSituation = field;
 		opponent = enemy;
-		System.out.println(String.format("Enemy has %d/%d mana and %d health", 
+		
+		if(inProgress) {
+			redrawNeeded = true;
+			return;
+		} else {
+			redrawNeeded = false;
+		}
+		
+		System.out.println(String.format("Enemy has %d/%d $ and %d health", 
 				enemy.availableMana, enemy.totalMana, enemy.health));
 		System.out.println(String.format("Enemy hand has %d cards, deck %d cards.",  
 				enemy.handSize, enemy.deckSize));
 		System.out.println("Field: ");
-		for(int i = 0; i < 80; i++) {
+		for(int i = 0; i < 79; i++) {
 			System.out.print("=");
 		}
 		System.out.println();
 		displayFieldSide(field.playerUnits.get(enemy.playerNumber));
-		for(int i = 0; i < 40; i++) {
+		for(int i = 0; i < 39; i++) {
 			System.out.print("- ");
 		}
 		System.out.println();
 		displayFieldSide(field.playerUnits.get(you.playerNumber));
-		for(int i = 0; i < 80; i++) {
+		for(int i = 0; i < 79; i++) {
 			System.out.print("=");
 		}
 		
-		System.out.println(String.format("\nYou have %d/%d mana and %d health", 
+		System.out.println(String.format("\nYou have %d/%d $ and %d health", 
 				you.getAvailableMana(), you.getTotalMana(), you.getHealth()));
 		System.out.println(String.format("Your deck has %d cards, your hand: ", you.getDeckSize()));
 		
@@ -59,12 +69,12 @@ public class RealPlayer implements PlayerInterface {
 					s = Integer.toString(c.getDamage()) + "/" + Integer.toString(c.getHealth());
 				}
 			}
-			System.out.print(String.format("%c%10s, %9s, %5s Cost: %2d|", qwerty[i], bc.name, s, 
-					bc.type.toString(), bc.cost));
-			if(++i % 2 == 0) System.out.println();
+			System.out.print(String.format("%c%10s,%4s,%3s %2d$|", qwerty[i], bc.name, s, 
+					bc.type.stringValue(), bc.cost));
+			if(++i % 3 == 0) System.out.println();
 		}
 		
-		if(i % 2 != 0) System.out.println();
+		if(i % 3 != 0) System.out.println();
 	}
 	
 	/**
@@ -80,9 +90,9 @@ public class RealPlayer implements PlayerInterface {
 			String s;
 			String d = arr.get(i).myCard.fullDescription;
 			if(d != null && d != "") {
-				s = String.format("i%10s|", arr.get(i).myCard.description);
+				s = String.format("i%10s|", arr.get(i).descriptionString());
 			} else {
-				s = String.format("|%10s|", arr.get(i).myCard.description);
+				s = String.format("|%10s|", arr.get(i).descriptionString());
 			}
 			System.out.print(s);
 		}
@@ -123,6 +133,7 @@ public class RealPlayer implements PlayerInterface {
 		while(c != 'z') { 
 			try {
 				c = System.in.read();
+				inProgress = true;
 				if(!targeting) {
 					switch(c) {
 						case '0': case '1': case '2': case '3':
@@ -157,7 +168,9 @@ public class RealPlayer implements PlayerInterface {
 						case 'h': 
 							displayHelp();
 							break;
-						case 10: case 13: break;
+						case 10: case 13: 
+							inProgress = false;
+							break;
 						default: break;
 					}
 				} else {
@@ -177,6 +190,7 @@ public class RealPlayer implements PlayerInterface {
 							}
 							break;
 						case 10: case 13: 
+							inProgress = false;
 							break;
 						default: 
 							targeting = false; 
@@ -186,6 +200,10 @@ public class RealPlayer implements PlayerInterface {
 			} catch (java.io.IOException e) {
 				System.out.println("Input error");
 				return;
+			}
+			
+			if(redrawNeeded) {
+				this.reciveInfo(me, latestSituation, opponent);
 			}
 		}
 	}
@@ -220,6 +238,35 @@ public class RealPlayer implements PlayerInterface {
 	@Override
 	public void setParentGame(Game g) {
 		parent = g;
+	}
+
+	@Override
+	public Unit selectTarget() {
+		int p, u;
+		System.out.println("Enter player to target (0 - you, 1 - he):");
+		try {
+			p = System.in.read();
+			while(p != '0' && p != '1') {
+				p = System.in.read();
+			}
+		} catch(java.io.IOException e){
+			p = '0'; 
+		}
+		p -= '0';
+		System.out.println("Enter unit to target:");
+		try {
+			u = 0;
+			while(u < '0' || p > '9') {
+				u = System.in.read();
+				if(u - '0' >= latestSituation.playerUnits.get(p).size())
+					u = 0;
+			}
+			u -= 48;
+		} catch(java.io.IOException e){
+			u = 0; 
+		}
+		
+		return latestSituation.playerUnits.get((me.playerNumber + p) % 2).get(u);
 	}
 
 }
