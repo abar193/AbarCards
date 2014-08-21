@@ -123,7 +123,7 @@ public class RealPlayer implements PlayerInterface {
 	private static final char[] qwerty = { 'q', 'w', 'e', 'r', 't', 'a', 's', 'd', 'f', 'g' };
 	
 	@Override
-	public void makeTurn() {
+	public void run() {
 		ArrayList<Unit> myArmy = latestSituation.playerUnits.get(me.playerNumber);
 		//ArrayList<Unit> hisArmy = latestSituation.playerUnits.get(opponent.playerNumber);
 		System.out.println("Type 'i' for info about units, or 'h' for help");
@@ -133,6 +133,9 @@ public class RealPlayer implements PlayerInterface {
 		while(c != 'z') { 
 			try {
 				c = System.in.read();
+				if(Thread.interrupted()) {
+					return;
+				}
 				inProgress = true;
 				if(!targeting) {
 					switch(c) {

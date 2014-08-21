@@ -27,7 +27,7 @@ public class PassiveBot implements PlayerInterface {
 	}
 
 	@Override
-	public void makeTurn() {
+	public void run() {
 
 	}
 

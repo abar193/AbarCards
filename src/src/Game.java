@@ -115,8 +115,18 @@ public class Game {
 					playersData[(i+1)%2].craeteOpenData());
 			
 			/* * * Wait for player * * */
-			players.get(i%2).makeTurn();
-			
+			Thread t = new Thread(players.get(i%2));
+			Thread tk = new Thread(new ThreadKiller(t));
+			t.start();
+			tk.start();
+			try { 
+				t.join();
+				if(tk.isAlive()) 
+					tk.interrupt();
+			} catch (InterruptedException e) {
+				
+			}
+			t.interrupt();
 			/* * * End turn * * */
 			playersData[i%2].auras.removeOutdatedAuras();
 			for(Unit u : field.playerUnits.get(i%2)) {

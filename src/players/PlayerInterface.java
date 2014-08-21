@@ -9,7 +9,7 @@ import units.Unit;
  * Basic interface for Player.
  * @author Abar
  */
-public interface PlayerInterface {
+public interface PlayerInterface extends Runnable {
 	/**
 	 * Updates info with actual data - called on beginning of the turn, and each
 	 * time a card is played.
@@ -34,7 +34,7 @@ public interface PlayerInterface {
 	/**
 	 * Here should player make his decisions and call methods like playCard or commitAttack on Game. 
 	 */
-	public void makeTurn();
+	public void run();
 	
 	public Unit selectTarget();
 }
