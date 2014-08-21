@@ -90,15 +90,19 @@ public class Game {
 		playersData[1].pullCard(3);
 		
 		FieldSituation fs = new FieldSituation();
-		fs.addUnit(new Unit(new UnitCard(5, 3, 1, "Tank", "Test unit")), bot.playerNumber);
-		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
-		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit")), bot.playerNumber);
+		fs.addUnit(new Unit(new UnitCard(5, 3, 1, "Tank", "Test unit"), 
+				bot.playerNumber), bot.playerNumber);
+		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit"), 
+				bot.playerNumber), bot.playerNumber);
+		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit"), 
+				bot.playerNumber), bot.playerNumber);
 		
 		SpecialUnitCard su = new SpecialUnitCard(0, 5, 0, "Bear", "A = H");
 		su.specialUnitRef = cards.SpecialUnitCard.SpecialUnit.DmgEqHealth;
 		fs.addUnit(factory.createUnit(su, bot.playerNumber), bot.playerNumber);
 		
-		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Home", "Sweet home"));
+		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Home", "Sweet home"), 
+				bot.playerNumber);
 		tauntUnit.setQuality(Quality.Taunt);
 		tauntUnit.myCard.fullDescription = "Has taunt";
 		fs.addUnit(tauntUnit, bot.playerNumber);
@@ -223,9 +227,7 @@ public class Game {
 			players.get((player + 1) % 2).reciveAction("Opponent plays" + c.name);
 
 			if(c.type == CardType.Unit) {
-				UnitCard uc = (UnitCard)c;
-				Unit u = new Unit(uc);
-				field.addUnit(u, player);
+				field.addUnit(factory.createUnit((UnitCard)c, player), player);
 
 			} else if (c.type == CardType.Spell) {
 				SpellCard card = (SpellCard)c;
