@@ -69,52 +69,32 @@ public class Game {
 	}
 	
 	/** Launches the game */
-	public void play() {
-		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("bin\\decks\\NeutralsDeck.xml"); 
+	public void play(PlayerInterface p1, PlayerInterface p2, Deck d1, Deck d2, int h1, int h2) {
 		
 		factory = new UnitFactory();
 		
-		Deck d1 = new Deck(bc);	
-		d1.shuffleCards();
-		Deck d2 = new Deck(bc);
-		d2.shuffleCards();
-		RealPlayer p1 = new RealPlayer();
-		PassiveBot p2 = new PassiveBot();
-		
-		PlayerData player = new PlayerData(d1, 10, p1);
-		PlayerData bot = new PlayerData(d2, 10, p2);
-		
-		initPlayers((PlayerInterface)p1, (PlayerInterface)p2, player, bot);
+		/* * * Initialization * * */
+		PlayerData player1 = new PlayerData(d1, 10, p1);
+		PlayerData player2 = new PlayerData(d2, 10, p2);
+		initPlayers((PlayerInterface)p1, (PlayerInterface)p2, player1, player2);
 		
 		playersData[0].pullCard(2);
 		playersData[1].pullCard(3);
 		
-		BuffSpell bs = new BuffSpell(new Buff(BuffType.AddDamage, 5));
-		BuffSpell bs1 = new BuffSpell(new Buff(BuffType.AddHealth, 1));
-		UnitPower up = new UnitPower(TriggeringCondition.OnDamage, bs);
-		UnitPower up1 = new UnitPower(TriggeringCondition.OnAllyDamage, bs1);
-		
 		FieldSituation fs = new FieldSituation();
-		fs.addUnit(new Unit(new UnitCard(5, 3, 1, "Raging", "  Tank"), 
-				bot.playerNumber), bot.playerNumber);
-		fs.playerUnits.get(bot.playerNumber).get(0).addPower(up);
-		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit"), 
-				bot.playerNumber), bot.playerNumber);
-		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Of Defence"), 
-				bot.playerNumber), bot.playerNumber);
-		fs.playerUnits.get(bot.playerNumber).get(2).addPower(up1);
 		
-		SpecialUnitCard su = new SpecialUnitCard(0, 5, 0, "Bear", "A = H");
+		/* * * Test games * * */ 
+		SpecialUnitCard su = new SpecialUnitCard(0, 2, 0, "Small Bear", "A = H");
 		su.specialUnitRef = cards.SpecialUnitCard.SpecialUnit.DmgEqHealth;
-		fs.addUnit(factory.createUnit(su, bot.playerNumber), bot.playerNumber);
+		fs.addUnit(factory.createUnit(su, player2.playerNumber), player2.playerNumber);
 		
-		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Home", "Sweet home"), 
-				bot.playerNumber);
+		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Bunker", ""), 
+				player2.playerNumber);
 		tauntUnit.setQuality(Quality.Taunt);
 		tauntUnit.myCard.fullDescription = "Has taunt";
-		fs.addUnit(tauntUnit, bot.playerNumber);
+		fs.addUnit(tauntUnit, player2.playerNumber);
 		
+		/* * * Game cycle * * */
 		field = fs;
 		field.refreshUnits();
 		int i = 0;
@@ -362,7 +342,16 @@ public class Game {
 	public static void main(String[] args) {		
 		Game g = new Game();
 		currentGame = g;
-		g.play();
+		
+		DeckPackReader dpr = new DeckPackReader();
+		Deck d1 = new Deck(dpr.parseFile("bin\\decks\\NeutralsDeck.xml"));	
+		d1.shuffleCards();
+		Deck d2 = new Deck(dpr.parseFile("bin\\decks\\BotImbaDeck.xml"));
+		d2.shuffleCards();
+		RealPlayer p1 = new RealPlayer();
+		PassiveBot p2 = new PassiveBot();
+		
+		g.play(p1, p2, d1, d2, 10, 10);
 	}
 	
 	/** For tests only */

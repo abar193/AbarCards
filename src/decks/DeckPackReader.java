@@ -98,6 +98,8 @@ public class DeckPackReader extends DefaultHandler {
     		int value = Integer.parseInt(atts.getValue("value"));
     		AuraEffect aura = new AuraEffect(AuraType.fromInt(type), value, null);
     		unit.auraEffects[unit.auraEffects.length-1] = aura;
+    	} else if(!localName.equals("Deck")) {
+    		System.out.println("Unknown tag: " + localName);
     	}
     }
     
@@ -122,7 +124,7 @@ public class DeckPackReader extends DefaultHandler {
     			unit.power = power;
     			power = null;
     		}
-    	}
+    	} 
     }
     
     
@@ -145,7 +147,7 @@ public class DeckPackReader extends DefaultHandler {
 	public static void main(String[] args) throws Exception {
         
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("C:\\Users\\Abar\\Documents\\Uni\\Workspace\\AbarCards\\src\\decks\\NeutralsDeck.xml");
+		ArrayList<BasicCard> bc = dpr.parseFile("bin\\decks\\BotImbaDeck.xml");
 		for(BasicCard c : bc) {
 			System.out.format("%s %s %d\n", c.name, c.fullDescription, c.cost);
 		}
