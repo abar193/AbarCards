@@ -19,9 +19,9 @@ public class TestFieldSituation {
 	@Test
 	public void testAddRemove() {
 		FieldSituation fs = new FieldSituation();
-		Unit u1 = new Unit(new UnitCard(1, 1, 1, "L", "a"));
-		Unit u2 = new Unit(new UnitCard(2, 2, 2, "M", "b"));
-		Unit u3 = new Unit(new UnitCard(3, 3, 3, "N", "c"));
+		Unit u1 = new Unit(new UnitCard(1, 1, 1, "L", "a"), 0);
+		Unit u2 = new Unit(new UnitCard(2, 2, 2, "M", "b"), 0);
+		Unit u3 = new Unit(new UnitCard(3, 3, 3, "N", "c"), 1);
 		assertEquals(true, fs.canUnitBeAdded(u1, 0));
 		fs.addUnit(u1, 0);
 		assertEquals(true, fs.canUnitBeAdded(u2, 0));
@@ -44,11 +44,11 @@ public class TestFieldSituation {
 	public void testFullDeck() {
 		FieldSituation fs = new FieldSituation();
 		for(int i = 0; i < fs.MAXFIELDUNITS; i++) {
-			fs.addUnit(new Unit(new UnitCard(i, i, i, "", "")), 0);
-			fs.addUnit(new Unit(new UnitCard(i, i, i, "", "")), 1);
+			fs.addUnit(new Unit(new UnitCard(i, i, i, "", ""), 0), 0);
+			fs.addUnit(new Unit(new UnitCard(i, i, i, "", ""), 1), 1);
 		}
 		
-		assertEquals(false, fs.canUnitBeAdded(new Unit(new UnitCard(0, 0, 0, "", "")), 0));
-		assertEquals(false, fs.canUnitBeAdded(new Unit(new UnitCard(0, 0, 0, "", "")), 1));
+		assertEquals(false, fs.canUnitBeAdded(new Unit(new UnitCard(0, 0, 0, "", ""), 0), 0));
+		assertEquals(false, fs.canUnitBeAdded(new Unit(new UnitCard(0, 0, 0, "", ""), 1), 1));
 	}
 }

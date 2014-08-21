@@ -27,14 +27,14 @@ public class UnitFactory {
 		if(card instanceof cards.SpecialUnitCard) {
 			switch(((SpecialUnitCard)card).specialUnitRef) {
 				case DmgEqHealth:
-					u = new UnitAttackEqToDmg(card);
+					u = new UnitAttackEqToDmg(card, player);
 					break;
 				case Other:
 				default: 
-					u = new Unit(card);
+					u = new Unit(card, player);
 			}
 		} else {
-			u = new Unit(card);
+			u = new Unit(card, player);
 		}
 		
 		if(card.qualities != 0) {

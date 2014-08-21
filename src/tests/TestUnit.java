@@ -13,14 +13,14 @@ public class TestUnit {
 	@Test
 	public void testInit() {
 		UnitCard uc = new UnitCard(4, 4, 4, "", "");
-		assertNotNull(new Unit(uc));
+		assertNotNull(new Unit(uc, 0));
 		assertNotNull(new Unit(uc, units.Unit.Quality.Battlecry.getValue()));
 	}
 
 	@Test
 	public void testBuffs() {
 		UnitCard uc = new UnitCard(5, 4, 4, "", "");
-		Unit u = new Unit(uc);
+		Unit u = new Unit(uc, 0);
 		assertEquals(false, u.hasQuality(Quality.Battlecry));
 		assertEquals(false, u.hasQuality(Quality.Charge));
 		assertEquals(false, u.hasQuality(Quality.Stealth));
@@ -62,7 +62,7 @@ public class TestUnit {
 	@Test
 	public void testNewBuffs() {
 		UnitCard uc = new UnitCard(1, 2, 3, "", "");
-		Unit u = new Unit(uc);
+		Unit u = new Unit(uc, 0);
 		u.applyBuff(new effects.Buff(effects.BuffType.DamageSetTo, 15));
 		assertEquals(15, u.getCurrentDamage());
 		u.applyBuff(new effects.Buff(effects.BuffType.HealthSetTo, 7));
@@ -97,7 +97,7 @@ public class TestUnit {
 		
 		for(int i = 0; i < arr.length; i++) {
 			UnitCard qc = new UnitCard(1, 1, 1, "", "");
-			Unit u = new Unit(qc);
+			Unit u = new Unit(qc, 0);
 			u.appyQualities(arr[i]);
 			for(Quality q:controll[i]) {
 				assertEquals(true, u.hasQuality(q));
@@ -107,9 +107,9 @@ public class TestUnit {
 	
 	@Test
 	public void testAttack() {
-		Unit u0 = new Unit(new UnitCard(1, 1, 1, "", ""));
+		Unit u0 = new Unit(new UnitCard(1, 1, 1, "", ""), 0);
 		assertEquals(false, u0.canAttack());
-		Unit u1 = new Unit(new UnitCard(3, 3, 1, "", ""));
+		Unit u1 = new Unit(new UnitCard(3, 3, 1, "", ""), 0);
 		u1.setQuality(Quality.Charge);
 		assertEquals(true, u1.canAttack());
 		u1.attackUnit(u0);

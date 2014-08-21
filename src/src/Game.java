@@ -4,6 +4,8 @@ import cards.*;
 import units.Unit;
 import units.Unit.Quality;
 import units.UnitFactory;
+import units.TriggeringCondition;
+import units.UnitPower;
 import effects.*;
 
 import java.util.ArrayList;
@@ -89,13 +91,20 @@ public class Game {
 		playersData[0].pullCard(2);
 		playersData[1].pullCard(3);
 		
+		BuffSpell bs = new BuffSpell(new Buff(BuffType.AddDamage, 5));
+		BuffSpell bs1 = new BuffSpell(new Buff(BuffType.AddHealth, 1));
+		UnitPower up = new UnitPower(TriggeringCondition.OnDamage, bs);
+		UnitPower up1 = new UnitPower(TriggeringCondition.OnAllyDamage, bs1);
+		
 		FieldSituation fs = new FieldSituation();
-		fs.addUnit(new Unit(new UnitCard(5, 3, 1, "Tank", "Test unit"), 
+		fs.addUnit(new Unit(new UnitCard(5, 3, 1, "Raging", "  Tank"), 
 				bot.playerNumber), bot.playerNumber);
+		fs.playerUnits.get(bot.playerNumber).get(0).addPower(up);
 		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit"), 
 				bot.playerNumber), bot.playerNumber);
-		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Test unit"), 
+		fs.addUnit(new Unit(new UnitCard(4, 2, 1, "Cannon", "Of Defence"), 
 				bot.playerNumber), bot.playerNumber);
+		fs.playerUnits.get(bot.playerNumber).get(2).addPower(up1);
 		
 		SpecialUnitCard su = new SpecialUnitCard(0, 5, 0, "Bear", "A = H");
 		su.specialUnitRef = cards.SpecialUnitCard.SpecialUnit.DmgEqHealth;
@@ -227,7 +236,10 @@ public class Game {
 			players.get((player + 1) % 2).reciveAction("Opponent plays" + c.name);
 
 			if(c.type == CardType.Unit) {
-				field.addUnit(factory.createUnit((UnitCard)c, player), player);
+				Unit u = factory.createUnit((UnitCard)c, player);
+				field.addUnit(u, player);
+				u.respondToEvent(TriggeringCondition.OnCreate);
+				this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
 
 			} else if (c.type == CardType.Spell) {
 				SpellCard card = (SpellCard)c;
@@ -320,6 +332,25 @@ public class Game {
 	/** Provides current FieldSituation for spell targeters */
 	public FieldSituation provideFieldSituation() {
 		return field;
+	}
+	
+	/**
+	 * Passes event for all unit of u's side, except u himself.
+	 */
+	public void passEventAboutUnit(Unit u, TriggeringCondition e) {
+		ArrayList<Unit> side = null;
+		if(field.playerUnits.get(0).contains(u)) 
+			side = field.playerUnits.get(0);
+		else if(field.playerUnits.get(1).contains(u))
+			side = field.playerUnits.get(1);
+		
+		if(side != null) {
+			for(Unit i : side) {
+				if(!i.equals(u)) {
+					i.respondToEvent(e);
+				}
+			}
+		}
 	}
 	
 	public static Game currentGame;

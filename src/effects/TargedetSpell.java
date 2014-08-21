@@ -21,9 +21,11 @@ public class TargedetSpell extends AbstractSpell {
 	public void exequte(int playerNum) {
 		this.playerNum = playerNum;
 		Unit[] units = targeter.selectTargets(playerNum, target);
-		for(Unit u : units) {
-			spell.target = u;
-			spell.exequte(playerNum);
+		if(units != null) {
+			for(Unit u : units) {
+				spell.target = u;
+				spell.exequte(playerNum);
+			}
 		}
 	}
 

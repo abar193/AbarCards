@@ -18,11 +18,11 @@ public class TestTargeters {
 	public void testRadnom() {
 		FieldSituation fs = new FieldSituation();
 		UnitCard c1 = new UnitCard(1, 1, 0, "", "");
-		Unit u1 = new Unit(c1);
+		Unit u1 = new Unit(c1, 0);
 		UnitCard c2 = new UnitCard(2, 1, 0, "", "");
-		Unit u2 = new Unit(c2);
+		Unit u2 = new Unit(c2, 0);
 		UnitCard c3 = new UnitCard(1, 3, 0, "", "");
-		Unit u3 = new Unit(c3);
+		Unit u3 = new Unit(c3, 1);
 		fs.addUnit(u1, 0);
 		fs.addUnit(u2, 0);
 		fs.addUnit(u3, 1);
@@ -70,11 +70,11 @@ public class TestTargeters {
 	public void testAllUnits() {
 		FieldSituation fs = new FieldSituation();
 		UnitCard c1 = new UnitCard(1, 1, 0, "", "");
-		Unit u1 = new Unit(c1);
+		Unit u1 = new Unit(c1, 0);
 		UnitCard c2 = new UnitCard(2, 1, 0, "", "");
-		Unit u2 = new Unit(c2);
+		Unit u2 = new Unit(c2, 0);
 		UnitCard c3 = new UnitCard(1, 3, 0, "", "");
-		Unit u3 = new Unit(c3);
+		Unit u3 = new Unit(c3, 1);
 		fs.addUnit(u1, 0);
 		fs.addUnit(u2, 0);
 		fs.addUnit(u3, 1);
@@ -110,7 +110,7 @@ public class TestTargeters {
 	
 	@Test
 	public void testSelf() {
-		Unit u = new Unit(new UnitCard(0, 5, 0, "", ""));
+		Unit u = new Unit(new UnitCard(0, 5, 0, "", ""), 0);
 		
 		SelfTargeter st = new SelfTargeter();
 		assertEquals(true, st.hasTargets(0, u));
@@ -122,11 +122,11 @@ public class TestTargeters {
 	public void testNeighbors() {
 		FieldSituation fs = new FieldSituation();
 		UnitCard c1 = new UnitCard(1, 1, 0, "", "");
-		Unit u1 = new Unit(c1);
+		Unit u1 = new Unit(c1, 0);
 		UnitCard c2 = new UnitCard(2, 1, 0, "", "");
-		Unit u2 = new Unit(c2);
+		Unit u2 = new Unit(c2, 0);
 		UnitCard c3 = new UnitCard(1, 3, 0, "", "");
-		Unit u3 = new Unit(c3);
+		Unit u3 = new Unit(c3, 1);
 		
 		fs.addUnit(u1, 0);
 		fs.addUnit(u2, 0);
@@ -152,11 +152,11 @@ public class TestTargeters {
 		}
 		
 		UnitCard c4 = new UnitCard(1, 4, 0, "", "");
-		Unit u4 = new Unit(c4);
+		Unit u4 = new Unit(c4, 1);
 		UnitCard c5 = new UnitCard(1, 5, 0, "", "");
-		Unit u5 = new Unit(c5);
+		Unit u5 = new Unit(c5, 1);
 		UnitCard c6 = new UnitCard(1, 6, 0, "", "");
-		Unit u6 = new Unit(c6);
+		Unit u6 = new Unit(c6, 1);
 		
 		fs.addUnit(u4, 1);
 		fs.addUnit(u5, 1);

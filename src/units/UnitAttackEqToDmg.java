@@ -6,13 +6,13 @@ public class UnitAttackEqToDmg extends Unit {
 	
 	boolean silenced;
 	
-	public UnitAttackEqToDmg(UnitCard card) {
-		super(card);
+	public UnitAttackEqToDmg(UnitCard card, int player) {
+		super(card, player);
 		silenced = false;
 	}
 
-	public UnitAttackEqToDmg(UnitCard card, int qualities) {
-		super(card, qualities);
+	public UnitAttackEqToDmg(UnitCard card, int player, int qualities) {
+		super(card, player, qualities);
 	}
 
 	@Override

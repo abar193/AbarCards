@@ -20,7 +20,7 @@ public class TestSpellEffects {
 		fs = new FieldSituation();
 		units = new Unit[5];
 		for(int i = 0; i < 5; i++) {
-			 units[0] = new Unit(new cards.UnitCard(i + 2, i + 2, 0, "", ""));
+			 units[0] = new Unit(new cards.UnitCard(i + 2, i + 2, 0, "", ""), 0);
 			 fs.addUnit(units[0], 0);
 		}
 		src.Game.currentGame = new src.Game();
