@@ -25,7 +25,7 @@ public class Unit {
 	private int currentDamage;
 	private int maxHealth;
 	private int qualities = 0;
-	private int myPlayer;
+	public int myPlayer;
 	
 	private ArrayList<UnitPower> powers;
 	
@@ -81,7 +81,7 @@ public class Unit {
 	
 	
 	public boolean canAttack() {
-		return (currentDamage > 0) & (canAttack | hasQuality(Quality.Charge)) & 
+		return (getCurrentDamage() > 0) & (canAttack | hasQuality(Quality.Charge)) & 
 				!attackedAlready; 
 	}
 	

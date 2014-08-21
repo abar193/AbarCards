@@ -78,6 +78,12 @@ public class FieldSituation {
 		return null;
 	}
 	
+	public boolean containsOnDifferentSides(Unit u1, Unit u2) {
+		return playerUnits.get(u1.myPlayer).contains(u1) &&
+				playerUnits.get(u2.myPlayer).contains(u2) &&
+				u1.myPlayer != u2.myPlayer;
+	}
+	
 	/**
 	 * Return amount of units with "taunt" quality for specific player
 	 * @param p player number (0-1)

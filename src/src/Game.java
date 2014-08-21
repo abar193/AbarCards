@@ -85,6 +85,7 @@ public class Game {
 		
 		/* * * Test games * * */ 
 		SpecialUnitCard su = new SpecialUnitCard(0, 2, 0, "Small Bear", "A = H");
+		su.fullDescription = "Attack is always equal to his health";
 		su.specialUnitRef = cards.SpecialUnitCard.SpecialUnit.DmgEqHealth;
 		fs.addUnit(factory.createUnit(su, player2.playerNumber), player2.playerNumber);
 		
@@ -157,6 +158,16 @@ public class Game {
 		return false;
 	}
 	
+	public boolean attackIsValid(Unit attacker, Unit target) {
+		if(field.containsOnDifferentSides(attacker, target)) {
+			if(target.hasQuality(Quality.Taunt)
+					|| (field.tauntUnitsForPlayer(target.myPlayer) == 0)) 
+				if(attacker.canAttack())
+					return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Informs both players, that someone lost cards
 	 * @param cards
@@ -165,6 +176,30 @@ public class Game {
 		for(BasicCard bc : cards) {
 			informAll(String.format("Player %d lost %s card!", player, bc.name));
 		}
+	}
+	
+	/**
+	 * Makes two units attack each other (attackIsValid(attacker, target) is called first)
+	 */
+	public void commitAttack(Unit attacker, Unit target) {
+		String s = attacker.myCard.name + 
+				" VS " + target.myCard.name;
+		informAll(s);
+		
+		attacker.attackUnit(target);
+		if(target.isDead()) {
+			informAll(target.myCard.name + " is dead");
+			field.removeUnitOfPlayer(target, target.myPlayer);
+			if(playersData[target.myPlayer].auras.unitDies(target)) 
+				recalculateFieldModifiers();
+		}
+		if(attacker.isDead()) {
+			informAll(attacker.myCard.name + " is dead"); 
+			field.removeUnitOfPlayer(attacker, attacker.myPlayer);
+			if(playersData[attacker.myPlayer].auras.unitDies(attacker)) 
+				recalculateFieldModifiers();
+		}
+		updateInfoForAll();
 	}
 	
 	/**
@@ -238,7 +273,7 @@ public class Game {
 			playersData[player].playCard(c);
 			// Drawing
 			players.get(player).reciveAction("Playing " + c.name);
-			players.get((player + 1) % 2).reciveAction("Opponent plays" + c.name);
+			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
 
 			if(c.type == CardType.Unit) {
 				Unit u = factory.createUnit((UnitCard)c, player);
@@ -349,7 +384,7 @@ public class Game {
 		Deck d2 = new Deck(dpr.parseFile("bin\\decks\\BotImbaDeck.xml"));
 		d2.shuffleCards();
 		RealPlayer p1 = new RealPlayer();
-		PassiveBot p2 = new PassiveBot();
+		SimpleBot p2 = new SimpleBot();
 		
 		g.play(p1, p2, d1, d2, 10, 10);
 	}
