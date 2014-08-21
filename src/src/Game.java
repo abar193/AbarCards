@@ -120,6 +120,9 @@ public class Game {
 		field.refreshUnits();
 		int i = 0;
 		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
+			for(Unit u : field.playerUnits.get(i%2)) {
+				u.startTurn();
+			}
 			recalculateFieldModifiers();
 			playersData[i%2].pullCard(1);
 			playersData[i%2].newTurn();
@@ -127,7 +130,9 @@ public class Game {
 					playersData[(i+1)%2].craeteOpenData());
 			players.get(i%2).makeTurn();
 			playersData[i%2].auras.removeOutdatedAuras();
-			field.refreshUnits();
+			for(Unit u : field.playerUnits.get(i%2)) {
+				u.endTurn();
+			}
 			i++;	
 		}
 		

@@ -11,6 +11,7 @@ import java.io.*;
 
 import cards.*;
 import cards.SpecialUnitCard.SpecialUnit;
+import units.UnitPower;
 import effects.AuraEffect;
 import effects.AuraType;
 import effects.AbstractSpell;
@@ -24,6 +25,7 @@ public class DeckPackReader extends DefaultHandler {
 
 	private ArrayList<BasicCard> resultingCard;
 	private UnitCard unit;
+	private UnitPower power;
 	private SpellCard spell;
 	private SpellXMLBuilder spellBuilder;
 	
@@ -32,6 +34,7 @@ public class DeckPackReader extends DefaultHandler {
 		unit = null;
 		spell = null;
 		spellBuilder = null;
+		power = null;
 	}
 	
 
@@ -41,12 +44,14 @@ public class DeckPackReader extends DefaultHandler {
 		unit = null;
 		spell = null;
 		spellBuilder = new SpellXMLBuilder();
+		power = null;
     }
     
     @Override
     public void endDocument() throws SAXException {
         unit = null;
         spell = null;
+        power = null;
     }
     
     @Override
@@ -59,6 +64,7 @@ public class DeckPackReader extends DefaultHandler {
     		int dmg = Integer.parseInt(atts.getValue("Damage"));
     		int health = Integer.parseInt(atts.getValue("Health"));
     		int cost = Integer.parseInt(atts.getValue("Cost"));
+    		
     		if(atts.getValue("SpecID") != null) {
     			unit = new cards.SpecialUnitCard(dmg, health, cost, n, d);
     			int i = Integer.parseInt(atts.getValue("SpecID"));
@@ -71,6 +77,8 @@ public class DeckPackReader extends DefaultHandler {
     		if(sc != null) {
     			spell = sc;
     		}
+    	} else if(localName.contains("Power")) {
+    		power = spellBuilder.reciveOpenPowerTag(localName, atts);
     	} else if(localName.equals("Qualities")) {
     		unit.qualities = Integer.parseInt(atts.getValue("v"));
     	} else if(localName.equals("Fulldesc")) {
@@ -106,6 +114,13 @@ public class DeckPackReader extends DefaultHandler {
     			spell.spell = s;
     			resultingCard.add(spell);
     			spell = null;
+    		}
+    	} else if(localName.contains("Power")) {
+    		AbstractSpell s = spellBuilder.reciveCloseTag(localName);
+    		if(s != null) {
+    			power.applySpell(s);
+    			unit.power = power;
+    			power = null;
     		}
     	}
     }

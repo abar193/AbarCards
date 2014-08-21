@@ -48,6 +48,10 @@ public class UnitFactory {
 			}
 		}
 		
+		if(card.power != null) {
+			u.addPower(card.power);
+		}
+		
 		return u;
 	}
 

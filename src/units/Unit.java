@@ -188,6 +188,8 @@ public class Unit {
 			src.Game.currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
 		}
 		for(UnitPower p : powersMatchingCondition(e)) {
+			src.Game.currentGame.informAll(String.format("%s invokes his power", 
+					myCard.name));
 			p.exequte(this, myPlayer);
 		}
 	}

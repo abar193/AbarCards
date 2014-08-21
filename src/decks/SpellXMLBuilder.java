@@ -8,6 +8,8 @@ import java.util.Stack;
 import effects.*;
 import cards.SpellCard;
 
+import units.UnitPower;
+
 import java.util.ArrayList;
 
 public class SpellXMLBuilder {
@@ -17,6 +19,13 @@ public class SpellXMLBuilder {
 	
 	public SpellXMLBuilder() {
 		stack = new Stack<AbstractSpell>();
+	}
+	
+	public UnitPower reciveOpenPowerTag(String tag, Attributes att) {
+		if(tag.equals("Power")) {
+			return new UnitPower(units.TriggeringCondition.
+					fromString(att.getValue("condition")));
+		} else return null;
 	}
 	
 	public SpellCard reciveOpenTag(String tag, Attributes att) {
@@ -68,7 +77,7 @@ public class SpellXMLBuilder {
 
 	public AbstractSpell reciveCloseTag(String tag) {
 		switch(tag) {	
-		case "Spell": {
+		case "Spell": case "Power": {
 			return stack.pop();
 		}
 		case "TargedetSpell": 

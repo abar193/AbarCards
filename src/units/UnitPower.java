@@ -12,6 +12,14 @@ public class UnitPower {
 		this.spell = spell;
 	}
 	
+	public UnitPower(TriggeringCondition tc) {
+		this.tc = tc;
+	}
+	
+	public void applySpell(AbstractSpell s) {
+		spell = s;
+	}
+	
 	public boolean matchesCondition(TriggeringCondition c) {
 		return tc == c;
 	}

@@ -9,6 +9,28 @@
 		<Aura type="1" value="1"/>
 		<Fulldesc txt="Aura +1 damage for all units" />
 	</Unit>
+	<Unit Name="Sniper" Description="" Damage="0" Health="1" Cost="2">
+		<Qualities v="2"/>
+		<Fulldesc txt="Deals 2 damage to random enemy at the end of a turn"/>
+		<Power condition="OnTurnEnd">
+			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
+				<BuffSpell>
+					<Buff type="Hurt" v="2"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Sniper" Description="" Damage="0" Health="1" Cost="2">
+		<Qualities v="2"/>
+		<Fulldesc txt="Deals 2 damage to random enemy at the end of a turn"/>
+		<Power condition="OnTurnEnd">
+			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
+				<BuffSpell>
+					<Buff type="Hurt" v="2"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
 	<Unit Name="Cannon" Description="5/3" Damage="5" Health="3" Cost="2"/>
 	<Unit Name="Bear" Description="A=H" Damage="0" Health="5" Cost="2" SpecID="1">
 		<Fulldesc txt="Attack is always equals to health."/>

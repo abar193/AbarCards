@@ -10,6 +10,7 @@ public class UnitCard extends BasicCard {
 	private int baseHealth;
 	private int baseDamage;
 	public AuraEffect[] auraEffects; 
+	public units.UnitPower power = null;
 	public int qualities;
 	
 	public UnitCard(int damage, int health, int cost, String name, String desc) {
