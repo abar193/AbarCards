@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Deck>
-	<Unit Name="Marine" Description="" Damage="2" Health="1" Cost="1">
+	<Unit Name="Marine" Description="" Damage="2" Health="2" Cost="1">
 		<Qualities v="8"/>
 		<Fulldesc txt="Has charge"/>
 	</Unit>
-	<Unit Name="Marine" Description="" Damage="2" Health="1" Cost="1">
+	<Unit Name="Marine" Description="" Damage="2" Health="2" Cost="1">
 		<Qualities v="8"/>
 		<Fulldesc txt="Has charge"/>
 	</Unit>
-	<Unit Name="Marine" Description="" Damage="2" Health="1" Cost="1">
+	<Unit Name="MarineSP" Description="SP" Damage="4" Health="1" Cost="1">
 		<Qualities v="8"/>
-		<Fulldesc txt="Has charge"/>
+		<Fulldesc txt="Has charge, used his stimpack"/>
 	</Unit>
-	<Unit Name="Firebat" Description="" Damage="2" Health="3" Cost="2"> 
+	<Unit Name="Firebat" Description="" Damage="3" Health="4" Cost="2"> 
 	</Unit>
-	<Unit Name="Firebat" Description="" Damage="2" Health="3" Cost="2"> 
+	<Unit Name="Firebat" Description="" Damage="3" Health="4" Cost="2"> 
 	</Unit>
 	<Unit Name="Medic" Description="H1A" Damage="0" Health="3" Cost="2">
 		<Fulldesc txt="At the end of a turn heals all allied units"/>
@@ -36,16 +36,17 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="Ghost" Description="" Damage="5" Health="2" Cost="4">
+	<Unit Name="Ghost" Description="" Damage="5" Health="3" Cost="4">
 		<Qualities v="2"/>
 		<Fulldesc txt="Has stealth"/>
 	</Unit>
-	<Unit Name="Ghost" Description="" Damage="5" Health="2" Cost="4">
+	<Unit Name="Ghost" Description="" Damage="5" Health="3" Cost="4">
 		<Qualities v="2"/>
 		<Fulldesc txt="Has stealth"/>
 	</Unit>
 	<Unit Name="Vulture" Description="" Damage="3" Health="3" Cost="3">
-		<Fulldesc txt="Deal 2 damage to random enemy unit, if some ally gets hurt"/>
+		<Qualities v="8"/>
+		<Fulldesc txt="Charge, deal 2 damage to random enemy unit, if some ally gets hurt"/>
 		<Power condition="OnAllyDamage">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
 				<BuffSpell>
@@ -55,7 +56,8 @@
 		</Power>
 	</Unit>
 	<Unit Name="Vulture" Description="" Damage="3" Health="3" Cost="3">
-		<Fulldesc txt="Deal 2 damage to random enemy unit, if some ally gets hurt"/>
+		<Qualities v="8"/>
+		<Fulldesc txt="Charge, deal 2 damage to random enemy unit, if some ally gets hurt"/>
 		<Power condition="OnAllyDamage">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
 				<BuffSpell>
@@ -64,7 +66,7 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="S Tank" Description="" Damage="0" Health="5" Cost="4">
+	<Unit Name="S Tank" Description="" Damage="0" Health="4" Cost="4">
 		<Fulldesc txt="Deal 4 damage to a random enemy unit and 1 dmg to adjusted ones at the end of a turn"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="0">
@@ -86,7 +88,7 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="S Tank" Description="" Damage="0" Health="5" Cost="4">
+	<Unit Name="S Tank" Description="" Damage="0" Health="4" Cost="4">
 		<Fulldesc txt="Deal 4 damage to a random enemy unit and 1 dmg to adjusted ones at the end of a turn"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="0">

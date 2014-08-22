@@ -58,10 +58,13 @@ public class RandomTargeter implements Targeter {
 			}
 		}
 		
+		ArrayList<Unit> arr;
+		if(aceptPlayers == -1) arr = pickRandomArray(fs, r);
+		else arr = fs.playerUnits.get((player + aceptPlayers) % 2);
+		
+		if(arr.size() <= 0) return null;
+		
 		for(int i = 0; i < maxCount; ) {
-			ArrayList<Unit> arr;
-			if(aceptPlayers == -1) arr = pickRandomArray(fs, r);
-			else arr = fs.playerUnits.get((player + aceptPlayers) % 2);
 			Unit u = arr.get(r.nextInt(arr.size()));
 			if(repeats) {
 				retValue.add(u);
@@ -70,7 +73,7 @@ public class RandomTargeter implements Targeter {
 				if(!retValue.contains(u)) {
 					retValue.add(u);
 					i++;
-				}				
+				}		
 			}
 		}
 
@@ -78,14 +81,8 @@ public class RandomTargeter implements Targeter {
 	}
 	
 	public ArrayList<Unit> pickRandomArray(FieldSituation fs, Random r) {
-		ArrayList<Unit> arr;
-		if(r.nextBoolean()) {
-			arr = fs.playerUnits.get(0);
-			if(arr.size() == 0) arr = fs.playerUnits.get(1);
-		} else {
-			arr = fs.playerUnits.get(1);
-			if(arr.size() == 0) arr = fs.playerUnits.get(0);
-		}
+		ArrayList<Unit> arr = new ArrayList<Unit>(fs.playerUnits.get(0));
+		arr.addAll(fs.playerUnits.get(1));
 		return arr;
 	}
 
@@ -94,7 +91,7 @@ public class RandomTargeter implements Targeter {
 		FieldSituation fs = Game.currentGame.provideFieldSituation();
 		
 		if(aceptPlayers == -1)
-			return fs.playerUnits.get(0).size() > 0 || fs.playerUnits.get(1).size() > 0;
+			return fs.playerUnits.get(0).size() + fs.playerUnits.get(1).size() > 0;
 		else 
 			return fs.playerUnits.get((player + aceptPlayers) % 2).size() > 0;
 	}

@@ -8,6 +8,7 @@ import units.TriggeringCondition;
 import units.UnitPower;
 import effects.*;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -74,8 +75,8 @@ public class Game {
 		factory = new UnitFactory();
 		
 		/* * * Initialization * * */
-		PlayerData player1 = new PlayerData(d1, 10, p1);
-		PlayerData player2 = new PlayerData(d2, 10, p2);
+		PlayerData player1 = new PlayerData(d1, h1, p1);
+		PlayerData player2 = new PlayerData(d2, h2, p2);
 		initPlayers((PlayerInterface)p1, (PlayerInterface)p2, player1, player2);
 		
 		playersData[0].pullCard(2);
@@ -84,12 +85,8 @@ public class Game {
 		FieldSituation fs = new FieldSituation();
 		
 		/* * * Test games * * */ 
-		SpecialUnitCard su = new SpecialUnitCard(0, 2, 0, "Small Bear", "A = H");
-		su.fullDescription = "Attack is always equal to his health";
-		su.specialUnitRef = cards.SpecialUnitCard.SpecialUnit.DmgEqHealth;
-		fs.addUnit(factory.createUnit(su, player2.playerNumber), player2.playerNumber);
 		
-		Unit tauntUnit = new Unit(new UnitCard(0, 1, 1, "Bunker", ""), 
+		Unit tauntUnit = new Unit(new UnitCard(0, 2, 1, "Bunker", ""), 
 				player2.playerNumber);
 		tauntUnit.setQuality(Quality.Taunt);
 		tauntUnit.myCard.fullDescription = "Has taunt";
@@ -149,7 +146,7 @@ public class Game {
 	 * @param attacker attacker's unit position field.playerUnits.get(playerA) 
 	 * @param target target's unit position field.playerUnits.get(playerT)
 	 * @param playerA attacker players number
-	 * @param playerT opponen players number
+	 * @param playerT opponent players number
 	 * @return true if attack is valid
 	 */
 	public boolean attackIsValid(int attacker, int target, int playerA, int playerT) {
@@ -160,8 +157,9 @@ public class Game {
 			return false;
 		}
 		if(field.unitExist(attacker, playerA) & field.unitExist(target, playerT)) {
-			if(field.unitForPlayer(target, playerT).hasQuality(Quality.Taunt)
-					|| (field.tauntUnitsForPlayer(playerT) == 0)) 
+			Unit u = field.unitForPlayer(target, playerT);
+			if((u.hasQuality(Quality.Taunt) || (field.tauntUnitsForPlayer(playerT) == 0)) && 
+					!u.hasQuality(Quality.Stealth)) 
 				if(field.unitForPlayer(attacker, playerA).canAttack())
 					return true;
 		}
@@ -389,14 +387,15 @@ public class Game {
 		currentGame = g;
 		
 		DeckPackReader dpr = new DeckPackReader();
-		Deck d1 = new Deck(dpr.parseFile("bin\\decks\\NeutralsDeck.xml"));	
+		//URL url = getClass().getResource("decks/NeutralsDeck.xml");
+		Deck d1 = new Deck(dpr.parseFile("NeutralsDeck.xml"));	
 		d1.shuffleCards();
-		Deck d2 = new Deck(dpr.parseFile("bin\\decks\\BotImbaDeck.xml"));
+		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 		d2.shuffleCards();
 		RealPlayer p1 = new RealPlayer();
 		SimpleBot p2 = new SimpleBot();
 		
-		g.play(p1, p2, d1, d2, 10, 10);
+		g.play(p1, p2, d1, d2, 15, 15);
 	}
 	
 	/** For tests only */

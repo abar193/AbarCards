@@ -24,6 +24,14 @@ public class RealPlayer implements PlayerInterface {
 	private boolean redrawNeeded;
 	private boolean inProgress;
 	
+	private ArrayList<String> messages; 
+	private boolean myTurn;
+	
+	public RealPlayer() {
+		messages = new ArrayList<String>();
+		myTurn = false;
+	}
+	
 	@Override
 	public void reciveInfo(PlayerData you, FieldSituation field, PlayerOpenData enemy) {
 		me = you;
@@ -81,7 +89,7 @@ public class RealPlayer implements PlayerInterface {
 	 * Displays single side of a FieldSituation (draws ArrayList<Unit> like cards).
 	 * @param arr array to display
 	 */
-	private void displayFieldSide(ArrayList<Unit> arr){
+	private void displayFieldSide(ArrayList<Unit> arr) {
 		for(int i = 0; i < arr.size(); i++) {
 			System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
 		}
@@ -116,6 +124,9 @@ public class RealPlayer implements PlayerInterface {
 	 */
 	@Override
 	public void reciveAction(String m) {
+		if(!myTurn) {
+			messages.add("> " + m);
+		}
 		System.out.println("> " + m);
 	}
 
@@ -127,6 +138,7 @@ public class RealPlayer implements PlayerInterface {
 		ArrayList<Unit> myArmy = latestSituation.playerUnits.get(me.playerNumber);
 		//ArrayList<Unit> hisArmy = latestSituation.playerUnits.get(opponent.playerNumber);
 		System.out.println("Type 'i' for info about units, or 'h' for help");
+		myTurn = true;
 		int c = 0;
 		boolean targeting = false;
 		int selectedUnit = 0;
@@ -134,6 +146,8 @@ public class RealPlayer implements PlayerInterface {
 			try {
 				c = System.in.read();
 				if(Thread.interrupted()) {
+					myTurn = false;
+					messages = new ArrayList<String>();
 					return;
 				}
 				inProgress = true;
@@ -168,9 +182,15 @@ public class RealPlayer implements PlayerInterface {
 						case 'i': 
 							exploreUnits(); 
 							break;
+						case 'l': 
+							restoreMessages();break;
 						case 'h': 
 							displayHelp();
 							break;
+						case 'o':
+							inProgress = false;
+							reciveInfo(me, latestSituation, opponent);
+							inProgress = true;
 						case 10: case 13: 
 							inProgress = false;
 							break;
@@ -209,6 +229,9 @@ public class RealPlayer implements PlayerInterface {
 				this.reciveInfo(me, latestSituation, opponent);
 			}
 		}
+		
+		myTurn = false; 
+		messages = new ArrayList<String>();
 	}
 
 	/**
@@ -230,12 +253,21 @@ public class RealPlayer implements PlayerInterface {
 		}
 	}
 	
+	private void restoreMessages() {
+		for(String s: messages) {
+			System.out.println(s);
+		}
+	}
+	
 	private void displayHelp() {
 		System.out.println("Help: \n" +
 				"You may enter orders one at a time, or with a single line, but press enter.\n" +
-				"Type your unit's number to select unit for attack. \n" + 
-				"Select his unit or press '-' to attack hero. " + 
-				"To play your card press it's key (q..t + a..g)");
+				"Type your unit's number to select it for attack. \n" + 
+				"Select target with his unit's number or type '-' to attack hero.\n" + 
+				"To play your card press it's key (q..t + a..g)\n" +
+				"Type 'i' to see info about all units with 'i' sign, or your cards.\n" +
+				"Type 'l' to show messages from last turn.\n" +
+				"Type 'o' to redraw field.");
 	}
 
 	@Override
@@ -246,7 +278,7 @@ public class RealPlayer implements PlayerInterface {
 	@Override
 	public Unit selectTarget() {
 		int p, u;
-		System.out.println("Enter player to target (0 - you, 1 - he):");
+		System.out.print("Enter player to target (0 - you, 1 - he): ");
 		try {
 			p = System.in.read();
 			while(p != '0' && p != '1') {
@@ -256,13 +288,15 @@ public class RealPlayer implements PlayerInterface {
 			p = '0'; 
 		}
 		p -= '0';
-		System.out.println("Enter unit to target:");
+		System.out.print("Enter unit to target: ");
 		try {
 			u = 0;
 			while(u < '0' || p > '9') {
 				u = System.in.read();
-				if(u - '0' >= latestSituation.playerUnits.get(p).size())
+				if(u - '0' >= latestSituation.playerUnits.get((me.playerNumber + p)%2).size()) {
+					System.out.println("Can't target that! #" + Integer.toString(u-'0'));
 					u = 0;
+				}
 			}
 			u -= 48;
 		} catch(java.io.IOException e){

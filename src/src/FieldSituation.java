@@ -92,7 +92,7 @@ public class FieldSituation {
 	public int tauntUnitsForPlayer(int p) {
 		int r = 0;
 		for(Unit u : playerUnits.get(p)) {
-			if(u.hasQuality(units.Unit.Quality.Taunt)) 
+			if((u.hasQuality(units.Unit.Quality.Taunt)) && (!u.hasQuality(units.Unit.Quality.Stealth))) 
 				r++;
 		}
 		return r;

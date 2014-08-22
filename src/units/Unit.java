@@ -181,8 +181,14 @@ public class Unit {
 	public void attackUnit(Unit u) {
 		if(canAttack()) {
 			if(u != null) {
-				u.damage(getCurrentDamage());
-				damage(u.getCurrentDamage());
+				int td = u.getCurrentDamage();
+				int md = getCurrentDamage();
+				u.damage(md);
+				damage(td);
+			}
+			
+			if(hasQuality(Quality.Stealth)) {
+				removeQuality(Quality.Stealth);
 			}
 			attackedAlready = true;
 		}

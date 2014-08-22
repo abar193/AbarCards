@@ -38,7 +38,8 @@ public class SimpleBot implements PlayerInterface {
 				get(enemyData.playerNumber).size());
 		
 		for(Unit u : field.playerUnits.get(opponent.playerNumber)) {
-			if(enemyTaunts == 0 || u.hasQuality(Unit.Quality.Taunt)) {
+			if((enemyTaunts == 0 || u.hasQuality(Unit.Quality.Taunt)) & 
+					!u.hasQuality(Unit.Quality.Stealth)) {
 				availableTargets.add(u);
 			}
 		}
@@ -109,9 +110,12 @@ public class SimpleBot implements PlayerInterface {
 	}
 	
 	protected void playAllCards() {
-		for(int i = 0; i < me.getHandSize(); i++) {
+		for(int i = 0; i < me.getHandSize(); ) {
 			if(me.canPlayCard(me.getHand().get(i))) {
 				parent.playCard(me.getHand().get(i), me.playerNumber);
+				i = 0;
+			} else {
+				i++;
 			}
 		}
 	}

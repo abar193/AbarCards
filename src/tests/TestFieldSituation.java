@@ -1,11 +1,13 @@
 package tests;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import units.Unit;
 import cards.UnitCard;
 import src.FieldSituation;
+import src.Game;
 
 public class TestFieldSituation {
 
@@ -50,5 +52,22 @@ public class TestFieldSituation {
 		
 		assertEquals(false, fs.canUnitBeAdded(new Unit(new UnitCard(0, 0, 0, "", ""), 0), 0));
 		assertEquals(false, fs.canUnitBeAdded(new Unit(new UnitCard(0, 0, 0, "", ""), 1), 1));
+	}
+	
+	@Test
+	public void testTaunts() {
+		FieldSituation fs = new FieldSituation();
+		Unit u1 = new Unit(new UnitCard(1, 1, 1, "L", "a"), 0, 4);
+		Unit u2 = new Unit(new UnitCard(2, 2, 2, "M", "b"), 0);
+		Unit u3 = new Unit(new UnitCard(3, 3, 3, "N", "c"), 1);
+		fs.addUnit(u1, 0);
+		fs.addUnit(u2, 0);
+		fs.addUnit(u3, 1);
+		Game.currentGame = new Game();
+		Game.currentGame.applyFieldSituation(fs);
+		assertEquals(1, fs.tauntUnitsForPlayer(0));
+		Unit u4 = new Unit(new UnitCard(4, 1, 1, "L", "a"), 0, 4 | 2);
+		fs.addUnit(u4, 1);
+		assertEquals(0, fs.tauntUnitsForPlayer(1));
 	}
 }

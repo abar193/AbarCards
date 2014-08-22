@@ -142,8 +142,6 @@ public class PlayerData {
 		if(canPlayCard(bc)) {
 			if(myHand.remove(bc)) {
 				availableMana -= bc.cost;
-				if(myPlayer != null) 
-					myPlayer.reciveAction("You play " + bc.name + " card");
 				return;
 			}
 		}

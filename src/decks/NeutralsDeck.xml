@@ -1,58 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Deck>
-	<Unit Name="Private" Description="" Damage="1" Health="1" Cost="1"></Unit>
-	<Unit Name="Corporal" Description="" Damage="2" Health="1" Cost="1">
+	<Spell Name="Ewok" Description="+2$" Cost="0">
+		<Fulldesc txt="Adds 2$ available from this turn for a player"/>
+		<PlayerValueSpell type="AddAvailMana" value="2" acept="0">
+		</PlayerValueSpell>
+	</Spell>
+	<Unit Name="Pepper1" Description="" Damage="2" Health="1" Cost="1">
 		<Qualities v="8"/>
 		<Fulldesc txt="Has charge"/>
 	</Unit>
-	<Unit Name="Sergant" Description="A+1D" Damage="1" Health="2" Cost="1">
-		<Aura type="1" value="1"/>
-		<Fulldesc txt="Aura +1 damage for all units" />
+	<Unit Name="Pepper2" Description="" Damage="2" Health="1" Cost="1">
+		<Qualities v="8"/>
+		<Fulldesc txt="Has charge"/>
 	</Unit>
-	<Unit Name="Sniper" Description="" Damage="0" Health="1" Cost="2">
-		<Qualities v="2"/>
-		<Fulldesc txt="Deals 2 damage to random enemy at the end of a turn"/>
-		<Power condition="OnTurnEnd">
-			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
-				<BuffSpell>
-					<Buff type="Hurt" v="2"/>
-				</BuffSpell>
-			</TargedetSpell>
-		</Power>
-	</Unit>
-	<Unit Name="Sniper" Description="" Damage="0" Health="1" Cost="2">
-		<Qualities v="2"/>
-		<Fulldesc txt="Deals 2 damage to random enemy at the end of a turn"/>
-		<Power condition="OnTurnEnd">
-			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
-				<BuffSpell>
-					<Buff type="Hurt" v="2"/>
-				</BuffSpell>
-			</TargedetSpell>
-		</Power>
-	</Unit>
-	<Unit Name="Cannon" Description="5/3" Damage="5" Health="3" Cost="2"/>
-	<Unit Name="Bear" Description="A=H" Damage="0" Health="5" Cost="2" SpecID="1">
-		<Fulldesc txt="Attack is always equals to health."/>
-	</Unit>
-	<Spell Name="Mana" Description="+2$" Cost="0">
-		<Fulldesc txt="Adds 2$ available from this turn for a player"/>
-		<PlayerValueSpell type="AddAvailMana" value="1" acept="0">
-		</PlayerValueSpell>
-	</Spell>
-	<Spell Name="+5/0" Description="" Cost="1">
-		<TargedetSpell targeter="player">
-			<BuffSpell>
-				<Buff type="AddDamage" v="4"/>
-			</BuffSpell>
-		</TargedetSpell>
-	</Spell>
-	<Spell Name="Bomb" Description="121" Cost="1">
-		<Fulldesc txt="Deals 2 damage to selected unit and 1 to adjusted ones."/>
+	<Spell Name="Zik" Description="131" Cost="2">
+		<Fulldesc txt="Deals 3 damage to selected unit and 1 to adjusted ones."/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
 				<BuffSpell>
-					<Buff type="Hurt" v="2"/>
+					<Buff type="Hurt" v="3"/>
 				</BuffSpell>
 				<TargedetSpell targeter="neighbor" o="-1">
 					<BuffSpell>
@@ -67,20 +33,75 @@
 			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Airstrike" Description="5rt" Cost="2">
-		<Fulldesc txt="Deals 1 damage to 5 random enemy targets"/>
-		<TargedetSpell targeter="random" acept="1" targets="5" repeats="1">
+	<Unit Name="Lisaalisa" Description="Stu" Damage="2" Health="2" Cost="2">
+		<Fulldesc txt="Silences targedet unit on spawn"/>
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="player">
+				<BuffSpell>
+					<Buff type="Silence" v="0"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Sky" Description="" Damage="0" Health="2" Cost="3">
+		<Qualities v="2"/>
+		<Fulldesc txt="Stealth, deals 3 damage to random enemy at the end of a turn"/>
+		<Power condition="OnTurnEnd">
+			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
+				<BuffSpell>
+					<Buff type="Hurt" v="3"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Detect" Description="" Damage="3" Health="2" Cost="2"/>
+	<Unit Name="Glebka" Description="" Damage="5" Health="3" Cost="4"/>
+	<Unit Name="Detect" Description="" Damage="4" Health="4" Cost="4"/>
+	<Unit Name="World War" Description="A=H" Damage="0" Health="4" Cost="4" SpecID="1">
+		<Fulldesc txt="Attack is always equals to health."/>
+	</Unit>
+	<Spell Name="GpLHek" Description="+55" Cost="4">
+		<Fulldesc txt="Adds 5/5 to a selected unit"/>
+		<TargedetSpell targeter="player">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="AddDamage" v="5"/>
+				</BuffSpell>
+				<BuffSpell>
+					<Buff type="AddHealth" v="5"/>
+				</BuffSpell>
+			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Dark Bobr" Description="8rt" Cost="6">
+		<Fulldesc txt="Deals 1 damage to 8 random enemy targets"/>
+		<TargedetSpell targeter="random" acept="1" targets="8" repeats="1">
 			 <BuffSpell>
 				<Buff type="Hurt" v="1"/>
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Nuke" Description="K-a" Cost="3">
-		<Fulldesc txt="Kills every single unit"/>
+	<Spell Name="Laylah" Description="K-a" Cost="6">
+		<Fulldesc txt="Kills (bans) every single unit"/>
 		<TargedetSpell targeter="all" acept="-1">
 			 <BuffSpell>
 				<Buff type="Kill" v="0"/>
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
+	<Unit Name="Terrens" Description="" Damage="3" Health="7" Cost="6">
+		<Fulldesc txt="Taunt"/>
+		<Qualities v="4"/>
+	</Unit>
+	<Unit Name="Rebreak" Description="" Damage="5" Health="5" Cost="7">
+		<Aura type="2" value="1"/>
+		<Fulldesc txt="Aura +1 health for all units, heals all allies for 2 at spawn" />
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="all" acept="0">
+				<BuffSpell>
+					<Buff type="Heal" v="2"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
 </Deck>

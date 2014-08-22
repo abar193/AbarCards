@@ -11,9 +11,10 @@ public class ThreadKiller implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Thread.sleep(60000l);
+			Thread.sleep(120000l);
 			if(myThread.isAlive()) {
 				myThread.interrupt();
+				System.out.println("Turn interrupted!");
 			}
 		} catch (InterruptedException e) {
 			
