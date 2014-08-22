@@ -36,6 +36,8 @@ time, or everything in a line - it doesn't matter.
 
     * Type 'h' for help
 
+    * Type 'z' to end turn
+
 The goal of the game is to drop enemy health under 0. 
 
 
