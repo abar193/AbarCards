@@ -29,6 +29,8 @@ public class DeckPackReader extends DefaultHandler {
 	private SpellCard spell;
 	private SpellXMLBuilder spellBuilder;
 	
+	private static final boolean IS_JAR = false;
+	
 	public DeckPackReader() {
 		resultingCard = new ArrayList<BasicCard>();
 		unit = null;
@@ -135,7 +137,11 @@ public class DeckPackReader extends DefaultHandler {
 	        SAXParser saxParser = spf.newSAXParser();
 	        XMLReader xmlReader = saxParser.getXMLReader();
 	        xmlReader.setContentHandler(this);
-	        xmlReader.parse(filename);//
+	        if(IS_JAR) {
+	        	xmlReader.parse(getClass().getResource(filename).toString());
+	        } else {
+	        	xmlReader.parse("bin\\decks\\" + filename);
+	        }
 	        return resultingCard;
     	} catch (Exception e) {
     		System.out.println("Exception " + e.getMessage());
