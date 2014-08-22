@@ -219,7 +219,8 @@ public class Game {
 			if(t == -1) {
 				String s = attacker.myCard.name + " VS Hero";
 				informAll(s);
-				playersData[pt].takeDamage(attacker.getCurrentDamage());
+				playersData[pt].takeDamage(attacker.getCurrentDamage()); 
+				players.get(pt).reciveAction(String.format("You take %d damage!", attacker.getCurrentDamage()));
 				attacker.attackUnit(null);
 				updateInfoForAll();
 				return;

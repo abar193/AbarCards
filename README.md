@@ -7,7 +7,7 @@ How to play:
 As you launch the game you will be chosen as first or second player. Depending on that you will either make the first turn with 3 cards, or 
 go after bot player, but with 4 cards. The interface has 4 parts: 
     
-    * Action-messages. Begin with "> ". Examples: "> You go second", "> You go second"
+    * Action-messages. Begin with "> ". Examples: "> You go second", "> You take 100 damage!"
     
     * Opponent-relevant information. Informs how many cards, currency or health your opponent has. Example: 
     "Enemy has 1/1 $ and 15 health. Enemy hand has 3 cards, deck 12 cards."

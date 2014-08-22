@@ -29,7 +29,7 @@ public class DeckPackReader extends DefaultHandler {
 	private SpellCard spell;
 	private SpellXMLBuilder spellBuilder;
 	
-	private static final boolean IS_JAR = false;
+	private static final boolean IS_JAR = true;
 	
 	public DeckPackReader() {
 		resultingCard = new ArrayList<BasicCard>();
