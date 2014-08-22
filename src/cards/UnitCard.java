@@ -1,5 +1,6 @@
 package cards;
 
+import units.Unit.Quality;
 import effects.AuraEffect;
 
 /**
@@ -27,7 +28,7 @@ public class UnitCard extends BasicCard {
 	public int getHealth() {
 		return baseHealth;
 	}
-	
+		
 	@Override
 	public String debugDisplay() {
 		return name + " " + description;

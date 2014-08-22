@@ -1,6 +1,7 @@
 package units;
 
 import cards.UnitCard;
+
 import java.util.Stack;
 import java.util.ArrayList;
 
@@ -116,6 +117,7 @@ public class Unit {
 			s = myCard.description;
 		else s = "<" + s + ">";
 		return s;
+
 	}
 	
 	/**

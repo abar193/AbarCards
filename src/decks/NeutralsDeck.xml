@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Deck>
-	<Spell Name="Ewok" Description="+2$" Cost="0">
+	<Spell Name="Money" Description="+2$" Cost="0">
 		<Fulldesc txt="Adds 2$ available from this turn for a player"/>
 		<PlayerValueSpell type="AddAvailMana" value="2" acept="0">
 		</PlayerValueSpell>
 	</Spell>
-	<Unit Name="Pepper1" Description="" Damage="2" Health="1" Cost="1">
+	<Unit Name="Private" Description="" Damage="2" Health="1" Cost="1">
 		<Qualities v="8"/>
 		<Fulldesc txt="Has charge"/>
 	</Unit>
-	<Unit Name="Pepper2" Description="" Damage="2" Health="1" Cost="1">
+	<Unit Name="Private" Description="" Damage="2" Health="1" Cost="1">
 		<Qualities v="8"/>
 		<Fulldesc txt="Has charge"/>
 	</Unit>
-	<Spell Name="Zik" Description="131" Cost="2">
+	<Spell Name="Bomb" Description="131" Cost="2">
 		<Fulldesc txt="Deals 3 damage to selected unit and 1 to adjusted ones."/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
@@ -33,7 +33,7 @@
 			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
-	<Unit Name="Lisaalisa" Description="Stu" Damage="2" Health="2" Cost="2">
+	<Unit Name="Cameramen" Description="Stu" Damage="2" Health="2" Cost="2">
 		<Fulldesc txt="Silences targedet unit on spawn"/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="player">
@@ -43,7 +43,7 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="Sky" Description="" Damage="0" Health="2" Cost="3">
+	<Unit Name="Sniper" Description="" Damage="0" Health="2" Cost="3">
 		<Qualities v="2"/>
 		<Fulldesc txt="Stealth, deals 3 damage to random enemy at the end of a turn"/>
 		<Power condition="OnTurnEnd">
@@ -54,13 +54,13 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="Detect" Description="" Damage="3" Health="2" Cost="2"/>
-	<Unit Name="Glebka" Description="" Damage="5" Health="3" Cost="4"/>
-	<Unit Name="Detect" Description="" Damage="4" Health="4" Cost="4"/>
-	<Unit Name="World War" Description="A=H" Damage="0" Health="4" Cost="4" SpecID="1">
+	<Unit Name="Sergant" Description="" Damage="3" Health="2" Cost="2"/>
+	<Unit Name="Leutenant" Description="" Damage="5" Health="3" Cost="4"/>
+	<Unit Name="Captain" Description="" Damage="4" Health="4" Cost="4"/>
+	<Unit Name="Bear" Description="A=H" Damage="0" Health="4" Cost="4" SpecID="1">
 		<Fulldesc txt="Attack is always equals to health."/>
 	</Unit>
-	<Spell Name="GpLHek" Description="+55" Cost="4">
+	<Spell Name="Drugs" Description="+55" Cost="4">
 		<Fulldesc txt="Adds 5/5 to a selected unit"/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
@@ -73,7 +73,7 @@
 			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Dark Bobr" Description="8rt" Cost="6">
+	<Spell Name="Airstrike" Description="8rt" Cost="6">
 		<Fulldesc txt="Deals 1 damage to 8 random enemy targets"/>
 		<TargedetSpell targeter="random" acept="1" targets="8" repeats="1">
 			 <BuffSpell>
@@ -81,19 +81,19 @@
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Laylah" Description="K-a" Cost="6">
-		<Fulldesc txt="Kills (bans) every single unit"/>
+	<Spell Name="Nuke" Description="K-a" Cost="6">
+		<Fulldesc txt="Kills every single unit"/>
 		<TargedetSpell targeter="all" acept="-1">
 			 <BuffSpell>
 				<Buff type="Kill" v="0"/>
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Unit Name="Terrens" Description="" Damage="3" Health="7" Cost="6">
+	<Unit Name="Bunker" Description="" Damage="3" Health="7" Cost="6">
 		<Fulldesc txt="Taunt"/>
 		<Qualities v="4"/>
 	</Unit>
-	<Unit Name="Rebreak" Description="" Damage="5" Health="5" Cost="7">
+	<Unit Name="Medic" Description="" Damage="5" Health="5" Cost="7">
 		<Aura type="2" value="1"/>
 		<Fulldesc txt="Aura +1 health for all units, heals all allies for 2 at spawn" />
 		<Power condition="OnCreate">

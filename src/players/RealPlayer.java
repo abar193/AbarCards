@@ -5,6 +5,7 @@ import src.Game;
 import units.Unit;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cards.*;
 
@@ -68,21 +69,12 @@ public class RealPlayer implements PlayerInterface {
 				you.getAvailableMana(), you.getTotalMana(), you.getHealth()));
 		System.out.println(String.format("Your deck has %d cards, your hand: ", you.getDeckSize()));
 		
-		int i = 0;
-		for(BasicCard bc : you.getHand()) {
-			String s = bc.description; 
-			if(s == null || s == "") {
-				if(bc instanceof UnitCard) {
-					UnitCard c = (UnitCard)bc;
-					s = Integer.toString(c.getDamage()) + "/" + Integer.toString(c.getHealth());
-				}
-			}
-			System.out.print(String.format("%c%10s,%4s,%3s %2d$|", qwerty[i], bc.name, s, 
-					bc.type.stringValue(), bc.cost));
-			if(++i % 3 == 0) System.out.println();
-		}
 		
-		if(i % 3 != 0) System.out.println();
+		ArrayList<BasicCard> cards = you.getHand();
+		printCards(cards.subList(0, Math.min(5, cards.size())), 0);
+		if(cards.size() > 5) {
+			printCards(cards.subList(5, cards.size()), 5);
+		}
 	}
 	
 	/**
@@ -119,6 +111,39 @@ public class RealPlayer implements PlayerInterface {
 		System.out.println();
 	}
 
+	
+	private void printCards(List<BasicCard> cards, int k) {
+		for(int i = 0; i < cards.size(); i++) {
+			System.out.print(String.format("%c%10s|", qwerty[i+k], cards.get(i).name));
+		}
+		System.out.println();
+		for(int i = 0; i < cards.size(); i++) {
+			String s;
+			String d = cards.get(i).fullDescription;
+			if(d != null && d != "") {
+				s = String.format("i%10s|", cards.get(i).description);
+			} else {
+				s = String.format("|%10s|", cards.get(i).description);
+			}
+			System.out.print(s);
+		}
+		System.out.println();
+		for(int i = 0; i < cards.size(); i++) {
+			System.out.print(String.format("|Cost: %3d$|", cards.get(i).cost));
+		}
+		System.out.println();
+		for(int i = 0; i < cards.size(); i++) {
+			BasicCard bc = cards.get(i);  
+			if(bc.type == CardType.Unit) {
+				System.out.print(String.format("|%2d/%3d d/h|", ((UnitCard) bc).getDamage(),
+						((UnitCard) bc).getDamage()));
+			} else if(bc.type == CardType.Spell) {
+				System.out.print("|     Spell|");
+			}
+		}
+		System.out.println();
+	}
+	
 	/**
 	 * Prints message to console.
 	 */
