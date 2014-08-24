@@ -1,25 +1,30 @@
 package effects;
 
+import java.util.ArrayList;
+
 import src.FieldSituation;
 import units.Unit;
 
 public class PlayerTargeter implements Targeter {
 
-	public PlayerTargeter() {
-		
+	boolean aceptHeroes;
+	
+	public PlayerTargeter(boolean aceptHeroes) {
+		this.aceptHeroes = aceptHeroes;
 	}
 	
 	@Override
-	public Unit[] selectTargets(int p, Unit t) {
+	public ArrayList<Unit> selectTargets(int p, Unit t) {
 		Unit u = src.Game.currentGame.askPlayerForTarget(p);
-		Unit[] a = {u};
-		return a;
+		ArrayList<Unit> arr = new ArrayList<Unit>(1);
+		arr.add(u);
+		return arr;
 	}
 
 	@Override
 	public boolean hasTargets(int player, Unit u) {
 		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
-		return fs.playerUnits.get(0).size() > 0 | fs.playerUnits.get(1).size() > 0;
+		return fs.allUnits(aceptHeroes).size() > 0;
 	}
 
 }

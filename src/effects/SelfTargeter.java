@@ -1,5 +1,7 @@
 package effects;
 
+import java.util.ArrayList;
+
 import units.Unit;
 
 public class SelfTargeter implements Targeter {
@@ -8,11 +10,11 @@ public class SelfTargeter implements Targeter {
 	}
 
 	@Override
-	public Unit[] selectTargets(int player, Unit u) {
+	public ArrayList<Unit> selectTargets(int player, Unit u) {
 		if(u == null) return null;
-		Unit[] un = new Unit[1];
-		un[0] = u;
-		return un;
+		ArrayList<Unit> arr = new ArrayList<Unit>(1);
+		arr.add(u);
+		return arr;
 	}
 
 	@Override

@@ -55,12 +55,12 @@ public class RealPlayer implements PlayerInterface {
 			System.out.print("=");
 		}
 		System.out.println();
-		displayFieldSide(field.playerUnits.get(enemy.playerNumber));
+		displayFieldSide(field.allUnitFromOneSide(enemy.playerNumber, false));
 		for(int i = 0; i < 39; i++) {
 			System.out.print("- ");
 		}
 		System.out.println();
-		displayFieldSide(field.playerUnits.get(you.playerNumber));
+		displayFieldSide(field.allUnitFromOneSide(you.playerNumber, false));
 		for(int i = 0; i < 79; i++) {
 			System.out.print("=");
 		}
@@ -136,7 +136,7 @@ public class RealPlayer implements PlayerInterface {
 			BasicCard bc = cards.get(i);  
 			if(bc.type == CardType.Unit) {
 				System.out.print(String.format("|%2d/%3d d/h|", ((UnitCard) bc).getDamage(),
-						((UnitCard) bc).getDamage()));
+						((UnitCard) bc).getHealth()));
 			} else if(bc.type == CardType.Spell) {
 				System.out.print("|     Spell|");
 			}
@@ -160,7 +160,7 @@ public class RealPlayer implements PlayerInterface {
 	
 	@Override
 	public void run() {
-		ArrayList<Unit> myArmy = latestSituation.playerUnits.get(me.playerNumber);
+		ArrayList<Unit> myArmy = latestSituation.allUnitFromOneSide(me.playerNumber, false);
 		//ArrayList<Unit> hisArmy = latestSituation.playerUnits.get(opponent.playerNumber);
 		System.out.println("Type 'i' for info about units, or 'h' for help");
 		myTurn = true;
@@ -175,6 +175,7 @@ public class RealPlayer implements PlayerInterface {
 					messages = new ArrayList<String>();
 					return;
 				}
+				myArmy = latestSituation.allUnitFromOneSide(me.playerNumber, false);
 				inProgress = true;
 				if(!targeting) {
 					switch(c) {
@@ -264,7 +265,7 @@ public class RealPlayer implements PlayerInterface {
 	 */
 	private void exploreUnits() {
 		for(int i = 0; i < 2; i++) {
-			for(Unit u: latestSituation.playerUnits.get((opponent.playerNumber + i) % 2)) {
+			for(Unit u: latestSituation.allUnitFromOneSide((opponent.playerNumber + i) % 2, false)) {
 				if(u.myCard.fullDescription != null && u.myCard.fullDescription != "") {
 					System.out.format("%s - %s \n", u.myCard.name, u.myCard.fullDescription);
 				}
@@ -318,7 +319,7 @@ public class RealPlayer implements PlayerInterface {
 			u = 0;
 			while(u < '0' || p > '9') {
 				u = System.in.read();
-				if(u - '0' >= latestSituation.playerUnits.get((me.playerNumber + p)%2).size()) {
+				if(u - '0' >= latestSituation.allUnitFromOneSide((me.playerNumber + p)%2, false).size()) {
 					System.out.println("Can't target that! #" + Integer.toString(u-'0'));
 					u = 0;
 				}
@@ -328,7 +329,7 @@ public class RealPlayer implements PlayerInterface {
 			u = 0; 
 		}
 		
-		return latestSituation.playerUnits.get((me.playerNumber + p) % 2).get(u);
+		return latestSituation.allUnitFromOneSide((me.playerNumber + p) % 2, false).get(u);
 	}
 
 }

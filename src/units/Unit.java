@@ -22,9 +22,9 @@ public class Unit {
 	public UnitCard myCard;
 	public int modDmg, modHealth;
 	
-	private int currentHealth;
+	protected int currentHealth;
 	private int currentDamage;
-	private int maxHealth;
+	protected int maxHealth;
 	private int qualities = 0;
 	public int myPlayer;
 	
@@ -132,6 +132,14 @@ public class Unit {
 		this.respondToEvent(TriggeringCondition.OnDamage);
 	}
 	
+	/**
+	 * Heals unit. Method calls OnDamage event.
+	 * @param d
+	 */
+	public void heal(int v) {
+		currentHealth = Math.min(currentHealth + v, maxHealth);
+	}
+	
 	public boolean isDead() {
 		return currentHealth <= 0;
 	}
@@ -169,7 +177,7 @@ public class Unit {
 			damage(b.value);
 			break;
 		case Heal:
-			currentHealth = Math.min(maxHealth, currentHealth + b.value);
+			heal(b.value);
 			break;
 		case Kill:
 			damage(getCurrentHealth());

@@ -1,7 +1,9 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import units.TriggeringCondition;
 import units.Unit;
 
 /**
@@ -16,8 +18,9 @@ public class FieldSituation {
 	 */
 	public static final int MAXFIELDUNITS = 5; 
 	
-	public ArrayList<ArrayList<Unit>> playerUnits;
-	public ArrayList<ArrayList<Unit>> playerBuildings;
+	private ArrayList<ArrayList<Unit>> playerUnits;
+	private ArrayList<ArrayList<Unit>> playerBuildings;
+	public ArrayList<Unit> heroes;
 	
 	public FieldSituation() {
 		playerUnits = new ArrayList<ArrayList<Unit>>(2){{
@@ -29,6 +32,8 @@ public class FieldSituation {
 			add(new ArrayList<Unit>(MAXFIELDUNITS));
 			add(new ArrayList<Unit>(MAXFIELDUNITS));
 		}};
+		
+		heroes = new ArrayList<Unit>(2);
 	}
 	
 	/**
@@ -62,20 +67,49 @@ public class FieldSituation {
 	 * Checks if unit exists for player
 	 */
 	public boolean unitExist(int unit, int player) {
+		if(unit == -1) return true;
 		if((player == 0 || player == 1) && unit >= 0 && player >= 0)
 			return playerUnits.get(player).size() > unit;
 		else 
 			return false;
 	}
 	
+	/** Returns playerUnits.get(player).iterator() */
+	public Iterator<Unit> provideIteratorForSide(int player) {
+		return playerUnits.get(player).iterator();
+	}
+	
 	/**
 	 * Gets unit for player (if that exists).
+	 * @param u unit number, or -1 for hero
 	 * @return unit or null, if that does not exists.
 	 */
 	public Unit unitForPlayer(int u, int p) {
+		if(u == -1) {
+			return heroes.get(p);
+		}
 		if(unitExist(u, p)) 
 			return playerUnits.get(p).get(u);
 		return null;
+	}
+	
+	/** Returns all unit for both players  */
+	public ArrayList<Unit> allUnits(boolean includeHeroes) {
+		ArrayList<Unit> al = new ArrayList<Unit>(playerUnits.get(0));
+		al.addAll(playerUnits.get(1));
+		if(includeHeroes) {
+			al.addAll(heroes);
+		}
+		return al;
+	}
+	
+	/**
+	 * Returns all units from one players side */
+	public ArrayList<Unit> allUnitFromOneSide(int player, boolean includeHero) {
+		ArrayList<Unit> al = new ArrayList<Unit>(playerUnits.get(player));
+		if(includeHero)
+			al.add(heroes.get(player));
+		return al;
 	}
 	
 	public boolean containsOnDifferentSides(Unit u1, Unit u2) {
@@ -131,6 +165,25 @@ public class FieldSituation {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Passes event for all unit of u's side, except u himself.
+	 */
+	public void passEventAboutUnit(Unit u, TriggeringCondition e) {
+		ArrayList<Unit> side = null;
+		if(playerUnits.get(0).contains(u)) 
+			side = playerUnits.get(0);
+		else if(playerUnits.get(1).contains(u))
+			side = playerUnits.get(1);
+		
+		if(side != null) {
+			for(Unit i : side) {
+				if(!i.equals(u)) {
+					i.respondToEvent(e);
+				}
+			}
+		}
 	}
 	
 	/**

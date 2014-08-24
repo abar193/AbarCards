@@ -2,7 +2,9 @@ package effects;
 
 import src.FieldSituation;
 import units.Unit;
-import java.util.Arrays;
+
+import java.util.ArrayList;
+
 /**
  * Picks all units of the specific player (or all players).
  * @author Abar
@@ -10,37 +12,30 @@ import java.util.Arrays;
 public class AllUnitsTargeter implements Targeter {
 	
 	int acceptablePlayers;
+	boolean aceptHeroes;
 	
-	public AllUnitsTargeter(int aceptPlayers) {
+	public AllUnitsTargeter(int aceptPlayers, boolean aceptHeroes) {
 		this.acceptablePlayers = aceptPlayers;
+		this.aceptHeroes = aceptHeroes;
 	}
 
 	@Override
-	public Unit[] selectTargets(int p, Unit u) {
+	public ArrayList<Unit> selectTargets(int p, Unit u) {
 		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
-			return fs.playerUnits.get((acceptablePlayers + p) % 2).
-					toArray(new Unit[fs.playerUnits.
-					                 get((acceptablePlayers + p) % 2).size()]);
+			return fs.allUnitFromOneSide((acceptablePlayers + p) % 2, aceptHeroes);
 		} else {
-			Unit[] u1 = fs.playerUnits.get(0).
-					toArray(new Unit[fs.playerUnits.get(0).size()]);
-			Unit[] u2 = fs.playerUnits.get(1).
-					toArray(new Unit[fs.playerUnits.get(1).size()]);
-			Unit[] result = Arrays.copyOf(u1, u1.length + u2.length);
-			System.arraycopy(u2, 0, result, u1.length, u2.length);
-			return result;
+			return fs.allUnits(aceptHeroes);
 		}
 	}
-
+	
 	@Override
 	public boolean hasTargets(int player, Unit u) {
 		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
-			return fs.playerUnits.get((acceptablePlayers + player) % 2).size() > 0;
+			return fs.allUnitFromOneSide((acceptablePlayers + player) % 2, aceptHeroes).size() > 0;
 		} else {
-			return fs.playerUnits.get(0).size() > 0 | 
-					fs.playerUnits.get(1).size() > 0;
+			return fs.allUnits(aceptHeroes).size() > 0; 
 		}
 	}
 

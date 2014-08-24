@@ -14,8 +14,8 @@ public class TestFieldSituation {
 	@Test
 	public void testInit() {
 		FieldSituation fs = new FieldSituation();
-		assertEquals(0, fs.playerUnits.get(0).size());
-		assertEquals(0, fs.playerUnits.get(1).size());
+		assertEquals(0, fs.allUnitFromOneSide(0, false).size());
+		assertEquals(0, fs.allUnitFromOneSide(1, false).size());
 	}
 	
 	@Test
@@ -30,16 +30,16 @@ public class TestFieldSituation {
 		fs.addUnit(u2, 0);
 		assertEquals(true, fs.canUnitBeAdded(u3, 1));
 		fs.addUnit(u3, 1);
-		assertEquals(2, fs.playerUnits.get(0).size());
-		assertEquals(1, fs.playerUnits.get(1).size());
+		assertEquals(2, fs.allUnitFromOneSide(0, false).size());
+		assertEquals(1, fs.allUnitFromOneSide(1, false).size());
 		assertEquals(true, fs.removeUnitOfPlayer(u1, 0));
 		assertEquals(false, fs.removeUnitOfPlayer(u1, 0));
-		assertEquals(1, fs.playerUnits.get(0).size());
+		assertEquals(1, fs.allUnitFromOneSide(0, false).size());
 		assertEquals(true, fs.removeUnitOfPlayer(u2, 0));
-		assertEquals(0, fs.playerUnits.get(0).size());
+		assertEquals(0, fs.allUnitFromOneSide(0, false).size());
 		assertEquals(false, fs.removeUnitOfPlayer(u3, 0));
 		assertEquals(true, fs.removeUnitOfPlayer(u3, 1));
-		assertEquals(0, fs.playerUnits.get(1).size());
+		assertEquals(0, fs.allUnitFromOneSide(1, false).size());
 	}
 	
 	@Test 

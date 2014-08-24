@@ -2,9 +2,8 @@ package players;
 
 import cards.Deck;
 import cards.BasicCard;
-
 import players.PlayerInterface;
-
+import units.Unit;
 import effects.AbstractSpell;
 import effects.PlayerValueSpell;
 import effects.PlayerValueModifier;
@@ -26,9 +25,10 @@ public class PlayerData {
 	private Deck myDeck;
 	private ArrayList<BasicCard> myHand;
 	
-	private int health;
 	private int totalMana;
 	private int availableMana;
+	
+	public Unit representingUnit;
 	
 	private PlayerInterface myPlayer;
 	
@@ -42,7 +42,7 @@ public class PlayerData {
 	public PlayerData(Deck d, int startHealth, PlayerInterface player) {
 		totalMana = 0;
 		availableMana = 0;
-		health = startHealth;
+		representingUnit = new Unit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
 		myHand = new ArrayList<BasicCard>(10);
 		myDeck = d;
 		myPlayer = player;
@@ -55,7 +55,7 @@ public class PlayerData {
 	public PlayerData(Deck d, int startHealth, PlayerInterface player, int maxHandCards) {
 		totalMana = 0;
 		availableMana = 0;
-		health = startHealth;
+		representingUnit = new Unit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
 		myHand = new ArrayList<BasicCard>(10);
 		myDeck = d;
 		MAXHANDLIMIT = maxHandCards;
@@ -92,10 +92,10 @@ public class PlayerData {
 					this.totalMana += ps.value;
 					break;
 				case AddHealth: 
-					this.health += ps.value;
+					this.representingUnit.heal(ps.value);
 					break;
 				case RemoveHealth:
-					this.health -= ps.value;
+					this.representingUnit.damage(ps.value);
 					break;
 				default:
 			}
@@ -117,7 +117,7 @@ public class PlayerData {
 		for(int i = 0; i < n; i++) {
 			BasicCard bc = myDeck.removeCard();
 			if(bc == null) {
-				health -= NOCARDPENALTY;
+				this.representingUnit.damage(NOCARDPENALTY);
 				if(!cantPullInformed) {
 					if(myPlayer != null) 
 						myPlayer.reciveAction("No cards left, taking damage instead");
@@ -149,7 +149,7 @@ public class PlayerData {
 	}
 	
 	public void takeDamage(int n) {
-		health -= n;
+		this.representingUnit.damage(n);
 	}
 	
 	/**
@@ -180,7 +180,7 @@ public class PlayerData {
 	}
 	
 	public int getHealth() {
-		return health;
+		return this.representingUnit.getCurrentHealth();
 	}
 	
 	public int getAvailableMana() {
@@ -219,7 +219,7 @@ public class PlayerData {
 	 * @param pod
 	 */
 	public void updateOpenData(PlayerOpenData pod) {
-		pod.health = this.health;
+		pod.health = this.representingUnit.getCurrentHealth();
 		pod.totalMana = this.totalMana;
 		pod.availableMana = this.availableMana;
 		pod.deckSize = this.getDeckSize();

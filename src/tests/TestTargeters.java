@@ -2,13 +2,13 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import src.Game;
 import src.FieldSituation;
-
 import effects.*;
-
 import cards.UnitCard;
 import units.Unit;
 
@@ -30,9 +30,10 @@ public class TestTargeters {
 		Game.currentGame.applyFieldSituation(fs);
 		
 		{
-			RandomTargeter rt = new RandomTargeter(-1, 3, false);
+			RandomTargeter rt = new RandomTargeter(-1, 3, false, false);
 			assertEquals(true, rt.hasTargets(0, null));
-			Unit[] u = rt.selectTargets(0, null);
+			ArrayList<Unit> ual = rt.selectTargets(0, null);
+			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(3, u.length);
 			assertNotEquals(u[0], u[1]);
 			assertNotEquals(u[0], u[2]);
@@ -40,25 +41,28 @@ public class TestTargeters {
 		}
 		
 		{
-			RandomTargeter rt = new RandomTargeter(0, 3, false);
+			RandomTargeter rt = new RandomTargeter(0, 3, false, false);
 			assertEquals(true, rt.hasTargets(0, null));
-			Unit[] u = rt.selectTargets(0, null);
+			ArrayList<Unit> ual = rt.selectTargets(0, null);
+			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(2, u.length);
 			assertNotEquals(u[0], u[1]);
 		}
 		
 		{
-			RandomTargeter rt = new RandomTargeter(0, 3, true);
+			RandomTargeter rt = new RandomTargeter(0, 3, true, false);
 			assertEquals(true, rt.hasTargets(0, null));
-			Unit[] u = rt.selectTargets(0, null);
+			ArrayList<Unit> ual = rt.selectTargets(0, null);
+			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(3, u.length);
 			assertEquals(true, u[0].equals(u[1]) | u[1].equals(u[2]) | u[0].equals(u[2]));
 		}
 		
 		{
-			RandomTargeter rt = new RandomTargeter(1, 5, true);
+			RandomTargeter rt = new RandomTargeter(1, 5, true, false);
 			assertEquals(true, rt.hasTargets(0, null));
-			Unit[] u = rt.selectTargets(0, null);
+			ArrayList<Unit> ual = rt.selectTargets(0, null);
+			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(5, u.length);
 			for(Unit un : u) {
 				assertEquals(un, u3);
@@ -83,28 +87,28 @@ public class TestTargeters {
 		Game.currentGame.applyFieldSituation(fs);
 		
 		{
-			AllUnitsTargeter at = new AllUnitsTargeter(0);
+			AllUnitsTargeter at = new AllUnitsTargeter(0, false);
 			assertEquals(true, at.hasTargets(0, null));
-			Unit[] u = at.selectTargets(0, null);
-			assertEquals(2, u.length);
-			assertNotEquals(u[0], u[1]);
+			ArrayList<Unit> u = at.selectTargets(0, null);
+			assertEquals(2, u.size());
+			assertNotEquals(u.get(0), u.get(1));
 		}
 		
 		{
-			AllUnitsTargeter at = new AllUnitsTargeter(1);
+			AllUnitsTargeter at = new AllUnitsTargeter(1, false);
 			assertEquals(true, at.hasTargets(0, null));
-			Unit[] u = at.selectTargets(0, null);
-			assertEquals(1, u.length);
+			ArrayList<Unit> u = at.selectTargets(0, null);
+			assertEquals(1, u.size());
 		}
 		
 		{
-			AllUnitsTargeter at = new AllUnitsTargeter(-1);
+			AllUnitsTargeter at = new AllUnitsTargeter(-1, false);
 			assertEquals(true, at.hasTargets(0, null));
-			Unit[] u = at.selectTargets(0, null);
-			assertEquals(3, u.length);
-			assertNotEquals(u[0], u[1]);
-			assertNotEquals(u[2], u[1]);
-			assertNotEquals(u[0], u[2]);
+			ArrayList<Unit> u = at.selectTargets(0, null);
+			assertEquals(3, u.size());
+			assertNotEquals(u.get(0), u.get(1));
+			assertNotEquals(u.get(2), u.get(1));
+			assertNotEquals(u.get(0), u.get(2));
 		}
 	}
 	
@@ -114,7 +118,7 @@ public class TestTargeters {
 		
 		SelfTargeter st = new SelfTargeter();
 		assertEquals(true, st.hasTargets(0, u));
-		assertEquals(true, st.selectTargets(0, u)[0].equals(u));
+		assertEquals(true, st.selectTargets(0, u).get(0).equals(u));
 		assertNull(st.selectTargets(1, null));
 	}
 	
@@ -140,15 +144,15 @@ public class TestTargeters {
 		
 		{
 			NeighborTargeter nt = new NeighborTargeter(-1);
-			assertEquals(u1, nt.selectTargets(0, u2)[0]);
+			assertEquals(u1, nt.selectTargets(0, u2).get(0));
 			assertNull(nt.selectTargets(0, u1));
 			assertNull(nt.selectTargets(1, u3));
 			nt = new NeighborTargeter(1);
-			assertEquals(u2, nt.selectTargets(0, u1)[0]);
+			assertEquals(u2, nt.selectTargets(0, u1).get(0));
 			assertNull(nt.selectTargets(0, u2));
 			assertNull(nt.selectTargets(1, u3));
 			nt = new NeighborTargeter(0);
-			assertEquals(u3, nt.selectTargets(0, u3)[0]);
+			assertEquals(u3, nt.selectTargets(0, u3).get(0));
 		}
 		
 		UnitCard c4 = new UnitCard(1, 4, 0, "", "");
@@ -165,11 +169,11 @@ public class TestTargeters {
 		
 		{
 			NeighborTargeter nt = new NeighborTargeter(1);
-			assertEquals(u4, nt.selectTargets(0, u3)[0]);
-			assertEquals(u6, nt.selectTargets(1, u5)[0]);
+			assertEquals(u4, nt.selectTargets(0, u3).get(0));
+			assertEquals(u6, nt.selectTargets(1, u5).get(0));
 			nt = new NeighborTargeter(2);
-			assertEquals(u6, nt.selectTargets(1, u4)[0]);
-			assertEquals(u5, nt.selectTargets(0, u3)[0]);
+			assertEquals(u6, nt.selectTargets(1, u4).get(0));
+			assertEquals(u5, nt.selectTargets(0, u3).get(0));
 			assertNull(nt.selectTargets(1, u5));
 			assertNull(nt.selectTargets(0, u6));
 		}

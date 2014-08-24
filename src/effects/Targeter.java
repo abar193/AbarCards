@@ -1,5 +1,7 @@
 package effects;
 
+import java.util.ArrayList;
+
 import units.Unit;
 
 /**
@@ -15,7 +17,7 @@ public interface Targeter {
 	 * @param u source unit 
 	 * @return array of targets
 	 */
-	public Unit[] selectTargets(int player, Unit u);
+	public ArrayList<Unit> selectTargets(int player, Unit u);
 	/**
 	 * Checks if there are enough units, matching required criteria
 	 * @return true, if spell associated with targeter can be casted.

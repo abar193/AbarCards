@@ -52,11 +52,15 @@ public class Game {
 			players.add(p2);
 			playersData[0] = d1;
 			playersData[1] = d2;
+			field.heroes.add(d1.representingUnit);
+			field.heroes.add(d2.representingUnit);
 		} else {
 			players.add(p2);
 			players.add(p1);
 			playersData[0] = d2;
 			playersData[1] = d1;
+			field.heroes.add(d2.representingUnit);
+			field.heroes.add(d1.representingUnit);
 		}
 		playersData[0].setPlayerNumber(0);
 		playersData[1].setPlayerNumber(1);
@@ -75,6 +79,8 @@ public class Game {
 		factory = new UnitFactory();
 		
 		/* * * Initialization * * */
+		field = new FieldSituation();
+		
 		PlayerData player1 = new PlayerData(d1, h1, p1);
 		PlayerData player2 = new PlayerData(d2, h2, p2);
 		initPlayers((PlayerInterface)p1, (PlayerInterface)p2, player1, player2);
@@ -82,23 +88,20 @@ public class Game {
 		playersData[0].pullCard(2);
 		playersData[1].pullCard(3);
 		
-		FieldSituation fs = new FieldSituation();
-		
 		/* * * Test games * * */ 
 		
 		Unit tauntUnit = new Unit(new UnitCard(0, 2, 1, "Bunker", ""), 
 				player2.playerNumber);
 		tauntUnit.setQuality(Quality.Taunt);
 		tauntUnit.myCard.fullDescription = "Has taunt";
-		fs.addUnit(tauntUnit, player2.playerNumber);
+		field.addUnit(tauntUnit, player2.playerNumber);
 		
 		/* * * Game cycle * * */
-		field = fs;
 		field.refreshUnits();
 		int i = 0;
 		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
 			/* * * Init * * */
-			for(Unit u : field.playerUnits.get(i%2)) {
+			for(Unit u : field.allUnitFromOneSide(i%2, false)) {
 				u.startTurn();
 			}
 			recalculateFieldModifiers();
@@ -126,7 +129,7 @@ public class Game {
 			t.interrupt();
 			/* * * End turn * * */
 			playersData[i%2].auras.removeOutdatedAuras();
-			for(Unit u : field.playerUnits.get(i%2)) {
+			for(Unit u : field.allUnitFromOneSide(i%2, false)) {
 				u.endTurn();
 			}
 			i++;	
@@ -286,7 +289,11 @@ public class Game {
 
 			if(c.type == CardType.Unit) {
 				Unit u = factory.createUnit((UnitCard)c, player);
-				field.addUnit(u, player);
+				try {
+					field.addUnit(u, player);
+				} catch (IllegalArgumentException e) {
+					players.get(player).reciveAction("Can't add that");
+				}
 				u.respondToEvent(TriggeringCondition.OnCreate);
 				this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
 
@@ -339,7 +346,7 @@ public class Game {
 		
 		for(int i = 0; i < 2; i++) {
 			int[] modifiers = playersData[i].auras.getModifiers();
-			Iterator<Unit> j = field.playerUnits.get(i).iterator();
+			Iterator<Unit> j = field.provideIteratorForSide(i);
 			while(j.hasNext()) {
 				Unit u = j.next();
 				u.modDmg = modifiers[1];
@@ -363,22 +370,10 @@ public class Game {
 	}
 	
 	/**
-	 * Passes event for all unit of u's side, except u himself.
+	 * Call's fieldSitation's method for convenience
 	 */
 	public void passEventAboutUnit(Unit u, TriggeringCondition e) {
-		ArrayList<Unit> side = null;
-		if(field.playerUnits.get(0).contains(u)) 
-			side = field.playerUnits.get(0);
-		else if(field.playerUnits.get(1).contains(u))
-			side = field.playerUnits.get(1);
-		
-		if(side != null) {
-			for(Unit i : side) {
-				if(!i.equals(u)) {
-					i.respondToEvent(e);
-				}
-			}
-		}
+		field.passEventAboutUnit(u, e);
 	}
 	
 	public static Game currentGame;
@@ -394,7 +389,7 @@ public class Game {
 		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 		d2.shuffleCards();
 		RealPlayer p1 = new RealPlayer();
-		SimpleBot p2 = new SimpleBot();
+		PassiveBot p2 = new PassiveBot();
 		
 		g.play(p1, p2, d1, d2, 15, 15);
 	}

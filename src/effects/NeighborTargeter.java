@@ -1,7 +1,8 @@
 package effects;
 
-import units.Unit;
+import java.util.ArrayList;
 
+import units.Unit;
 import src.Game;
 import src.FieldSituation;
 
@@ -13,12 +14,12 @@ public class NeighborTargeter implements Targeter {
 	}
 
 	@Override
-	public Unit[] selectTargets(int player, Unit u) {
+	public ArrayList<Unit> selectTargets(int player, Unit u) {
 		Unit n = Game.currentGame.provideFieldSituation().neighborUnit(offset, u);
 		if(n == null) 
 			return null;
-		Unit[] arr = new Unit[1];
-		arr[0] = n; 
+		ArrayList<Unit> arr = new ArrayList<>(1);
+		arr.add(n);
 		return arr;
 	}
 

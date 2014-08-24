@@ -1,5 +1,7 @@
 package effects;
 
+import java.util.ArrayList;
+
 import units.Unit;
 
 public class TargedetSpell extends AbstractSpell {
@@ -20,7 +22,7 @@ public class TargedetSpell extends AbstractSpell {
 	@Override
 	public void exequte(int playerNum) {
 		this.playerNum = playerNum;
-		Unit[] units = targeter.selectTargets(playerNum, target);
+		ArrayList<Unit> units = targeter.selectTargets(playerNum, target);
 		if(units != null) {
 			for(Unit u : units) {
 				spell.target = u;

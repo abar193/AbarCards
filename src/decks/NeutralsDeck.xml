@@ -73,9 +73,9 @@
 			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Airstrike" Description="8rt" Cost="6">
+	<Spell Name="Airstrike" Description="8rt" Cost="3">
 		<Fulldesc txt="Deals 1 damage to 8 random enemy targets"/>
-		<TargedetSpell targeter="random" acept="1" targets="8" repeats="1">
+		<TargedetSpell targeter="random" acept="1" targets="8" repeats="1" hero="1">
 			 <BuffSpell>
 				<Buff type="Hurt" v="1"/>
 			</BuffSpell>

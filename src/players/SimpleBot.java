@@ -34,10 +34,10 @@ public class SimpleBot implements PlayerInterface {
 		opponent = enemyData;
 		
 		enemyTaunts = field.tauntUnitsForPlayer(enemyData.playerNumber);
-		availableTargets = new ArrayList<Unit>(field.playerUnits.
-				get(enemyData.playerNumber).size());
+		availableTargets = new ArrayList<Unit>(field.allUnitFromOneSide(enemyData.playerNumber, 
+				false).size());
 		
-		for(Unit u : field.playerUnits.get(opponent.playerNumber)) {
+		for(Unit u : field.allUnitFromOneSide(opponent.playerNumber, false)) {
 			if((enemyTaunts == 0 || u.hasQuality(Unit.Quality.Taunt)) & 
 					!u.hasQuality(Unit.Quality.Stealth)) {
 				availableTargets.add(u);
@@ -46,7 +46,7 @@ public class SimpleBot implements PlayerInterface {
 		
 		totalAvailableDamage = 0;
 		totalAvailableHealth = totalAvailableUnits = 0;
-		for(Unit u : field.playerUnits.get(me.playerNumber)) {
+		for(Unit u : field.allUnitFromOneSide(me.playerNumber, false)) {
 			if(u.canAttack()) {
 				totalAvailableDamage += u.getCurrentDamage();
 				totalAvailableUnits++;
@@ -77,8 +77,8 @@ public class SimpleBot implements PlayerInterface {
 
 	protected void attackWithAllUnits() {
 		
-		ArrayList<Unit> myDeck = latestSituation.playerUnits.get(me.playerNumber);
-		ArrayList<Unit> hisDeck = latestSituation.playerUnits.get(opponent.playerNumber);
+		ArrayList<Unit> myDeck = latestSituation.allUnitFromOneSide(me.playerNumber, false);
+		ArrayList<Unit> hisDeck = latestSituation.allUnitFromOneSide(opponent.playerNumber, false);
 		Random r = new Random();
 		
 		while(totalAvailableUnits > 0) {
@@ -86,7 +86,7 @@ public class SimpleBot implements PlayerInterface {
 				for(int i = 0; i < myDeck.size(); i++) {
 					if(myDeck.get(i).canAttack()) {
 						parent.commitAttack(i, -1, me.playerNumber, opponent.playerNumber);
-						myDeck = latestSituation.playerUnits.get(me.playerNumber);
+						myDeck = latestSituation.allUnitFromOneSide(me.playerNumber, false);
 					}
 				}
 			} else {
@@ -95,8 +95,9 @@ public class SimpleBot implements PlayerInterface {
 						if(availableTargets.size() > 0) {
 							parent.commitAttack(myDeck.get(i), 
 									availableTargets.get(r.nextInt(availableTargets.size())));
-							myDeck = latestSituation.playerUnits.get(me.playerNumber);
-							hisDeck = latestSituation.playerUnits.get(opponent.playerNumber);
+							myDeck = latestSituation.allUnitFromOneSide(me.playerNumber, false);
+							hisDeck = latestSituation.allUnitFromOneSide(opponent.playerNumber, 
+									false);
 							i = 0;
 						} else {
 							parent.commitAttack(i, -1, me.playerNumber, opponent.playerNumber);

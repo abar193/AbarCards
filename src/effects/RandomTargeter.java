@@ -5,7 +5,6 @@ import src.Game;
 
 import units.Unit;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 public class RandomTargeter implements Targeter {
 
 	int aceptPlayers, maxCount, player;
-	boolean repeats;
+	boolean repeats, aceptHeroes;
 	/**
 	 * Initialises targeter, who selects random targets from field
 	 * @param player player-owner of the card
@@ -26,14 +25,15 @@ public class RandomTargeter implements Targeter {
 	 * @param maxCount at least 1 at most maxCount
 	 * @param repeatsAllowed true to allow repeating
 	 */
-	public RandomTargeter(int acceptablePlayers, int maxCount, boolean repeatsAllowed) {
+	public RandomTargeter(int acceptablePlayers, int maxCount, boolean repeatsAllowed, boolean aceptHeroes) {
 		aceptPlayers = acceptablePlayers;
 		this.maxCount = maxCount;
 		repeats = repeatsAllowed;
+		this.aceptHeroes = aceptHeroes;
 	}
 
 	@Override
-	public Unit[] selectTargets(int p, Unit targ) {
+	public ArrayList<Unit> selectTargets(int p, Unit targ) {
 		FieldSituation fs = Game.currentGame.provideFieldSituation(); 
 		player = p;
 		Random r = new Random();
@@ -41,26 +41,19 @@ public class RandomTargeter implements Targeter {
 		
 		if(!repeats) {
 			if(aceptPlayers != -1) {
-				if(fs.playerUnits.get((player + aceptPlayers) % 2).size() <= maxCount) {
-					return (Unit[])fs.playerUnits.get((player + aceptPlayers) % 2).
-							toArray(new Unit[retValue.size()]);
+				if(fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes).size() <= maxCount) {
+					return fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes);
 				}
 			} else {
-				if(fs.playerUnits.get(0).size() + fs.playerUnits.get(1).size() <= maxCount) {
-					Unit[] u1 = fs.playerUnits.get(0).
-							toArray(new Unit[fs.playerUnits.get(0).size()]);
-					Unit[] u2 = fs.playerUnits.get(1).
-							toArray(new Unit[fs.playerUnits.get(1).size()]);
-					Unit[] result = Arrays.copyOf(u1, u1.length + u2.length);
-					System.arraycopy(u2, 0, result, u1.length, u2.length);
-					return result;
+				if(fs.allUnits(aceptHeroes).size() <= maxCount) {
+					return fs.allUnits(aceptHeroes);
 				}
 			}
 		}
 		
 		ArrayList<Unit> arr;
-		if(aceptPlayers == -1) arr = pickRandomArray(fs, r);
-		else arr = fs.playerUnits.get((player + aceptPlayers) % 2);
+		if(aceptPlayers == -1) arr = fs.allUnits(aceptHeroes);
+		else arr = fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes);
 		
 		if(arr.size() <= 0) return null;
 		
@@ -77,13 +70,7 @@ public class RandomTargeter implements Targeter {
 			}
 		}
 
-		return (retValue.toArray(new Unit[retValue.size()]));
-	}
-	
-	public ArrayList<Unit> pickRandomArray(FieldSituation fs, Random r) {
-		ArrayList<Unit> arr = new ArrayList<Unit>(fs.playerUnits.get(0));
-		arr.addAll(fs.playerUnits.get(1));
-		return arr;
+		return retValue;
 	}
 
 	@Override
@@ -91,9 +78,9 @@ public class RandomTargeter implements Targeter {
 		FieldSituation fs = Game.currentGame.provideFieldSituation();
 		
 		if(aceptPlayers == -1)
-			return fs.playerUnits.get(0).size() + fs.playerUnits.get(1).size() > 0;
+			return fs.allUnits(aceptHeroes).size() > 0;
 		else 
-			return fs.playerUnits.get((player + aceptPlayers) % 2).size() > 0;
+			return fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes).size() > 0;
 	}
 
 }
