@@ -2,8 +2,11 @@ package players;
 
 import cards.Deck;
 import cards.BasicCard;
+
 import players.PlayerInterface;
-import units.Unit;
+
+import units.PlayerUnit;
+
 import effects.AbstractSpell;
 import effects.PlayerValueSpell;
 import effects.PlayerValueModifier;
@@ -28,7 +31,7 @@ public class PlayerData {
 	private int totalMana;
 	private int availableMana;
 	
-	public Unit representingUnit;
+	public PlayerUnit representingUnit;
 	
 	private PlayerInterface myPlayer;
 	
@@ -42,7 +45,7 @@ public class PlayerData {
 	public PlayerData(Deck d, int startHealth, PlayerInterface player) {
 		totalMana = 0;
 		availableMana = 0;
-		representingUnit = new Unit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
+		representingUnit = new PlayerUnit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
 		myHand = new ArrayList<BasicCard>(10);
 		myDeck = d;
 		myPlayer = player;
@@ -55,7 +58,7 @@ public class PlayerData {
 	public PlayerData(Deck d, int startHealth, PlayerInterface player, int maxHandCards) {
 		totalMana = 0;
 		availableMana = 0;
-		representingUnit = new Unit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
+		representingUnit = new PlayerUnit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
 		myHand = new ArrayList<BasicCard>(10);
 		myDeck = d;
 		MAXHANDLIMIT = maxHandCards;

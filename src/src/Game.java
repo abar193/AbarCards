@@ -53,14 +53,18 @@ public class Game {
 			playersData[0] = d1;
 			playersData[1] = d2;
 			field.heroes.add(d1.representingUnit);
+			d1.representingUnit.myPlayer = 0;
 			field.heroes.add(d2.representingUnit);
+			d2.representingUnit.myPlayer = 1;
 		} else {
 			players.add(p2);
 			players.add(p1);
 			playersData[0] = d2;
 			playersData[1] = d1;
 			field.heroes.add(d2.representingUnit);
+			d2.representingUnit.myPlayer = 0;
 			field.heroes.add(d1.representingUnit);
+			d1.representingUnit.myPlayer = 1;
 		}
 		playersData[0].setPlayerNumber(0);
 		playersData[1].setPlayerNumber(1);
