@@ -14,19 +14,19 @@ public class TestUnit {
 	public void testInit() {
 		UnitCard uc = new UnitCard(4, 4, 4, "", "");
 		assertNotNull(new Unit(uc, 0));
-		assertNotNull(new Unit(uc, units.Unit.Quality.Battlecry.getValue()));
+		assertNotNull(new Unit(uc, units.Unit.Quality.Windfury.getValue()));
 	}
 
 	@Test
 	public void testBuffs() {
 		UnitCard uc = new UnitCard(5, 4, 4, "", "");
 		Unit u = new Unit(uc, 0);
-		assertEquals(false, u.hasQuality(Quality.Battlecry));
+		assertEquals(false, u.hasQuality(Quality.Windfury));
 		assertEquals(false, u.hasQuality(Quality.Charge));
 		assertEquals(false, u.hasQuality(Quality.Stealth));
 		assertEquals(false, u.hasQuality(Quality.Taunt));
-		u.setQuality(Quality.Battlecry);
-		assertEquals(true, u.hasQuality(Quality.Battlecry));
+		u.setQuality(Quality.Windfury);
+		assertEquals(true, u.hasQuality(Quality.Windfury));
 		u.setQuality(Quality.Charge);
 		assertEquals(true, u.hasQuality(Quality.Charge));
 		u.setQuality(Quality.Stealth);
@@ -35,7 +35,7 @@ public class TestUnit {
 		assertEquals(true, u.hasQuality(Quality.Taunt));
 		assertEquals(true, u.hasQuality(Quality.Stealth));
 		assertEquals(true, u.hasQuality(Quality.Charge));
-		assertEquals(true, u.hasQuality(Quality.Battlecry));
+		assertEquals(true, u.hasQuality(Quality.Windfury));
 		u.removeQuality(Quality.Charge);
 		assertEquals(false, u.hasQuality(Quality.Charge));
 		
@@ -51,7 +51,7 @@ public class TestUnit {
 		assertEquals(u.getCurrentHealth(), 3);
 		
 		u.applyBuff(new effects.Buff(effects.BuffType.Silence, 0));
-		assertEquals(false, u.hasQuality(Quality.Battlecry));
+		assertEquals(false, u.hasQuality(Quality.Windfury));
 		assertEquals(false, u.hasQuality(Quality.Charge));
 		assertEquals(false, u.hasQuality(Quality.Stealth));
 		assertEquals(false, u.hasQuality(Quality.Taunt));
@@ -71,28 +71,28 @@ public class TestUnit {
 	
 	@Test 
 	public void testBuffedUnit() {
-		int[] arr = {Quality.Battlecry.getValue(), 
+		int[] arr = {Quality.Windfury.getValue(), 
 				Quality.Charge.getValue(), 
 				Quality.Stealth.getValue(), 
 				Quality.Taunt.getValue(), 
-				Quality.Battlecry.getValue() | Quality.Charge.getValue(), //  
+				Quality.Windfury.getValue() | Quality.Charge.getValue(), //  
 				Quality.Stealth.getValue() | Quality.Taunt.getValue(), //
-				Quality.Battlecry.getValue() | Quality.Taunt.getValue(), //
+				Quality.Windfury.getValue() | Quality.Taunt.getValue(), //
 				Quality.Stealth.getValue() | Quality.Charge.getValue(),//
-				Quality.Battlecry.getValue() | Quality.Stealth.getValue(), //
+				Quality.Windfury.getValue() | Quality.Stealth.getValue(), //
 				Quality.Taunt.getValue() | Quality.Charge.getValue(), //
-				Quality.Battlecry.getValue() | Quality.Charge.getValue() | Quality.Taunt.getValue()};
-		Quality[][] controll = { {Quality.Battlecry}, 
+				Quality.Windfury.getValue() | Quality.Charge.getValue() | Quality.Taunt.getValue()};
+		Quality[][] controll = { {Quality.Windfury}, 
 				{Quality.Charge}, 
 				{Quality.Stealth},
 				{Quality.Taunt}, 
-				{Quality.Battlecry, Quality.Charge}, 
+				{Quality.Windfury, Quality.Charge}, 
 				{Quality.Stealth, Quality.Taunt},
-				{Quality.Battlecry, Quality.Taunt},
+				{Quality.Windfury, Quality.Taunt},
 				{Quality.Stealth, Quality.Charge},
-				{Quality.Battlecry, Quality.Stealth},
+				{Quality.Windfury, Quality.Stealth},
 				{Quality.Taunt, Quality.Charge},
-				{Quality.Battlecry, Quality.Charge, Quality.Taunt}
+				{Quality.Windfury, Quality.Charge, Quality.Taunt}
 			};
 		
 		for(int i = 0; i < arr.length; i++) {
@@ -106,11 +106,23 @@ public class TestUnit {
 	}
 	
 	@Test
-	public void testAttack() {
+	public void testAttackCharge() {
 		Unit u0 = new Unit(new UnitCard(1, 1, 1, "", ""), 0);
 		assertEquals(false, u0.canAttack());
 		Unit u1 = new Unit(new UnitCard(3, 3, 1, "", ""), 0);
 		u1.setQuality(Quality.Charge);
+		assertEquals(true, u1.canAttack());
+		u1.attackUnit(u0);
+		assertEquals(false, u1.canAttack());
+	}
+	
+
+	@Test
+	public void testAttack() {
+		Unit u0 = new Unit(new UnitCard(1, 1, 1, "", ""), 0);
+		assertEquals(false, u0.canAttack());
+		Unit u1 = new Unit(new UnitCard(3, 3, 1, "", ""), 0);
+		u1.endTurn();
 		assertEquals(true, u1.canAttack());
 		u1.attackUnit(u0);
 		assertEquals(false, u1.canAttack());

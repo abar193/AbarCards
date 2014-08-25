@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Unit {
 	public enum Quality {
-		Battlecry(1), Stealth(2), Taunt(4), Charge(8);
+		Windfury(1), Stealth(2), Taunt(4), Charge(8);
 		private final int value;
 
 	    private Quality(int value) {
@@ -30,7 +30,8 @@ public class Unit {
 	
 	private ArrayList<UnitPower> powers;
 	
-	private boolean canAttack, attackedAlready;
+	private boolean canAttack;
+	private int attackedAlready;
 	
 	public Unit(UnitCard card, int player) {
 		currentHealth = card.getHealth();
@@ -40,7 +41,7 @@ public class Unit {
 		powers = new ArrayList<UnitPower>();
 		
 		canAttack = false;
-		attackedAlready = false;
+		attackedAlready = 0;
 		modHealth = 0;
 		modDmg = 0;
 		myPlayer = player;
@@ -55,7 +56,7 @@ public class Unit {
 		powers = new ArrayList<UnitPower>();
 		
 		canAttack = ((this.qualities & Quality.Charge.value) == 1);
-		attackedAlready = false;
+		attackedAlready = 0;
 		modHealth = 0;
 		modDmg = 0;
 		myPlayer = player;
@@ -76,14 +77,14 @@ public class Unit {
 	
 	public void endTurn() {
 		canAttack = true;
-		attackedAlready = false;
+		attackedAlready = 0;
 		this.respondToEvent(TriggeringCondition.OnTurnEnd);
 	}
 	
 	
 	public boolean canAttack() {
 		return (getCurrentDamage() > 0) & (canAttack | hasQuality(Quality.Charge)) & 
-				!attackedAlready; 
+				(attackedAlready <= (qualities & 1)); 
 	}
 	
 	public int getCurrentHealth() {
@@ -200,7 +201,7 @@ public class Unit {
 			if(hasQuality(Quality.Stealth)) {
 				removeQuality(Quality.Stealth);
 			}
-			attackedAlready = true;
+			attackedAlready++;
 		}
 	}
 	
