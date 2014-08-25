@@ -32,7 +32,7 @@ public class Game {
 	private PlayerData[] playersData;
 	/** Field, where all units, building (and heroes?) are standing*/
 	private FieldSituation field;
-	private UnitFactory factory;
+	public UnitFactory factory;
 	
 	/**
 	 * Initialises player-relevant variables, and randomly puts chooses Player1 and Player2 from 
@@ -388,7 +388,7 @@ public class Game {
 		
 		DeckPackReader dpr = new DeckPackReader();
 		//URL url = getClass().getResource("decks/NeutralsDeck.xml");
-		Deck d1 = new Deck(dpr.parseFile("NeutralsDeck.xml"));	
+		Deck d1 = new Deck(dpr.parseFile("TestDeck.xml"));	
 		d1.shuffleCards();
 		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 		d2.shuffleCards();

@@ -25,6 +25,7 @@ public class DeckPackReader extends DefaultHandler {
 
 	private ArrayList<BasicCard> resultingCard;
 	private UnitCard unit;
+	private UnitCard helper;
 	private UnitPower power;
 	private SpellCard spell;
 	private SpellXMLBuilder spellBuilder;
@@ -60,19 +61,24 @@ public class DeckPackReader extends DefaultHandler {
     public void startElement(String namespaceURI, String localName, String qName, 
             Attributes atts) throws SAXException 
     {
-    	if(localName.equals("Unit")) {
+    	if(localName.equals("Unit") || localName.equals("HelperUnit")) {
     		String n = atts.getValue("Name");
     		String d = atts.getValue("Description");
     		int dmg = Integer.parseInt(atts.getValue("Damage"));
     		int health = Integer.parseInt(atts.getValue("Health"));
     		int cost = Integer.parseInt(atts.getValue("Cost"));
-    		
+    		UnitCard tmp;
     		if(atts.getValue("SpecID") != null) {
-    			unit = new cards.SpecialUnitCard(dmg, health, cost, n, d);
+    			tmp = new cards.SpecialUnitCard(dmg, health, cost, n, d);
     			int i = Integer.parseInt(atts.getValue("SpecID"));
-    			((SpecialUnitCard)unit).specialUnitRef = SpecialUnit.fromInteger(i);
+    			((SpecialUnitCard)tmp).specialUnitRef = SpecialUnit.fromInteger(i);
     		} else {
-    			unit = new UnitCard(dmg, health, cost, n, d);
+    			tmp = new UnitCard(dmg, health, cost, n, d);
+    		}
+    		if(localName.equals("Unit")) {
+    			unit = tmp;
+    		} else {
+    			helper = tmp;
     		}
     	} else if(localName.contains("Spell") || localName.contains("Buff")) {
     		SpellCard sc = spellBuilder.reciveOpenTag(localName, atts);
@@ -82,7 +88,10 @@ public class DeckPackReader extends DefaultHandler {
     	} else if(localName.contains("Power")) {
     		power = spellBuilder.reciveOpenPowerTag(localName, atts);
     	} else if(localName.equals("Qualities")) {
-    		unit.qualities = Integer.parseInt(atts.getValue("v"));
+    		if(helper != null)
+    			helper.qualities = Integer.parseInt(atts.getValue("v"));
+    		else 
+    			unit.qualities = Integer.parseInt(atts.getValue("v"));
     	} else if(localName.equals("Fulldesc")) {
     		if(unit != null) {
     			unit.fullDescription = atts.getValue("txt");
@@ -112,6 +121,12 @@ public class DeckPackReader extends DefaultHandler {
     	if(unit != null && localName.equals("Unit")) {
     		resultingCard.add(unit);
     		unit = null;
+    	} else if(localName.equals("CreateUnitSpell")) {
+    		AbstractSpell s = spellBuilder.reciveCloseTag(localName);
+    		if(s != null && s instanceof effects.CreateUnitSpell) {
+    			((effects.CreateUnitSpell)s).myUnit = helper;
+    			helper = null;
+    		}
     	} else if(localName.contains("Spell") || localName.contains("Buff")) {
     		AbstractSpell s = spellBuilder.reciveCloseTag(localName);
     		if(s != null) {
@@ -153,7 +168,7 @@ public class DeckPackReader extends DefaultHandler {
 	public static void main(String[] args) throws Exception {
         
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("NeutralsDeck.xml");
+		ArrayList<BasicCard> bc = dpr.parseFile("TestDeck.xml");
 		for(BasicCard c : bc) {
 			System.out.format("%s %s %d\n", c.name, c.fullDescription, c.cost);
 		}

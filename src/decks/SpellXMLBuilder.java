@@ -62,6 +62,13 @@ public class SpellXMLBuilder {
 			stack.push(pvs);
 			break;
 		}
+		case "CreateUnitSpell": {
+			int count = Integer.parseInt(att.getValue("count"));
+			int side = Integer.parseInt(att.getValue("side"));
+			CreateUnitSpell cus = new CreateUnitSpell(null, count, side);
+			stack.push(cus);
+			break;
+		}
 		case "Buff": {
 			String type = att.getValue("type");
 			int v = Integer.parseInt(att.getValue("v"));
@@ -104,6 +111,28 @@ public class SpellXMLBuilder {
 			}
 			break;
 		} 
+		case "CreateUnitSpell": {
+			AbstractSpell ls = stack.pop();
+			if(ls instanceof CreateUnitSpell) {
+				AbstractSpell ps;
+				try{
+					ps = stack.peek();
+				} catch(EmptyStackException e) {
+					stack.push(ls); // last spell in hierarchy, do nothing
+					return ls;
+				}
+				if(ps == null) {
+					return ls;
+				} else if(ps instanceof TargedetSpell) {
+					((TargedetSpell) ps).spell = ls;
+					return ls;
+				} else if(ps instanceof SpellContainer) {
+					((SpellContainer) ps).add(ls);
+					return ls;
+				}
+				break;
+			}
+		}
 		case "Buff": {
 			AbstractSpell a = stack.peek();
 			if(a instanceof BuffSpell) {

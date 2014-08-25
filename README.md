@@ -55,11 +55,9 @@ Things done so far:
 
     * Simple bot, capable of spawning and attacking random units. 
 
+    * Spells can target heroes
+
 What I'm working on for now: 
-
-    * Spell targeters should be able to target heroes as well
-
-    * UI updates
     
 	* I'd like to add "buildings" capable of creating cards for the player. 
 
