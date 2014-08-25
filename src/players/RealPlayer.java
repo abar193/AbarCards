@@ -55,12 +55,12 @@ public class RealPlayer implements PlayerInterface {
 			System.out.print("=");
 		}
 		System.out.println();
-		displayFieldSide(field.allUnitFromOneSide(enemy.playerNumber, false));
+		displayFieldSide(field.allUnitFromOneSide(enemy.playerNumber, false), false);
 		for(int i = 0; i < 39; i++) {
 			System.out.print("- ");
 		}
 		System.out.println();
-		displayFieldSide(field.allUnitFromOneSide(you.playerNumber, false));
+		displayFieldSide(field.allUnitFromOneSide(you.playerNumber, false), true);
 		for(int i = 0; i < 79; i++) {
 			System.out.print("=");
 		}
@@ -81,9 +81,13 @@ public class RealPlayer implements PlayerInterface {
 	 * Displays single side of a FieldSituation (draws ArrayList<Unit> like cards).
 	 * @param arr array to display
 	 */
-	private void displayFieldSide(ArrayList<Unit> arr) {
+	private void displayFieldSide(ArrayList<Unit> arr, boolean mySide) {
 		for(int i = 0; i < arr.size(); i++) {
-			System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
+			if(mySide && !arr.get(i).canAttack()) {
+				System.out.print(String.format("|%10s|", arr.get(i).myCard.name));
+			} else {
+				System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
+			}
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
@@ -98,14 +102,10 @@ public class RealPlayer implements PlayerInterface {
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
-			System.out.print(String.format("|Cost: %4d|", arr.get(i).myCard.cost));
-		}
-		System.out.println();
-		for(int i = 0; i < arr.size(); i++) {
 			BasicCard bc = arr.get(i).myCard;  
 			if(bc.type == CardType.Unit) {
-				System.out.print(String.format("|%2d/%3d d/h|", arr.get(i).getCurrentDamage(),
-						arr.get(i).getCurrentHealth()));
+				System.out.print(String.format("|%2dd/%2dh%2d$|", arr.get(i).getCurrentDamage(),
+						arr.get(i).getCurrentHealth(), arr.get(i).myCard.cost));
 			}
 		}
 		System.out.println();
@@ -127,18 +127,15 @@ public class RealPlayer implements PlayerInterface {
 			}
 			System.out.print(s);
 		}
-		System.out.println();
-		for(int i = 0; i < cards.size(); i++) {
-			System.out.print(String.format("|Cost: %3d$|", cards.get(i).cost));
-		}
+		
 		System.out.println();
 		for(int i = 0; i < cards.size(); i++) {
 			BasicCard bc = cards.get(i);  
 			if(bc.type == CardType.Unit) {
-				System.out.print(String.format("|%2d/%3d d/h|", ((UnitCard) bc).getDamage(),
-						((UnitCard) bc).getHealth()));
+				System.out.print(String.format("|%2dd/%2dh%2d$|", ((UnitCard) bc).getDamage(),
+						((UnitCard) bc).getHealth(), bc.cost));
 			} else if(bc.type == CardType.Spell) {
-				System.out.print("|     Spell|");
+				System.out.format("|Spell  %2d$|", bc.cost);
 			}
 		}
 		System.out.println();
