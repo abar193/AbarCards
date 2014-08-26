@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Deck>
+	<!--  "Solid" group -->
+	<Unit Name="Solid 2-1" Description="" Damage="2" Health="1" Cost="1">
+	</Unit>
+	<Unit Name="Solid 1-2" Description="" Damage="1" Health="2" Cost="1">
+	</Unit>
+	<Unit Name="Solid 3-2" Description="" Damage="3" Health="2" Cost="2">
+	</Unit>
+	<Unit Name="Solid 2-3" Description="" Damage="2" Health="3" Cost="2">
+	</Unit>
+	<Unit Name="Solid 3-3" Description="" Damage="3" Health="3" Cost="3">
+	</Unit>
+	<Unit Name="Solid 4-2" Description="" Damage="4" Health="2" Cost="3">
+	</Unit>
+	<Unit Name="Solid 2-4" Description="" Damage="2" Health="4" Cost="3">
+	</Unit>
+	<Unit Name="Solid 5-4" Description="" Damage="5" Health="4" Cost="4">
+	</Unit>
+	<Unit Name="Solid 4-5" Description="" Damage="4" Health="5" Cost="4">
+	</Unit>
+	<Unit Name="Solid 6-5" Description="" Damage="6" Health="5" Cost="5">
+	</Unit>
+	<Unit Name="Solid 5-6" Description="" Damage="5" Health="6" Cost="5">
+	</Unit>
+	<Unit Name="Solid 8-8" Description="" Damage="8" Health="8" Cost="10">
+	</Unit>
+	<!--  Taunters group -->
+	<Unit Name="Taunt 0-4" Description="" Damage="0" Health="4" Cost="1">
+		<Qualities v="4"/>
+	</Unit>
+	<Unit Name="Taunt 2-2" Description="" Damage="2" Health="2" Cost="2">
+		<Qualities v="4"/>
+	</Unit>
+	<Unit Name="Taunt 2-3" Description="" Damage="2" Health="3" Cost="3">
+		<Qualities v="4"/>
+	</Unit>
+	<Unit Name="Taunt 3-4" Description="" Damage="3" Health="4" Cost="4">
+		<Qualities v="4"/>
+	</Unit>
+	<Unit Name="Taunt 2-7" Description="" Damage="2" Health="7" Cost="5">
+		<Qualities v="4"/>
+	</Unit>
+	<!-- Chargers -->
+	<Unit Name="Mad nerd " Description="" Damage="0" Health="4" Cost="1">
+		<Fulldesc txt="Has charge and windfury... but no attack!"/>
+		<Qualities v="9"/>
+	</Unit>
+	<Unit Name="C 1-1" Description="" Damage="1" Health="1" Cost="1">
+		<Qualities v="8"/>
+	</Unit>
+	<Unit Name="C 2-2" Description="" Damage="2" Health="2" Cost="2">
+		<Qualities v="8"/>
+	</Unit>
+	<Unit Name="C 3-2" Description="" Damage="3" Health="2" Cost="3">
+		<Qualities v="8"/>
+	</Unit>
+	<Unit Name="C 5-2" Description="" Damage="5" Health="2" Cost="5">
+		<Qualities v="8"/>
+	</Unit>
+	<!--  Stealth-units  -->
+	<Unit Name="Sniper" Description="" Damage="0" Health="2" Cost="3">
+		<Qualities v="2"/>
+		<Fulldesc txt="Stealth, deals 2 damage to random enemy at the end of a turn"/>
+		<Power condition="OnTurnEnd">
+			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
+				<BuffSpell>
+					<Buff type="Hurt" v="2"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Phantom" Description="" Damage="3" Health="2" Cost="3">
+		<Qualities v="2"/>
+	</Unit>
+	<Unit Name="Ghost" Description="" Damage="5" Health="3" Cost="5">
+		<Qualities v="2"/>
+	</Unit>
+	<!--  Silencers -->
+	<Unit Name="Maniac" Description="Stu" Damage="2" Health="1" Cost="2">
+		<Fulldesc txt="Silences targedet unit on spawn"/>
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="player">
+				<BuffSpell>
+					<Buff type="Silence" v="0"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Cameramen" Description="Stu" Damage="4" Health="4" Cost="4">
+		<Fulldesc txt="Silences targedet unit on spawn"/>
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="player">
+				<BuffSpell>
+					<Buff type="Silence" v="0"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<!-- Summoners -->
+	<Unit Name="Cat lady" Description="" Damage="1" Health="1" Cost="2">
+		<Fulldesc txt="Creates 2x 1-1 cats"/>
+		<Power condition="OnCreate">
+			<CreateUnitSpell count="2" side="0">
+				<HelperUnit Name="Cat" Description="" Damage="1" Health="1" Cost="0">
+				</HelperUnit>
+			</CreateUnitSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Russian+SB" Description="" Damage="4" Health="4" Cost="5">
+		<Fulldesc txt="Creates 1x  2-2 small bear"/>
+		<Power condition="OnCreate">
+			<CreateUnitSpell count="1" side="0">
+				<HelperUnit Name="Small bear" Description="" Damage="2" Health="2" Cost="0">
+				</HelperUnit>
+			</CreateUnitSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Imp master" Description="" Damage="1" Health="5" Cost="3">
+		<Fulldesc txt="Takes 1 dmg and creates 1-1 imp on turn end"/>
+		<Power condition="OnTurnEnd">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="Hurt" v="1"/>
+				</BuffSpell>
+				<CreateUnitSpell count="1" side="0">
+					<HelperUnit Name="Imp" Description="" Damage="1" Health="1" Cost="0">
+					</HelperUnit>
+				</CreateUnitSpell>
+			</SpellContainer>
+		</Power>
+	</Unit>
+	<!-- Damage providers -->
+	<Unit Name="Singer" Description="" Damage="1" Health="1" Cost="2">
+		<Aura type="1" value="1"/>
+		<Fulldesc txt="Aura +1 damage for all units" />
+	</Unit>
+	<Unit Name="Drummer" Description="" Damage="1" Health="3" Cost="3">
+		<Aura type="1" value="1"/>
+		<Fulldesc txt="Aura +1 damage for all units" />
+	</Unit>
+	<Unit Name="TopManager" Description="" Damage="3" Health="5" Cost="5">
+		<Aura type="1" value="1"/>
+		<Qualities v="4"/>
+		<Fulldesc txt="Taunt, Aura +1 damage for all units" />
+	</Unit>
+	<!-- Health providers -->
+	<Unit Name="+1 H Aura" Description="" Damage="3" Health="3" Cost="4">
+		<Aura type="2" value="1"/>
+		<Fulldesc txt="Aura +1 health for all units" />
+	</Unit>
+	<Unit Name="Med PhD" Description="" Damage="5" Health="5" Cost="7">
+		<Aura type="2" value="1"/>
+		<Fulldesc txt="Aura +1 damage for all units" />
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="all" acept="0">
+				<BuffSpell>
+					<Buff type="Heal" v="2"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<!-- Healers -->
+	<Unit Name="Volonteer" Description="Stu" Damage="2" Health="1" Cost="2">
+		<Fulldesc txt="Heals targedet unit on spawn"/>
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="player">
+				<BuffSpell>
+					<Buff type="Heal" v="2"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="RCActivist" Description="" Damage="0" Health="1" Cost="1">
+		<Qualities v="2"/>
+		<Fulldesc txt="Stealth, adds 1 health to a random ally"/>
+		<Power condition="OnTurnEnd">
+			<TargedetSpell targeter="random" acept="0" targets="1" repeats="1">
+				<BuffSpell>
+					<Buff type="AddHealth" v="1"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Field doc" Description="" Damage="5" Health="1" Cost="5">
+		<Qualities v="8"/>
+		<Fulldesc txt="Charge, heal all +2 on spawn" />
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="all" acept="0">
+				<BuffSpell>
+					<Buff type="Heal" v="2"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+</Deck>
