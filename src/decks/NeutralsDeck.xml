@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <Deck>
 	<Spell Name="Civilians" Description="2*T*units" Cost="1">
 		<Fulldesc txt="Summons 2 0-2 units to taunt"/>

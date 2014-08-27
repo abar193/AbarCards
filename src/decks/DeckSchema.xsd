@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Deck xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="decks"
+	xmlns:tns="http://www.example.org/DeckSchema"
+	elementFormDefault="qualified" xmlns:Q1="decks">
+
+	<attribute name="Name" type="string"></attribute>
+
+	<attribute name="Description" type="string"></attribute>
+
+	<attribute name="Cost" type="int"></attribute>
+
+	<attribute name="Damage" type="int"></attribute>
+
+	<attribute name="Health" type="int"></attribute>
+
+	<complexType name="Unit">
+		<attribute ref="Q1:Name"></attribute>
+		<attribute ref="Q1:Description"></attribute>
+		<attribute ref="Q1:Cost"></attribute>
+		<attribute ref="Q1:Damage"></attribute>
+		<attribute ref="Q1:Health"></attribute>
+	</complexType>
+
+	<complexType name="Spell">
+		<attribute ref="Q1:Name"></attribute>
+		<attribute ref="Q1:Description"></attribute>
+		<attribute ref="Q1:Cost"></attribute>
+	</complexType>
+
+	<attribute name="txt" type="string"></attribute>
+
+	<attributeGroup name="cusG">
+		<attribute name="cost" type="int"></attribute>
+		<attribute name="side" type="int"></attribute>
+	</attributeGroup>
+
+	<complexType name="CreateUnitSpell">
+		<attributeGroup ref="Q1:cusG"></attributeGroup>
+	</complexType>
+
+	<attribute name="v" type="int"></attribute>
+
+	<attributeGroup name="pvsG">
+		<attribute name="type" type="string"></attribute>
+		<attribute name="value" type="int"></attribute>
+		<attribute name="acept" type="int"></attribute>
+	</attributeGroup>
+
+
+
+	<complexType name="PlayerValueSpell">
+		<attributeGroup ref="Q1:pvsG"></attributeGroup>
+	</complexType>
+
+	<attributeGroup name="bG">
+		<attribute name="type" type="string"></attribute>
+		<attribute name="v" type="int"></attribute>
+	</attributeGroup>
+
+	<complexType name="Buff">
+		<attributeGroup ref="Q1:bG"></attributeGroup>
+	</complexType>
+
+	<element name="Spell" type="Q1:Spell"></element>
+
+	<element name="Unit" type="Q1:Unit"></element>
+</Deck>

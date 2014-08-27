@@ -5,9 +5,9 @@
 		<Fulldesc txt="Summons 2 1-1 units for enemy"/>
 		<Power condition="OnCreate">
 			<CreateUnitSpell count="2" side="1">
-			<HelperUnit Name="W" Description="" Damage="1" Health="1" Cost="0">
-			</HelperUnit>
-		</CreateUnitSpell>
+				<HelperUnit Name="W" Description="" Damage="1" Health="1" Cost="0">
+				</HelperUnit>
+			</CreateUnitSpell>
 		</Power>
 	</Unit>
 	<Spell Name="Civilians" Description="2*T*units" Cost="1">

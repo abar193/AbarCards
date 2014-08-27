@@ -12,7 +12,7 @@ import java.util.Random;
  *
  */
 public class Deck {
-	public static final int DECK_SIZE = 30;
+	public static final int DECK_SIZE = 15;
 	
 	private ArrayList<BasicCard> cards = null;
 	
@@ -56,7 +56,7 @@ public class Deck {
 		if(cards == null || cards.size() == 0 || cards.size() > DECK_SIZE) {
 			return false;
 		}
-		return true;
+		return (cards.size() == DECK_SIZE);
 	}
 	
 	/**

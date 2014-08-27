@@ -84,6 +84,7 @@ public class Game {
 		
 		/* * * Initialization * * */
 		field = new FieldSituation();
+		currentGame = this;
 		
 		PlayerData player1 = new PlayerData(d1, h1, p1);
 		PlayerData player2 = new PlayerData(d2, h2, p2);
