@@ -3,6 +3,7 @@ package players;
 import src.FieldSituation;
 import src.Game;
 import units.Unit;
+import units.Unit.Quality;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +83,12 @@ public class RealPlayer implements PlayerInterface {
 	 * @param arr array to display
 	 */
 	private void displayFieldSide(ArrayList<Unit> arr, boolean mySide) {
+		int t = latestSituation.tauntUnitsForPlayer(opponent.playerNumber);
 		for(int i = 0; i < arr.size(); i++) {
-			if(mySide && !arr.get(i).canAttack()) {
+			if((mySide && !arr.get(i).canAttack()) || (!mySide && t > 0 && 
+					(!arr.get(i).hasQuality(Quality.Taunt) 
+					|| arr.get(i).hasQuality(Quality.Stealth)))) 
+			{
 				System.out.print(String.format("|%10s|", arr.get(i).myCard.name));
 			} else {
 				System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
@@ -114,7 +119,10 @@ public class RealPlayer implements PlayerInterface {
 	
 	private void printCards(List<BasicCard> cards, int k) {
 		for(int i = 0; i < cards.size(); i++) {
-			System.out.print(String.format("%c%10s|", qwerty[i+k], cards.get(i).name));
+			if(cards.get(i).cost <= me.getAvailableMana()) 
+				System.out.print(String.format("%c%10s|", qwerty[i+k], cards.get(i).name));
+			else 
+				System.out.print(String.format("|%10s|", cards.get(i).name));
 		}
 		System.out.println();
 		for(int i = 0; i < cards.size(); i++) {
