@@ -19,15 +19,15 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="Cleaner" Description="+1/1/dmg" Damage="1" Health="2" Cost="2">
-		<Fulldesc txt="Gains 1/1 on each allied unit damage"/>
-		<Power condition="OnAllyDamage">
+	<Unit Name="Cleaner" Description="2/1/death" Damage="2" Health="2" Cost="2">
+		<Fulldesc txt="Gains 2/1 on each allied unit death"/>
+		<Power condition="OnAllyDeath">
 			<SpellContainer>
 				<BuffSpell>
 					<Buff type="AddHealth" v="1"/>
 				</BuffSpell>
 				<BuffSpell>
-					<Buff type="AddDamage" v="1"/>
+					<Buff type="AddDamage" v="2"/>
 				</BuffSpell>
 				</SpellContainer>
 		</Power>
@@ -43,9 +43,9 @@
 	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="4">
 		<Qualities v="8"/>
 	</Unit>	
-	<Unit Name="Spambot" Description="" Damage="6" Health="1" Cost="5">
+	<Unit Name="Spambot" Description="" Damage="6" Health="5" Cost="3">
 		<Fulldesc txt="Summon 2x2/2 spammers on death"/>
-		<Power condition="OnDamage">
+		<Power condition="OnDeath">
 			<CreateUnitSpell count="2" side="0">
 				<HelperUnit Name="Spammer" Description="" Damage="2" Health="2" Cost="0">
 				</HelperUnit>

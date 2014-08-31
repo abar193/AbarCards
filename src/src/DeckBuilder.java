@@ -213,8 +213,8 @@ public class DeckBuilder {
 							|| s.toUpperCase().equals("D")) {
 						Deck d = validDeck();
 						if(d != null) {
-							input.close();
 							launchGame(d, s.toUpperCase().charAt(0));
+							input.close();
 							return;
 						}
 					} 

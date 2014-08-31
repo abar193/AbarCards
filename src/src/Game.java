@@ -205,12 +205,16 @@ public class Game {
 		attacker.attackUnit(target);
 		if(target.isDead()) {
 			informAll(target.myCard.name + " is dead");
+			target.respondToEvent(TriggeringCondition.OnDeath);
+			passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
 			field.removeUnitOfPlayer(target, target.myPlayer);
 			if(playersData[target.myPlayer].auras.unitDies(target)) 
 				recalculateFieldModifiers();
 		}
 		if(attacker.isDead()) {
 			informAll(attacker.myCard.name + " is dead"); 
+			attacker.respondToEvent(TriggeringCondition.OnDeath);
+			passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
 			field.removeUnitOfPlayer(attacker, attacker.myPlayer);
 			if(playersData[attacker.myPlayer].auras.unitDies(attacker)) 
 				recalculateFieldModifiers();
@@ -238,17 +242,21 @@ public class Game {
 			String s = attacker.myCard.name + 
 					" VS " + target.myCard.name;
 			informAll(s);
-			
+			// TODO - call other method
 			attacker.attackUnit(target);
 			if(target.isDead()) {
 				informAll(target.myCard.name + " is dead");
-				field.removeUnitOfPlayer(target, pt);
+				target.respondToEvent(TriggeringCondition.OnDeath);
+				passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
+				field.removeUnitOfPlayer(target, target.myPlayer);
 				if(playersData[pt].auras.unitDies(target)) 
 					recalculateFieldModifiers();
 			}
 			if(attacker.isDead()) {
 				informAll(attacker.myCard.name + " is dead"); 
-				field.removeUnitOfPlayer(attacker, pa);
+				attacker.respondToEvent(TriggeringCondition.OnDeath);
+				passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
+				field.removeUnitOfPlayer(attacker, attacker.myPlayer);
 				if(playersData[pa].auras.unitDies(attacker)) 
 					recalculateFieldModifiers();
 			}
@@ -359,6 +367,8 @@ public class Game {
 				if(u.isDead()) {
 					informAll(u.myCard.name + " is dead");
 					//field.removeUnitOfPlayer(u, i);
+					u.respondToEvent(TriggeringCondition.OnDeath);
+					passEventAboutUnit(u, TriggeringCondition.OnAllyDeath);
 					j.remove();
 					if(playersData[i].auras.unitDies(u)) { 
 						recalculateFieldModifiers();
