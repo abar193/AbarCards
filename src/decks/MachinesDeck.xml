@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Deck>
+	<Unit Name="Smart Lamp" Description="" Damage="0" Health="1" Cost="1">
+		<Aura type="1" value="1"/>
+		<Fulldesc txt="Aura +1 dmg for all units" />
+	</Unit>
+	<Unit Name="IT guy" Description="+2/2+Taunt" Damage="4" Health="3" Cost="4">
+		<Fulldesc txt="Gives machine +2/+2 and Taunt on spawn"/>
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="player">
+				<SpellContainer>
+					<BuffSpell>
+						<Buff type="AddHealth" v="2"/>
+					</BuffSpell>
+					<BuffSpell>
+						<Buff type="AddDamage" v="2"/>
+					</BuffSpell>
+				</SpellContainer>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Cleaner" Description="+1/1/dmg" Damage="1" Health="2" Cost="2">
+		<Fulldesc txt="Gains 1/1 on each allied unit damage"/>
+		<Power condition="OnAllyDamage">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="AddHealth" v="1"/>
+				</BuffSpell>
+				<BuffSpell>
+					<Buff type="AddDamage" v="1"/>
+				</BuffSpell>
+				</SpellContainer>
+		</Power>
+	</Unit>
+	<Unit Name="Provider" Description="1 card" Damage="2" Health="1" Cost="2">
+		<Fulldesc txt="Pull 1 card for each summoned machine"/>
+		<Power condition="OnAllySpawn">
+			<BuffSpell>
+				<Buff type="AddHealth" v="1"/>
+			</BuffSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="4">
+		<Qualities v="8"/>
+	</Unit>	
+	<Unit Name="Spambot" Description="" Damage="6" Health="1" Cost="5">
+		<Fulldesc txt="Summon 2x2/2 spammers on death"/>
+		<Power condition="OnDamage">
+			<CreateUnitSpell count="2" side="0">
+				<HelperUnit Name="Spammer" Description="" Damage="2" Health="2" Cost="0">
+				</HelperUnit>
+			</CreateUnitSpell>
+		</Power>
+	</Unit>
+	<Unit Name="G-Car" Description="C" Damage="8" Health="8" Cost="9">
+		<Qualities v="8"/>
+	</Unit>
+	<Spell Name="Shock" Description="2 dmg" Cost="1">
+		<Fulldesc txt="Deals 2 damage to selected unit"/>
+		<TargedetSpell targeter="player">
+			<BuffSpell>
+				<Buff type="Hurt" v="2"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Analysis" Description="h=1" Cost="0">
+		<Fulldesc txt="Set unit's health to 1"/>
+		<TargedetSpell targeter="player">
+			<BuffSpell>
+				<Buff type="HealthSetTo" v="1"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Strike" Description="3/5 dmg" Cost="3">
+		<Fulldesc txt="Deals 3 damage to selected unit"/>
+		<TargedetSpell targeter="player">
+			<BuffSpell>
+				<Buff type="Hurt" v="3"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="R-Hit" Description="2rt x 3dmg" Cost="4">
+		<Fulldesc txt="Deal 3 damage to 2 random targets"/>
+		<TargedetSpell targeter="random" acept="1" targets="2" repeats="0" hero="0">
+			 <BuffSpell>
+				<Buff type="Hurt" v="3"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Bomb" Description="252" Cost="5">
+		<Fulldesc txt="Deals 5 damage to selected unit and 2 to adjusted ones."/>
+		<TargedetSpell targeter="player">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="Hurt" v="5"/>
+				</BuffSpell>
+				<TargedetSpell targeter="neighbor" o="-1">
+					<BuffSpell>
+						<Buff type="Hurt" v="2"/>
+					</BuffSpell>
+				</TargedetSpell>
+				<TargedetSpell targeter="neighbor" o="1">
+					<BuffSpell>
+						<Buff type="Hurt" v="2"/>
+					</BuffSpell>
+				</TargedetSpell>
+			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
+</Deck>

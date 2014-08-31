@@ -6,7 +6,8 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.io.*;
 
 import cards.*;
@@ -157,6 +158,14 @@ public class DeckPackReader extends DefaultHandler {
 	        } else {
 	        	xmlReader.parse("bin\\decks\\" + filename);
 	        }
+	        
+	        Collections.sort(resultingCard, new Comparator<BasicCard>() {
+	            @Override
+	            public int compare(BasicCard arg0, BasicCard arg1) {
+	                return arg0.cost - arg1.cost;
+	            }
+
+	        });
 	        return resultingCard;
     	} catch (Exception e) {
     		System.out.println("Exception " + e.getMessage());
@@ -168,7 +177,7 @@ public class DeckPackReader extends DefaultHandler {
 	public static void main(String[] args) throws Exception {
         
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("TestSmallDeck.xml");
+		ArrayList<BasicCard> bc = dpr.parseFile("NeutralsDeck.xml");
 		for(BasicCard c : bc) {
 			System.out.format("%s %s %d\n", c.name, c.fullDescription, c.cost);
 		}

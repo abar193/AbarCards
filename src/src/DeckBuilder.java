@@ -1,5 +1,13 @@
 package src;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -10,11 +18,16 @@ import decks.DeckPackReader;
 public class DeckBuilder {
 	
 	private final int CARDS_IN_A_ROW = 5;
+	private final String DECK_NAME = "HeroDeck.Cards.";
+
+	private final char qwerty[] = {'q', 'w', 'e', 'r', 't'};
+	private final String[] names = {"Machines"};
+	private final String[] links = {"MachinesDeck.xml"};
 	
 	public ArrayList<BasicCard> selectedCards;
 	public ArrayList<BasicCard> fullDeck;
-	
-	private final char qwerty[] = {'q', 'w', 'e', 'r', 't'};
+
+	private int playerChoose;
 	
 	/** Splits lines in fullDescription word by word, cuts words longer than 10 chars
 	 * into smaller ones, and groups small words if their sum length < 10.
@@ -127,7 +140,7 @@ public class DeckBuilder {
 				System.out.print(String.format("|%2dd/%2dh%2d$|", bc.getDamage(),
 						bc.getHealth(), bc.cost));
 			} else {
-				System.out.format("|%10s|", "Spell");
+				System.out.format("|%6s%3d$|", "Spell", deck.get(x + start).cost);
 			}
 		}
 		if(selectedCards.size() > y) {
@@ -200,6 +213,7 @@ public class DeckBuilder {
 							|| s.toUpperCase().equals("D")) {
 						Deck d = validDeck();
 						if(d != null) {
+							input.close();
 							launchGame(d, s.toUpperCase().charAt(0));
 							return;
 						}
@@ -233,11 +247,59 @@ public class DeckBuilder {
 		return null;
 	}
 	
+	/**
+	 * Saves cards from selectedCards to file Deck.X, where X stands for 
+	 * hero number.
+	 * This method assumes selectedCards are validated and can be build into 
+	 * valid deck.
+	 */
+	public void saveDeck() {
+		BufferedWriter writer = null;
+		try {
+		    writer = new BufferedWriter(new OutputStreamWriter(
+		          new FileOutputStream(DECK_NAME + playerChoose), "utf-8"));
+		    for(BasicCard c : selectedCards) {
+		    	writer.write(String.format("%s %d\n", c.name, c.cost));
+		    }
+		} catch (IOException ex) {
+			System.out.println("Could not save your deck, sorry man.");
+		} finally {
+		   try {writer.close();} catch (Exception ex) {}
+		}
+	}
+	
+	/** Reads deck from file, and stores cards to selectedCards */
+	public void loadDeck(File file) {
+		BufferedReader reader = null;
+		try {
+		    reader = new BufferedReader(new InputStreamReader(
+		          new FileInputStream(file), "utf-8"));
+		    String s;
+		    while((s = reader.readLine()) != null) {
+		    	String[] splits = s.split(" ");
+		    	try{ 
+		    		int cost = Integer.parseInt(splits[1]);
+		    		for(BasicCard c : fullDeck) {
+		    			if(c.name.equals(splits[0]) && c.cost == cost) 
+		    				selectedCards.add(c);
+		    		}
+		    	} catch (NumberFormatException e) {
+		    		System.out.println("Contaminated file, at line " + splits[0]);
+		    	}
+		    }
+		} catch (IOException ex) {
+			System.out.println("Could not read your deck, sorry man.");
+		} finally {
+		   try {reader.close();} catch (Exception ex) {}
+		}
+	}
+	
 	public void launchGame(Deck d, char v) {
 		DeckPackReader dpr = new DeckPackReader();
 		d.shuffleCards();
 		players.RealPlayer r = new players.RealPlayer();
 		Game g = new Game();
+		saveDeck();
 		switch (v) {
 			case 'A': {
 				Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
@@ -256,6 +318,61 @@ public class DeckBuilder {
 		}
 	}
 	
+	/* Loads all saved deck files and returns them in array list */
+	private ArrayList<File> deckFiles() {
+		ArrayList<File> files = new ArrayList<File>();
+		for(int i = 0; i < names.length; i++) {
+			File f = new File(DECK_NAME + i);
+			if(f.exists() && !f.isDirectory()) {
+				files.add(f);
+			}
+		}
+		return files;
+	}
+	
+	public void chooseDeck() {
+		ArrayList<File> files = deckFiles();
+		if(files != null && files.size() > 0) {
+			System.out.println("Load your previous deck: ");
+			
+			for(int i = 0; i < files.size(); i++) {
+				System.out.format("%c - %s\n", qwerty[i], files.get(i).getName());
+			}
+		}
+		
+		System.out.println("Choose your hero: ");
+		
+		for(int i = 0; i < names.length; i++) {
+			System.out.format("%d - %s\n", i, names[i]);
+		}
+		char i = 0;
+		while(true) {
+			try {
+				i = (char)System.in.read();
+			} catch (Exception e) {
+				
+			}
+			if(i - '0' >= 0 && i - '0' < names.length) {
+				ArrayList<BasicCard> c = new DeckPackReader().parseFile(links[i-'0']);
+				fullDeck.addAll(0, c);
+				pickCards();
+				return;
+			} else {
+				for(int j = 0; j < files.size(); j++) {
+					if(i == qwerty[j]) {
+						String fname = files.get(j).getName(); 
+						int num = fname.charAt(fname.length() - 1) - '0';
+						ArrayList<BasicCard> c = new DeckPackReader().parseFile(links[num]);
+						fullDeck.addAll(0, c);
+						loadDeck(files.get(j));
+						pickCards();
+						return;
+					}
+				}
+			}
+		}
+	}
+	
 	public DeckBuilder(ArrayList<BasicCard> deck) {
 		fullDeck = deck;
 		selectedCards = new ArrayList<BasicCard>(15);
@@ -263,9 +380,9 @@ public class DeckBuilder {
 	
 	public static void main(String[] arg) {
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> c = dpr.parseFile("TestSmallDeck.xml");
+		ArrayList<BasicCard> c = dpr.parseFile("NeutralsDeck.xml");
 		DeckBuilder db = new DeckBuilder(c);
-		db.pickCards();
+		db.chooseDeck();
 	}
 
 }

@@ -394,7 +394,7 @@ public class Game {
 		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 		d2.shuffleCards();
 		RealPlayer p1 = new RealPlayer();
-		PassiveBot p2 = new PassiveBot();
+		SimpleBot p2 = new SimpleBot();
 		
 		g.play(p1, p2, d1, d2, 15, 15);
 	}
