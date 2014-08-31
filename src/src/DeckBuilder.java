@@ -127,9 +127,9 @@ public class DeckBuilder {
 			System.out.format("|%10s|", deck.get(x + start).description);
 		}
 		if(selectedCards.size() > y) {
-			System.out.format(" %d %10s\n", y, selectedCards.get(y).name);
+			System.out.format(" %2d %10s\n", y, selectedCards.get(y).name);
 		} else {
-			System.out.format(" %d %10s\n", y, "");
+			System.out.format(" %2d %10s\n", y, "");
 		}
 		y++;
 		
@@ -144,9 +144,9 @@ public class DeckBuilder {
 			}
 		}
 		if(selectedCards.size() > y) {
-			System.out.format(" %d %10s\n", y, selectedCards.get(y).name);
+			System.out.format(" %2d %10s\n", y, selectedCards.get(y).name);
 		} else {
-			System.out.format(" %d %10s\n", y, "");
+			System.out.format(" %2d %10s\n", y, "");
 		}
 		y++;
 		
@@ -160,9 +160,9 @@ public class DeckBuilder {
 				System.out.format("|%10s|", s);
 			}
 			if(selectedCards.size() > y + yl) {
-				System.out.format(" %d %10s\n", y + yl, selectedCards.get(y + yl).name);
+				System.out.format(" %2d %10s\n", y + yl, selectedCards.get(y + yl).name);
 			} else {
-				System.out.format(" %d %10s\n", y + yl, "");
+				System.out.format(" %2d %10s\n", y + yl, "");
 			}
 		}
 		
@@ -171,9 +171,9 @@ public class DeckBuilder {
 		// Finish selectedCards
 		while(y < Math.max(15, selectedCards.size())) {
 			if(selectedCards.size() > y) 
-				System.out.format("%60s %d %10s\n", " ", y, selectedCards.get(y).name);
+				System.out.format("%60s %2d %10s\n", " ", y, selectedCards.get(y).name);
 			else 
-				System.out.format("%60s %d \n", " ", y);
+				System.out.format("%60s %2d \n", " ", y);
 			y++;
 		}
 		

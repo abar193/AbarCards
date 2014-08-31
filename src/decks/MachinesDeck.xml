@@ -4,7 +4,7 @@
 		<Aura type="1" value="1"/>
 		<Fulldesc txt="Aura +1 dmg for all units" />
 	</Unit>
-	<Unit Name="IT guy" Description="+2/2+Taunt" Damage="4" Health="3" Cost="4">
+	<Unit Name="Cyborg" Description="+2/2+Taunt" Damage="4" Health="3" Cost="4">
 		<Fulldesc txt="Gives machine +2/+2 and Taunt on spawn"/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="player">
@@ -35,9 +35,7 @@
 	<Unit Name="Provider" Description="1 card" Damage="2" Health="1" Cost="2">
 		<Fulldesc txt="Pull 1 card for each summoned machine"/>
 		<Power condition="OnAllySpawn">
-			<BuffSpell>
-				<Buff type="AddHealth" v="1"/>
-			</BuffSpell>
+			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
 		</Power>
 	</Unit>
 	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="4">

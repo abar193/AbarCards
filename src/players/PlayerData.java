@@ -100,6 +100,8 @@ public class PlayerData {
 				case RemoveHealth:
 					this.representingUnit.damage(ps.value);
 					break;
+				case PullCard:
+					this.pullCard(ps.value);
 				default:
 			}
 		}
