@@ -238,29 +238,7 @@ public class Game {
 				return;
 			}
 			Unit target = field.unitForPlayer(t, pt);
-			
-			String s = attacker.myCard.name + 
-					" VS " + target.myCard.name;
-			informAll(s);
-			// TODO - call other method
-			attacker.attackUnit(target);
-			if(target.isDead()) {
-				informAll(target.myCard.name + " is dead");
-				target.respondToEvent(TriggeringCondition.OnDeath);
-				passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
-				field.removeUnitOfPlayer(target, target.myPlayer);
-				if(playersData[pt].auras.unitDies(target)) 
-					recalculateFieldModifiers();
-			}
-			if(attacker.isDead()) {
-				informAll(attacker.myCard.name + " is dead"); 
-				attacker.respondToEvent(TriggeringCondition.OnDeath);
-				passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
-				field.removeUnitOfPlayer(attacker, attacker.myPlayer);
-				if(playersData[pa].auras.unitDies(attacker)) 
-					recalculateFieldModifiers();
-			}
-			updateInfoForAll();
+			commitAttack(attacker, target);
 		}
 	}
 	
