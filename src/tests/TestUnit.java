@@ -122,7 +122,7 @@ public class TestUnit {
 		Unit u0 = new Unit(new UnitCard(1, 1, 1, "", ""), 0);
 		assertEquals(false, u0.canAttack());
 		Unit u1 = new Unit(new UnitCard(3, 3, 1, "", ""), 0);
-		u1.endTurn();
+		u1.startTurn();
 		assertEquals(true, u1.canAttack());
 		u1.attackUnit(u0);
 		assertEquals(false, u1.canAttack());
@@ -134,7 +134,7 @@ public class TestUnit {
 		assertEquals(false, u0.canAttack());
 		Unit u1 = new Unit(new UnitCard(1, 5, 1, "", ""), 0);
 		u1.setQuality(Quality.Windfury);
-		u1.endTurn();
+		u1.startTurn();
 		assertEquals(true, u1.canAttack());
 		u1.attackUnit(u0);
 		assertEquals(true, u1.canAttack());
