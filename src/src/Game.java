@@ -336,13 +336,12 @@ public class Game {
 		for(int i = 0; i < 2; i++) {
 			int[] modifiers = playersData[i].auras.getModifiers();
 			Iterator<Unit> j = field.provideIteratorForSide(i);
-			while(j.hasNext()) {
+			while(j.hasNext()) { // Iteration 1: calculate aura-modifiers, remove dead units
 				Unit u = j.next();
 				u.modDmg = modifiers[1];
 				u.modHealth = modifiers[2];
 				if(u.isDead()) {
 					informAll(u.myCard.name + " is dead");
-					//field.removeUnitOfPlayer(u, i);
 					j.remove();
 					u.respondToEvent(TriggeringCondition.OnDeath, null);
 					field.passEventAboutRemovedUnitFromSide(u.myPlayer, u, 
@@ -351,8 +350,13 @@ public class Game {
 						recalculateFieldModifiers();
 						return;
 					}
-					j = field.provideIteratorForSide(i);
+					j = field.provideIteratorForSide(i); // to avoid deathrate-summonUnits-exception
 				}
+			}
+			j = field.provideIteratorForSide(i);
+			while(j.hasNext()) { // Iteration 2: trigger UnitPowers with condition "always"
+				Unit u = j.next();
+				u.respondToEvent(TriggeringCondition.Always, null);
 			}
 		}
 	}

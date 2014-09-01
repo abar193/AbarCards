@@ -1,8 +1,13 @@
 package units;
 
+/**
+ * Enum, describing when should UnitPowers be triggered.
+ * @author Abar
+ *
+ */
 public enum TriggeringCondition {
 	OnCreate, OnTurnStart, OnTurnEnd, OnDamage, OnAllySpawn, OnAllyDamage, OnDeath,
-	OnAllyDeath;
+	OnAllyDeath, Always;
 	
 	public static TriggeringCondition fromString(String c) {
 		switch(c) {
@@ -22,6 +27,8 @@ public enum TriggeringCondition {
 			return OnDeath;
 		case "OnAllyDeath":
 			return OnAllyDeath;
+		case "Always":
+			return Always;
 		default: 
 			return null;
 		}

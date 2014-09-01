@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Deck>
-	<Unit Name="Smart Lamp" Description="" Damage="0" Health="1" Cost="1" Class="Machine">
-		<Aura type="1" value="1"/>
+	<Unit Name="Smart Lamp" Description="" Damage="1" Health="1" Cost="1" Class="Machine">
 		<Fulldesc txt="Aura +1 dmg for all units" />
+		<Power condition="Always">
+			<TargedetSpell targeter="all" acept="0">
+				<Filter type="ClassEquals" v="Machine"/>
+				<Filter type="NotSelf"/>
+				<BuffSpell>
+					<Buff type="ModDmg" v="1"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
 	</Unit>
 	<Unit Name="Cyborg" Description="+2/2+Taunt" Damage="4" Health="3" Cost="4">
 		<Fulldesc txt="Gives machine +2/+2 and Taunt on spawn"/>
@@ -15,6 +23,9 @@
 					</BuffSpell>
 					<BuffSpell>
 						<Buff type="AddDamage" v="2"/>
+					</BuffSpell>
+					<BuffSpell>
+						<Buff type="AddQuality" v="4"/>
 					</BuffSpell>
 				</SpellContainer>
 			</TargedetSpell>
@@ -44,7 +55,7 @@
 	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="4" Class="Machine">
 		<Qualities v="8"/>
 	</Unit>	
-	<Unit Name="Spambot" Description="" Damage="6" Health="5" Cost="6" Class="Machine">
+	<Unit Name="Spambot" Description="" Damage="6" Health="2" Cost="2" Class="Machine">
 		<Fulldesc txt="Summon 2x2/2 spammers on death"/>
 		<Power condition="OnDeath">
 			<CreateUnitSpell count="2" side="0">

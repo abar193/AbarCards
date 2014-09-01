@@ -6,7 +6,8 @@ package effects;
  *
  */
 public enum BuffType {
-	AddHealth, AddDamage, AddQuality, Silence, HealthSetTo, DamageSetTo, Hurt, Heal, Kill;
+	AddHealth, AddDamage, AddQuality, Silence, HealthSetTo, DamageSetTo, Hurt, Heal, Kill,
+	ModDmg, ModHealth;
 	
 	public static BuffType fromString(String s) {
 		switch (s) {
@@ -28,6 +29,10 @@ public enum BuffType {
 			return Heal;
 		case "Kill":
 			return Kill;
+		case "ModDmg":
+			return ModDmg;
+		case "ModHealth":
+			return ModHealth;
 		default:
 			System.out.println("Error! Unknown buff: " + s);
 			break;
