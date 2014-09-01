@@ -15,6 +15,8 @@ import java.util.Iterator;
 import decks.DeckPackReader;
 import players.*;
 
+// TODO: CreateUnitSpell should call events
+// TODO: Pull Card spell should call "Lost X Card" 
 
 
 /**
@@ -327,7 +329,7 @@ public class Game {
 	/**
 	 * Calculates cost- and health-modifiers based on players auras, and applies them to units.
 	 */
-	public void recalculateFieldModifiers() {
+	public synchronized void recalculateFieldModifiers() {
 		playersData[0].auras.calculateModifiers();
 		playersData[1].auras.calculateModifiers();
 		
@@ -341,13 +343,15 @@ public class Game {
 				if(u.isDead()) {
 					informAll(u.myCard.name + " is dead");
 					//field.removeUnitOfPlayer(u, i);
-					u.respondToEvent(TriggeringCondition.OnDeath, null);
-					passEventAboutUnit(u, TriggeringCondition.OnAllyDeath);
 					j.remove();
+					u.respondToEvent(TriggeringCondition.OnDeath, null);
+					field.passEventAboutRemovedUnitFromSide(u.myPlayer, u, 
+							TriggeringCondition.OnAllyDeath);
 					if(playersData[i].auras.unitDies(u)) { 
 						recalculateFieldModifiers();
 						return;
 					}
+					j = field.provideIteratorForSide(i);
 				}
 			}
 		}

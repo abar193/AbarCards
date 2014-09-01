@@ -221,6 +221,16 @@ public class FieldSituation {
 		}
 	}
 	
+	public void passEventAboutRemovedUnitFromSide(int side, Unit u, TriggeringCondition e) {
+		ArrayList<Unit> army = playerUnits.get(side);
+		
+		if(army != null) {
+			for(Unit i : army) {
+				i.respondToEvent(e, u);	
+			}
+		}
+	} 
+	
 	/**
 	 * Removes unit u of player p.
 	 * @return true if unit has been found and removed
