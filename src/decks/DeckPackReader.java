@@ -90,10 +90,14 @@ public class DeckPackReader extends DefaultHandler {
     			spell = sc;
     		}
     	} else if(localName.contains("Filter")) {
-    		if(power != null)
-    			power.filter = spellBuilder.reciveOpenFilterTag(localName, atts);
-    		else 
-    			System.out.println("Error with tag 'filter'");
+    		if(power != null) {
+    			units.UnitFilter f = spellBuilder.reciveOpenFilterTag(localName, atts); 
+    			if(f != null)
+    				power.filter = f;
+    		} else {
+    			if(spellBuilder.reciveOpenFilterTag(localName, atts) != null)
+    				System.out.println("Error with tag 'filter'");
+    		}
     	} else if(localName.contains("Power")) {
     		power = spellBuilder.reciveOpenPowerTag(localName, atts);
     	} else if(localName.equals("Qualities")) {

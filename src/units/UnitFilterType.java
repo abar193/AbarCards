@@ -16,6 +16,7 @@ public enum UnitFilterType {
 		case "DamageLess":
 			return DamageLess;
 		default:
+			System.out.println("Unknown filter: " + s);
 			return null;
 		}
 	}

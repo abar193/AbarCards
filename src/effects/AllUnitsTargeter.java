@@ -14,29 +14,31 @@ public class AllUnitsTargeter implements Targeter {
 	
 	int acceptablePlayers;
 	boolean aceptHeroes;
+	boolean excludeSelf;
 	UnitFilter filter;
 	
 	public AllUnitsTargeter(int aceptPlayers, boolean aceptHeroes) {
 		this.acceptablePlayers = aceptPlayers;
 		this.aceptHeroes = aceptHeroes;
+		excludeSelf = false; 
 	}
 
 	@Override
 	public ArrayList<Unit> selectTargets(int p, Unit u) {
 		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
-			if(filter == null) {
-				return fs.allUnitFromOneSide((acceptablePlayers + p) % 2, aceptHeroes);
-			} else {
-				return fs.getUnitsMatchingFilter((acceptablePlayers + p) % 2, filter,
-						aceptHeroes);
-			}
+			ArrayList<Unit> tmp = (filter == null) ? fs.allUnitFromOneSide((acceptablePlayers + p)
+					% 2, aceptHeroes) :
+				fs.getUnitsMatchingFilter((acceptablePlayers + p) % 2, filter, aceptHeroes);
+			if(excludeSelf) tmp.remove(u);
+			return tmp;
 		} else {
-			if(filter == null) {
-				return fs.allUnits(aceptHeroes); 
-			} else {
-				return fs.getUnitsMatchingFilter(-1, filter, aceptHeroes);
-			}
+			ArrayList<Unit> tmp = (filter == null) ? fs.allUnits(aceptHeroes) :
+				fs.getUnitsMatchingFilter(-1, filter, aceptHeroes);
+			
+			if(excludeSelf) tmp.remove(u);
+			
+			return tmp;
 		}
 	}
 	

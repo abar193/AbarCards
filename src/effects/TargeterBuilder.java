@@ -36,8 +36,12 @@ public class TargeterBuilder {
 		case "all": {
 			int acept = Integer.parseInt(att.getValue("acept"));
 			boolean aceptHero = (att.getValue("hero") == null) ? false : 
-				att.getValue("hero").equals("1");
-			return new AllUnitsTargeter(acept, aceptHero);
+				att.getValue("hero").equals("1"); 
+			boolean excludeSelf = (att.getValue("excludeSelf") == null) ? false : 
+				att.getValue("excludeSelf").equals("1");
+			AllUnitsTargeter tmp = new AllUnitsTargeter(acept, aceptHero);
+			tmp.excludeSelf = excludeSelf;
+			return tmp;
 		}
 		default: 
 			return null;

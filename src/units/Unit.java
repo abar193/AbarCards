@@ -252,7 +252,14 @@ public class Unit {
 		case Kill:
 			damage(getCurrentHealth());
 			break;
+		case ModDmg:
+			modDmg += b.value;
+			break;
+		case ModHealth:
+			modHealth += b.value;
+			break;
 		default:
+			System.out.println("Unknown buff" + b.type.toString());
 			break;
 			
 		}
@@ -274,9 +281,10 @@ public class Unit {
 				src.Game.currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
 		}
 		for(UnitPower p : powersMatchingCondition(e)) {
-			if(p.filter == null || otherU.matchesFilter(p.filter)) { 
-				src.Game.currentGame.informAll(String.format("%s invokes his power", 
-						myCard.name));
+			if(p.filter == null || otherU.matchesFilter(p.filter)) {
+				if(e != TriggeringCondition.Always)
+					src.Game.currentGame.informAll(String.format("%s invokes his power", 
+							myCard.name));
 				p.exequte(this, myPlayer);
 			}
 		}

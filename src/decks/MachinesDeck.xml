@@ -3,9 +3,8 @@
 	<Unit Name="Smart Lamp" Description="" Damage="1" Health="1" Cost="1" Class="Machine">
 		<Fulldesc txt="Aura +1 dmg for all units" />
 		<Power condition="Always">
-			<TargedetSpell targeter="all" acept="0">
+			<TargedetSpell targeter="all" acept="0" excludeSelf="1">
 				<Filter type="ClassEquals" v="Machine"/>
-				<Filter type="NotSelf"/>
 				<BuffSpell>
 					<Buff type="ModDmg" v="1"/>
 				</BuffSpell>
@@ -52,8 +51,15 @@
 			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
 		</Power>
 	</Unit>
-	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="4" Class="Machine">
-		<Qualities v="8"/>
+	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="2" Class="Machine">
+		<Power condition="Always">
+			<TargedetSpell targeter="all" acept="0">
+				<Filter type="ClassEquals" v="Machine"/>
+				<BuffSpell>
+					<Buff type="AddQuality" v="8"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
 	</Unit>	
 	<Unit Name="Spambot" Description="" Damage="6" Health="2" Cost="2" Class="Machine">
 		<Fulldesc txt="Summon 2x2/2 spammers on death"/>
