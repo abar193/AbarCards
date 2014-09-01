@@ -3,6 +3,7 @@ package effects;
 import java.util.ArrayList;
 
 import units.Unit;
+import units.UnitFilter;
 import src.Game;
 import src.FieldSituation;
 
@@ -27,5 +28,11 @@ public class NeighborTargeter implements Targeter {
 	public boolean hasTargets(int player, Unit u) {
 		return Game.currentGame.provideFieldSituation().neighborUnit(offset, u) != null;
 	}
+	
+	@Override
+	public void setFilter(UnitFilter f) {
+		System.out.println("Not implemented!");
+	}
+
 
 }

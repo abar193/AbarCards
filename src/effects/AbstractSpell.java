@@ -1,6 +1,7 @@
 package effects;
 
 import units.Unit;
+import units.UnitFilter;
 
 /**
  * Parent of all spell effects. Used in spells from cards, or 
@@ -14,6 +15,7 @@ public abstract class AbstractSpell {
 
 	public Unit target;
 	int playerNum;
+	private UnitFilter filter;
 	
 	public AbstractSpell() {
 	}
@@ -27,5 +29,9 @@ public abstract class AbstractSpell {
 	 * Executes spell. 
 	 */
 	public abstract void exequte(int player);
+	
+	public void setFilter(UnitFilter f) {
+		filter = f;
+	}
 
 }

@@ -4,6 +4,8 @@ import effects.AbstractSpell;
 
 public class UnitPower {
 
+	public UnitFilter filter;
+	
 	private TriggeringCondition tc;
 	private AbstractSpell spell;
 	

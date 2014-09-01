@@ -5,7 +5,30 @@ import cards.UnitCard;
 import java.util.Stack;
 import java.util.ArrayList;
 
+/**
+ * Represents single unit from battelfield. 
+ * Each unit should be initialised with UnitCard, from witch base stats like health or 
+ * damage should come. 
+ * 
+ * After initialising stats may be modified by applying BuffSpell on unit via applyBuff() method 
+ * or heal(), damage().
+ *  
+ * Each unit may have some combnation of qualities. For now there are 4:
+ * Windfury - unit may attack twice a turn;
+ * Stealth - unit may not be targeted. Unit looses this quaity after first attack he makes;
+ * Taunt - enemy units have to attack this unit;
+ * Charge - unit may attack from the moment he spawned.
+ * 
+ * Each unit may also poses some "powers". Power is a spell, triggered by event from enum {@link TriggeringCondition}.
+ * If a certain event (like "AllySpawn") occurs, respondToEvent() method of each unit should be called. 
+ * If that unit has corresponding power (usually unit may have only 1 power, but there's room for more)
+ *   he will call power's execute method passing himself and myPlayer as parameters.
+ *   
+ * @author Abar
+ *
+ */
 public class Unit {
+	/** Enum for qualities unit may have. They are stored in int value  */
 	public enum Quality {
 		Windfury(1), Stealth(2), Taunt(4), Charge(8);
 		private final int value;
@@ -20,19 +43,22 @@ public class Unit {
 	}
 	
 	public UnitCard myCard;
-	public int modDmg, modHealth;
 	
-	protected int currentHealth;
-	private int currentDamage;
-	protected int maxHealth;
-	private int qualities = 0;
+	public int modDmg, modHealth;
 	public int myPlayer;
 	
-	private ArrayList<UnitPower> powers;
+	protected int currentHealth;
+	protected int maxHealth;
 	
-	private boolean canAttack;
+	private int currentDamage;
+	private int qualities = 0;
 	private int attackedAlready;
 	
+	private ArrayList<UnitPower> powers;
+	private boolean canAttack;
+	
+	
+	/* Initialisation */
 	public Unit(UnitCard card, int player) {
 		currentHealth = card.getHealth();
 		maxHealth = currentHealth;
@@ -71,17 +97,34 @@ public class Unit {
 		powers.add(p);
 	}
 	
+	/* Interaction */ 
 	public void startTurn() {
-		this.respondToEvent(TriggeringCondition.OnTurnStart);
+		canAttack = true;
+		attackedAlready = 0;
+		this.respondToEvent(TriggeringCondition.OnTurnStart, this);
 	}
 	
 	public void endTurn() {
-		canAttack = true;
-		attackedAlready = 0;
-		this.respondToEvent(TriggeringCondition.OnTurnEnd);
+		this.respondToEvent(TriggeringCondition.OnTurnEnd, this);
 	}
 	
+	public void attackUnit(Unit u) {
+		if(canAttack()) {
+			if(u != null) {
+				int td = u.getCurrentDamage();
+				int md = getCurrentDamage();
+				u.damage(md);
+				damage(td);
+			}
+			
+			if(hasQuality(Quality.Stealth)) {
+				removeQuality(Quality.Stealth);
+			}
+			attackedAlready++;
+		}
+	}
 	
+	/* Status */
 	public boolean canAttack() {
 		return (getCurrentDamage() > 0) & (canAttack | hasQuality(Quality.Charge)) & 
 				(attackedAlready <= (qualities & 1)); 
@@ -95,16 +138,37 @@ public class Unit {
 		return currentDamage + modDmg;
 	}
 	
+	public boolean isDead() {
+		return currentHealth <= 0;
+	}
+	
+	public boolean matchesFilter(UnitFilter f) {
+		if(f == null) return true;
+		
+		int value;
+		try {
+			value = Integer.parseInt(f.value);
+		} catch (NumberFormatException e) {
+			value = 0;
+		}
+		
+		switch(f.type) {
+			case ClassEquals:
+				return f.value.equals(myCard.cardClass);
+			case DamageLess:
+				return getCurrentDamage() < value;
+			case DamageMore:
+				return getCurrentDamage() > value;
+			case HealthLess:
+				return getCurrentHealth() < value;
+			case HealthMore:
+				return getCurrentHealth() > value;
+		}
+		return false;
+	}
+	
 	public boolean hasQuality(Quality q) {
 		return (qualities & q.getValue()) != 0;
-	}
-	
-	public void setQuality(Quality q) {
-		qualities |= q.getValue();
-	}
-	
-	public void setQuality(int i) {
-		qualities |= i;
 	}
 	
 	public String descriptionString() {
@@ -121,6 +185,15 @@ public class Unit {
 
 	}
 	
+	/* Input */
+	public void setQuality(Quality q) {
+		qualities |= q.getValue();
+	}
+	
+	public void setQuality(int i) {
+		qualities |= i;
+	}
+	
 	/**
 	 * Applies damage to unit. Method calls OnDamage event.
 	 * @param d
@@ -130,7 +203,7 @@ public class Unit {
 		if(src.Game.currentGame != null)
 			src.Game.currentGame.informAll(String.format("%s takes %d damage", 
 				myCard.name, d));
-		this.respondToEvent(TriggeringCondition.OnDamage);
+		this.respondToEvent(TriggeringCondition.OnDamage, this);
 	}
 	
 	/**
@@ -139,10 +212,6 @@ public class Unit {
 	 */
 	public void heal(int v) {
 		currentHealth = Math.min(currentHealth + v, maxHealth);
-	}
-	
-	public boolean isDead() {
-		return currentHealth <= 0;
 	}
 	
 	public void removeQuality(Quality q) {
@@ -189,24 +258,7 @@ public class Unit {
 		}
 	}
 	
-	public void attackUnit(Unit u) {
-		if(canAttack()) {
-			if(u != null) {
-				int td = u.getCurrentDamage();
-				int md = getCurrentDamage();
-				u.damage(md);
-				damage(td);
-			}
-			
-			if(hasQuality(Quality.Stealth)) {
-				removeQuality(Quality.Stealth);
-			}
-			attackedAlready++;
-		}
-	}
-	
-	/*  EVENTS   */
-	
+	/* Events */
 	public Stack<UnitPower> powersMatchingCondition(TriggeringCondition c) {
 		Stack<UnitPower> s = new Stack<UnitPower>();
 		for(UnitPower p : powers) {
@@ -216,15 +268,17 @@ public class Unit {
 		return s;
 	}
 	
-	public void respondToEvent(TriggeringCondition e) {
+	public void respondToEvent(TriggeringCondition e, Unit otherU) {
 		if(e == TriggeringCondition.OnDamage) {
 			if(src.Game.currentGame != null)
 				src.Game.currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
 		}
 		for(UnitPower p : powersMatchingCondition(e)) {
-			src.Game.currentGame.informAll(String.format("%s invokes his power", 
-					myCard.name));
-			p.exequte(this, myPlayer);
+			if(p.filter == null || otherU.matchesFilter(p.filter)) { 
+				src.Game.currentGame.informAll(String.format("%s invokes his power", 
+						myCard.name));
+				p.exequte(this, myPlayer);
+			}
 		}
 	}
 }

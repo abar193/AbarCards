@@ -3,6 +3,7 @@ package effects;
 import java.util.ArrayList;
 
 import units.Unit;
+import units.UnitFilter;
 
 /**
  * Targeters are used with TargedetSpells to choose targets. 
@@ -11,6 +12,8 @@ import units.Unit;
  * @author Abar
  */
 public interface Targeter {
+	
+	public void setFilter(UnitFilter f);
 	/**
 	 * Selects target units and returns them as array. 
 	 * @param player player's number, who activated spell

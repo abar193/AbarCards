@@ -9,6 +9,8 @@ import effects.*;
 import cards.SpellCard;
 
 import units.UnitPower;
+import units.UnitFilter;
+import units.UnitFilterType;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,18 @@ public class SpellXMLBuilder {
 			return new UnitPower(units.TriggeringCondition.
 					fromString(att.getValue("condition")));
 		} else return null;
+	}
+	
+	public UnitFilter reciveOpenFilterTag(String tag, Attributes att) {
+		if(tag.equals("Filter")) {
+			UnitFilter filt = new UnitFilter(att.getValue("type"), att.getValue("v"));
+			if(stack.size() == 0) return filt;
+			else {
+				AbstractSpell s = stack.peek();
+				s.setFilter(filt);
+			}
+		}
+		return null;
 	}
 	
 	public SpellCard reciveOpenTag(String tag, Attributes att) {

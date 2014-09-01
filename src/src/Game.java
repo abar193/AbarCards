@@ -72,10 +72,6 @@ public class Game {
 		p2.setParentGame(this);
 	}
 	
-	/** Used only for test games now */
-	private ArrayList<BasicCard> generateTestArrayList() {
-		return null;
-	}
 	
 	/** Launches the game */
 	public void play(PlayerInterface p1, PlayerInterface p2, Deck d1, Deck d2, int h1, int h2) {
@@ -205,7 +201,7 @@ public class Game {
 		attacker.attackUnit(target);
 		if(target.isDead()) {
 			informAll(target.myCard.name + " is dead");
-			target.respondToEvent(TriggeringCondition.OnDeath);
+			target.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
 			field.removeUnitOfPlayer(target, target.myPlayer);
 			if(playersData[target.myPlayer].auras.unitDies(target)) 
@@ -213,7 +209,7 @@ public class Game {
 		}
 		if(attacker.isDead()) {
 			informAll(attacker.myCard.name + " is dead"); 
-			attacker.respondToEvent(TriggeringCondition.OnDeath);
+			attacker.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
 			field.removeUnitOfPlayer(attacker, attacker.myPlayer);
 			if(playersData[attacker.myPlayer].auras.unitDies(attacker)) 
@@ -285,7 +281,7 @@ public class Game {
 				} catch (IllegalArgumentException e) {
 					players.get(player).reciveAction("Can't add that");
 				}
-				u.respondToEvent(TriggeringCondition.OnCreate);
+				u.respondToEvent(TriggeringCondition.OnCreate, null);
 				this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
 
 			} else if (c.type == CardType.Spell) {
@@ -345,7 +341,7 @@ public class Game {
 				if(u.isDead()) {
 					informAll(u.myCard.name + " is dead");
 					//field.removeUnitOfPlayer(u, i);
-					u.respondToEvent(TriggeringCondition.OnDeath);
+					u.respondToEvent(TriggeringCondition.OnDeath, null);
 					passEventAboutUnit(u, TriggeringCondition.OnAllyDeath);
 					j.remove();
 					if(playersData[i].auras.unitDies(u)) { 

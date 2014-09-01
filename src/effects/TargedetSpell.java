@@ -3,6 +3,7 @@ package effects;
 import java.util.ArrayList;
 
 import units.Unit;
+import units.UnitFilter;
 
 public class TargedetSpell extends AbstractSpell {
 
@@ -29,6 +30,12 @@ public class TargedetSpell extends AbstractSpell {
 				spell.exequte(playerNum);
 			}
 		}
+	}
+	
+	@Override
+	public void setFilter(UnitFilter f) {
+		targeter.setFilter(f);
+		super.setFilter(f);
 	}
 
 }

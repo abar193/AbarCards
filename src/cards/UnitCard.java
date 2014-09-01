@@ -13,6 +13,7 @@ public class UnitCard extends BasicCard {
 	public AuraEffect[] auraEffects; 
 	public units.UnitPower power = null;
 	public int qualities;
+	public String cardClass;
 	
 	public UnitCard(int damage, int health, int cost, String name, String desc) {
 		super(name, desc, cost);

@@ -76,6 +76,9 @@ public class DeckPackReader extends DefaultHandler {
     		} else {
     			tmp = new UnitCard(dmg, health, cost, n, d);
     		}
+    		
+    		tmp.cardClass = atts.getValue("Class");
+    		
     		if(localName.equals("Unit")) {
     			unit = tmp;
     		} else {
@@ -86,6 +89,11 @@ public class DeckPackReader extends DefaultHandler {
     		if(sc != null) {
     			spell = sc;
     		}
+    	} else if(localName.contains("Filter")) {
+    		if(power != null)
+    			power.filter = spellBuilder.reciveOpenFilterTag(localName, atts);
+    		else 
+    			System.out.println("Error with tag 'filter'");
     	} else if(localName.contains("Power")) {
     		power = spellBuilder.reciveOpenPowerTag(localName, atts);
     	} else if(localName.equals("Qualities")) {
@@ -177,7 +185,7 @@ public class DeckPackReader extends DefaultHandler {
 	public static void main(String[] args) throws Exception {
         
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("NeutralsDeck.xml");
+		ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml");
 		for(BasicCard c : bc) {
 			System.out.format("%s %s %d\n", c.name, c.fullDescription, c.cost);
 		}

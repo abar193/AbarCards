@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import units.TriggeringCondition;
 import units.Unit;
+import units.UnitFilter;
 
 /**
  * Stores information about "field" with units and buildings.
@@ -103,6 +104,40 @@ public class FieldSituation {
 		return al;
 	}
 	
+	/** 
+	 * Counts units matching specific filter
+	 * @param player -1 for both players, or 0-1 for player number
+	 * @param f filter to be used
+	 * @param includeHero should heroes be included?
+	 * @return count of matching units
+	 */
+	public int countUnitsMatchingFilter(int player, UnitFilter f, boolean includeHero) {
+		int matches = 0;
+		ArrayList<Unit> units = (player == -1) ? allUnits(includeHero) : allUnitFromOneSide(player, includeHero);
+		for(Unit u : units) {
+			if(u.matchesFilter(f)) matches++;
+		}
+		return matches;
+	}
+	
+	/**
+	 * Gets units matching specific filter
+	 * @param player -1 for both players, or 0-1 for player number
+	 * @param f filter to be used
+	 * @param includeHero should heroes be included?
+	 * @return list of units matching filter
+	 */
+	public ArrayList<Unit> getUnitsMatchingFilter(int player, UnitFilter f, boolean includeHero) {
+		ArrayList<Unit> units = (player == -1) ? 
+				allUnits(includeHero) : allUnitFromOneSide(player, includeHero);
+		Iterator<Unit> i = units.iterator();
+		while(i.hasNext()) {
+			Unit u = i.next();
+			if(!u.matchesFilter(f)) i.remove();
+		}
+		return units;
+	}
+	
 	/**
 	 * Returns all units from one players side */
 	public ArrayList<Unit> allUnitFromOneSide(int player, boolean includeHero) {
@@ -180,7 +215,7 @@ public class FieldSituation {
 		if(side != null) {
 			for(Unit i : side) {
 				if(!i.equals(u)) {
-					i.respondToEvent(e);
+					i.respondToEvent(e, u);
 				}
 			}
 		}

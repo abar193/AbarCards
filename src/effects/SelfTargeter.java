@@ -3,6 +3,7 @@ package effects;
 import java.util.ArrayList;
 
 import units.Unit;
+import units.UnitFilter;
 
 public class SelfTargeter implements Targeter {
 
@@ -20,6 +21,11 @@ public class SelfTargeter implements Targeter {
 	@Override
 	public boolean hasTargets(int player, Unit u) {
 		return u != null;
+	}
+
+	@Override
+	public void setFilter(UnitFilter f) {
+		System.out.println("Really?");
 	}
 
 }

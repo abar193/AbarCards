@@ -2,8 +2,8 @@ package effects;
 
 import src.FieldSituation;
 import src.Game;
-
 import units.Unit;
+import units.UnitFilter;
 
 import java.util.Random;
 import java.util.ArrayList;
@@ -81,6 +81,11 @@ public class RandomTargeter implements Targeter {
 			return fs.allUnits(aceptHeroes).size() > 0;
 		else 
 			return fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes).size() > 0;
+	}
+
+	@Override
+	public void setFilter(UnitFilter f) {
+		System.out.println("Not implemented!");
 	}
 
 }
