@@ -1,5 +1,5 @@
 package effects;
-// TODO: fix R-Hit
+
 import src.FieldSituation;
 import src.Game;
 import units.Unit;

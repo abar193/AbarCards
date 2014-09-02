@@ -1,8 +1,5 @@
 package src;
 
-// TODO: Extra drawing on start
-// TODO: Read cards with spaces
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -196,7 +193,7 @@ public class DeckBuilder {
 		int start = 0;
 		String s = "";
 		Scanner input = new Scanner(System.in);
-
+		s = input.nextLine(); // skip first user's enter from "ChooseYourHero" part
 		while(!s.equals("z")) {
 			drawCards(fullDeck, start);
 			s = input.nextLine();
@@ -279,7 +276,10 @@ public class DeckBuilder {
 		          new FileInputStream(file), "utf-8"));
 		    String s;
 		    while((s = reader.readLine()) != null) {
-		    	String[] splits = s.split(" ");
+		    	String[] splits = new String[2];
+		    	int lastpost = s.lastIndexOf(" ");
+		    	splits[0] = s.substring(0, lastpost);
+		    	splits[1] = s.substring(lastpost + 1);
 		    	try{ 
 		    		int cost = Integer.parseInt(splits[1]);
 		    		for(BasicCard c : fullDeck) {
