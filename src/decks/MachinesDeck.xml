@@ -56,7 +56,7 @@
 			<TargedetSpell targeter="all" acept="0">
 				<Filter type="ClassEquals" v="Machine"/>
 				<BuffSpell>
-					<Buff type="AddQuality" v="8"/>
+					<Buff type="ModQuality" v="8"/>
 				</BuffSpell>
 			</TargedetSpell>
 		</Power>

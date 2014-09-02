@@ -354,6 +354,7 @@ public class Game {
 				Unit u = j.next();
 				u.modDmg = modifiers[1];
 				u.modHealth = modifiers[2];
+				u.modQualities = 0;
 				if(u.isDead()) {
 					informAll(u.myCard.name + " is dead");
 					j.remove();

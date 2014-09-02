@@ -44,7 +44,7 @@ public class Unit {
 	
 	public UnitCard myCard;
 	
-	public int modDmg, modHealth;
+	public int modDmg, modHealth, modQualities;
 	public int myPlayer;
 	
 	protected int currentHealth;
@@ -168,7 +168,7 @@ public class Unit {
 	}
 	
 	public boolean hasQuality(Quality q) {
-		return (qualities & q.getValue()) != 0;
+		return ((qualities | modQualities) & q.getValue()) != 0;
 	}
 	
 	public String descriptionString() {
@@ -258,6 +258,8 @@ public class Unit {
 			case ModHealth:
 				modHealth += b.value;
 				break;
+			case ModQuality:
+				modQualities |= b.value;
 			default:
 				System.out.println("Unknown buff" + b.type.toString());
 				break;
