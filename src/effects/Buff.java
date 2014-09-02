@@ -15,6 +15,12 @@ public class Buff {
 		svalue = v;
 	}
 	
+	// For tests
+	public Buff(BuffType bt, int v) {
+		type = bt;
+		value = v;
+	}
+	
 	public Buff(String s, String v) {
 		type = BuffType.fromString(s);
 		svalue = v;

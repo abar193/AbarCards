@@ -41,16 +41,16 @@ public class TestUnit {
 		
 		assertEquals(5, u.getCurrentDamage());
 		assertEquals(4, u.getCurrentHealth());
-		u.applyBuff(new effects.Buff(effects.BuffType.AddDamage, "5"));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddDamage, 5));
 		assertEquals(10, u.getCurrentDamage());
-		u.applyBuff(new effects.Buff(effects.BuffType.AddHealth, "2"));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddHealth, 2));
 		assertEquals(u.getCurrentHealth(), 6);
-		u.applyBuff(new effects.Buff(effects.BuffType.AddDamage, "-1"));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddDamage, -1));
 		assertEquals(u.getCurrentDamage(), 9);
-		u.applyBuff(new effects.Buff(effects.BuffType.AddHealth, "-3"));
+		u.applyBuff(new effects.Buff(effects.BuffType.AddHealth, -3));
 		assertEquals(u.getCurrentHealth(), 3);
 		
-		u.applyBuff(new effects.Buff(effects.BuffType.Silence, "0"));
+		u.applyBuff(new effects.Buff(effects.BuffType.Silence, 0));
 		assertEquals(false, u.hasQuality(Quality.Windfury));
 		assertEquals(false, u.hasQuality(Quality.Charge));
 		assertEquals(false, u.hasQuality(Quality.Stealth));
@@ -63,9 +63,9 @@ public class TestUnit {
 	public void testNewBuffs() {
 		UnitCard uc = new UnitCard(1, 2, 3, "", "");
 		Unit u = new Unit(uc, 0);
-		u.applyBuff(new effects.Buff(effects.BuffType.DamageSetTo, "15"));
+		u.applyBuff(new effects.Buff(effects.BuffType.DamageSetTo, 15));
 		assertEquals(15, u.getCurrentDamage());
-		u.applyBuff(new effects.Buff(effects.BuffType.HealthSetTo, "7"));
+		u.applyBuff(new effects.Buff(effects.BuffType.HealthSetTo, 7));
 		assertEquals(7, u.getCurrentHealth());
 	}
 	
