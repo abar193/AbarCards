@@ -7,7 +7,7 @@ package units;
  */
 public enum TriggeringCondition {
 	OnCreate, OnTurnStart, OnTurnEnd, OnDamage, OnAllySpawn, OnAllyDamage, OnDeath,
-	OnAllyDeath, Always;
+	OnAllyDeath, BeforeCreate, Always;
 	
 	public static TriggeringCondition fromString(String c) {
 		switch(c) {
@@ -29,7 +29,10 @@ public enum TriggeringCondition {
 			return OnAllyDeath;
 		case "Always":
 			return Always;
+		case "BeforeCreate":
+			return BeforeCreate;
 		default: 
+			System.out.println("Unknown condition " + c);
 			return null;
 		}
 	}

@@ -7,15 +7,16 @@ package effects;
  */
 public class Buff {
 	public BuffType type;
+	public String svalue;
 	public int value;
 	
-	public Buff(BuffType bt, int v) {
+	public Buff(BuffType bt, String v) {
 		type = bt;
-		value = v;
+		svalue = v;
 	}
 	
-	public Buff(String s, int v) {
+	public Buff(String s, String v) {
 		type = BuffType.fromString(s);
-		value = v;
+		svalue = v;
 	}
 }

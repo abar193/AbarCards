@@ -220,47 +220,47 @@ public class Unit {
 	
 	public void applyBuff(effects.Buff b) {
 		switch (b.type) {
-		case AddDamage:
-			currentDamage += b.value;
-			break;
-		case AddHealth:
-			currentHealth += b.value;
-			maxHealth += b.value;
-			break;
-		case AddQuality:
-			setQuality(b.value);
-			break;
-		case Silence:
-			currentHealth = Math.min(myCard.getHealth(), currentHealth);
-			maxHealth = myCard.getHealth();
-			currentDamage = myCard.getDamage();
-			powers = new ArrayList<UnitPower>();
-			qualities = 0;
-			break;
-		case DamageSetTo:
-			currentDamage = b.value;
-			break;
-		case HealthSetTo:
-			currentHealth = b.value;
-			break;
-		case Hurt: 
-			damage(b.value);
-			break;
-		case Heal:
-			heal(b.value);
-			break;
-		case Kill:
-			damage(getCurrentHealth());
-			break;
-		case ModDmg:
-			modDmg += b.value;
-			break;
-		case ModHealth:
-			modHealth += b.value;
-			break;
-		default:
-			System.out.println("Unknown buff" + b.type.toString());
-			break;
+			case AddDamage:
+				currentDamage += b.value;
+				break;
+			case AddHealth:
+				currentHealth += b.value;
+				maxHealth += b.value;
+				break;
+			case AddQuality:
+				setQuality(b.value);
+				break;
+			case Silence:
+				currentHealth = Math.min(myCard.getHealth(), currentHealth);
+				maxHealth = myCard.getHealth();
+				currentDamage = myCard.getDamage();
+				powers = new ArrayList<UnitPower>();
+				qualities = 0;
+				break;
+			case DamageSetTo:
+				currentDamage = b.value;
+				break;
+			case HealthSetTo:
+				currentHealth = b.value;
+				break;
+			case Hurt: 
+				damage(b.value);
+				break;
+			case Heal:
+				heal(b.value);
+				break;
+			case Kill:
+				damage(getCurrentHealth());
+				break;
+			case ModDmg:
+				modDmg += b.value;
+				break;
+			case ModHealth:
+				modHealth += b.value;
+				break;
+			default:
+				System.out.println("Unknown buff" + b.type.toString());
+				break;
 			
 		}
 	}

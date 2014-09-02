@@ -268,7 +268,10 @@ public class Game {
 	public boolean createUnit(UnitCard uc, int player) {
 		Unit u = factory.createUnit(uc, player);
 		try {
-			field.addUnit(u, player);
+			if(field.canUnitBeAdded(u, player)) {
+				u.respondToEvent(TriggeringCondition.BeforeCreate, null);
+				field.addUnit(u, player);
+			}
 		} catch (IllegalArgumentException e) {
 			return false;
 		}

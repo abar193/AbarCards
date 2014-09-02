@@ -29,7 +29,7 @@ public class TestSpellEffects {
 	 
 	@Test
 	public void testAll() {
-		BuffSpell bs = new BuffSpell(new Buff(BuffType.Hurt, 1));
+		BuffSpell bs = new BuffSpell(new Buff(BuffType.Hurt, "1"));
 		TargedetSpell ts = new TargedetSpell(new effects.AllUnitsTargeter(1, false), bs);
 		ts.exequte(1);
 		for(int i = 0; i < 5; i++) {
@@ -39,8 +39,8 @@ public class TestSpellEffects {
 	
 	@Test
 	public void testSpellContainer() {
-		BuffSpell bs0 = new BuffSpell(new Buff(BuffType.AddHealth, 1));
-		BuffSpell bs1 = new BuffSpell(new Buff(BuffType.AddQuality, Quality.Taunt.getValue()));
+		BuffSpell bs0 = new BuffSpell(new Buff(BuffType.AddHealth, "1"));
+		BuffSpell bs1 = new BuffSpell(new Buff(BuffType.AddQuality, Integer.toString(Quality.Taunt.getValue())));
 		SpellContainer sc = new SpellContainer(bs0);
 		sc.add(bs1);
 		TargedetSpell ts = new TargedetSpell(new effects.AllUnitsTargeter(0, false), sc);

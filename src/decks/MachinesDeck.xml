@@ -41,7 +41,7 @@
 				<BuffSpell>
 					<Buff type="AddDamage" v="2"/>
 				</BuffSpell>
-				</SpellContainer>
+			</SpellContainer>
 		</Power>
 	</Unit>
 	<Unit Name="Provider" Description="1 card" Damage="2" Health="1" Cost="2" Class="Machine">
@@ -73,6 +73,14 @@
 	<Unit Name="G-Car" Description="C" Damage="8" Health="8" Cost="9" Class="Machine">
 		<Qualities v="8"/>
 	</Unit>
+	<Spell Name="Tosters!!!" Description="1/1xEnUn" Cost="1">
+		<Fulldesc txt="Summons 1/1 machines with chardge for each enemy unit"/>
+		<CreateUnitSpell count="EnemyUnitsCount" side="0">
+			<HelperUnit Name="Toster" Description="" Damage="1" Health="1" Cost="0" Class="Machine">
+				<Qualities  v="8"/>
+			</HelperUnit>
+		</CreateUnitSpell>
+	</Spell>
 	<Spell Name="Shock" Description="2 dmg" Cost="0">
 		<Fulldesc txt="Deals 2 damage to selected unit"/>
 		<TargedetSpell targeter="player">

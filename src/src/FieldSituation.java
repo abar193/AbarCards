@@ -17,7 +17,7 @@ public class FieldSituation {
 	/**
 	 * Maximum amount of units allowed to stay on a side.
 	 */
-	public static final int MAXFIELDUNITS = 5; 
+	public static final int MAXFIELDUNITS = 6; 
 	
 	private ArrayList<ArrayList<Unit>> playerUnits;
 	private ArrayList<ArrayList<Unit>> playerBuildings;
@@ -136,6 +136,15 @@ public class FieldSituation {
 			if(!u.matchesFilter(f)) i.remove();
 		}
 		return units;
+	}
+	
+	public int countUnitsForSide(int side, boolean includeHero) {
+		if(side == -1) {
+			return playerUnits.get(0).size() + playerUnits.get(1).size() 
+					+ ((includeHero) ? 2 : 0); 
+		} else {
+			return playerUnits.get(side).size() + ((includeHero) ? 1 : 0);
+		}
 	}
 	
 	/**

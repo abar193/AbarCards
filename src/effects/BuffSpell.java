@@ -16,6 +16,7 @@ public class BuffSpell extends AbstractSpell {
 	@Override
 	public void exequte(int playerNum) {
 		this.playerNum = playerNum;
+		buff.value = CustomValueDecoder.decodeValue(buff.svalue, playerNum, target);
 		target.applyBuff(buff);
 	}
 

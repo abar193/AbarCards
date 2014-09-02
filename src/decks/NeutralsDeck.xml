@@ -175,7 +175,7 @@
 	</Unit>
 	<Unit Name="RCActivist" Description="" Damage="0" Health="1" Cost="1">
 		<Qualities v="2"/>
-		<Fulldesc txt="Stealth, adds 1 health to a random ally"/>
+		<Fulldesc txt="Stealth, TurnEnd: add 1 health to a random ally"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="0" targets="1" repeats="1">
 				<BuffSpell>
@@ -184,7 +184,7 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="Field doc" Description="" Damage="5" Health="1" Cost="5">
+	<Unit Name="Field doc" Description="" Damage="5" Health="2" Cost="5">
 		<Qualities v="8"/>
 		<Fulldesc txt="Charge, heal all +2 on spawn" />
 		<Power condition="OnCreate">
@@ -193,6 +193,20 @@
 					<Buff type="Heal" v="2"/>
 				</BuffSpell>
 			</TargedetSpell>
+		</Power>
+	</Unit>
+	<!-- Stat gainers -->
+	<Unit Name="Warlord" Description="" Damage="4" Health="4" Cost="5">
+		<Fulldesc txt="Gain 1/1 for each ally on field"/>
+		<Power condition="BeforeCreate">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="AddHealth" v="AllyUnitsCount"/>
+				</BuffSpell>
+				<BuffSpell>
+					<Buff type="AddDamage" v="AllyUnitsCount"/>
+				</BuffSpell>
+			</SpellContainer>
 		</Power>
 	</Unit>
 </Deck>
