@@ -260,7 +260,7 @@ public class Game {
 		if(c.type == CardType.Unit)
 			return playersData[player].canPlayCard(c);
 		else if(c.type == CardType.Spell) 
-			return playersData[player].canPlayCard(c) & ((SpellCard)c).spell.validate();
+			return playersData[player].canPlayCard(c) & ((SpellCard)c).spell.validate(player);
 		else return false;
 	}
 	

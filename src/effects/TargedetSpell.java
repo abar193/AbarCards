@@ -16,7 +16,8 @@ public class TargedetSpell extends AbstractSpell {
 	}
 
 	@Override
-	public boolean validate() {
+	public boolean validate(int player) {
+		this.playerNum = player;
 		return targeter.hasTargets(playerNum, target);
 	}
 

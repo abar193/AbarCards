@@ -1,5 +1,8 @@
 package src;
 
+// TODO: Extra drawing on start
+// TODO: Read cards with spaces
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

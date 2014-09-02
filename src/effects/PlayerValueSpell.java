@@ -21,7 +21,7 @@ public class PlayerValueSpell extends AbstractSpell {
 	}
 	
 	@Override
-	public boolean validate() {
+	public boolean validate(int player) {
 		return true;
 	}
 

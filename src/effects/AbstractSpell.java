@@ -23,7 +23,7 @@ public abstract class AbstractSpell {
 	/**
 	 * Returns true, if spell can be casted - has enought targets, e.t.c.
 	 */
-	public abstract boolean validate();
+	public abstract boolean validate(int player);
 	
 	/**
 	 * Executes spell. 
