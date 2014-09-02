@@ -23,6 +23,10 @@ public class SpellCard extends BasicCard {
 		this.spell = as;
 	}
 	
+	public boolean validate(int player) {
+		return spell.validate(player);
+	}
+	
 	public void exequte(int player) {
 		spell.exequte(player);
 	}

@@ -25,12 +25,8 @@ public class CreateUnitSpell extends AbstractSpell {
 
 	@Override
 	public void exequte(int player) {
-		FieldSituation fs = Game.currentGame.provideFieldSituation();
 		for(int i = 0; i < count; i++) {
-			Unit u = Game.currentGame.factory.createUnit(myUnit, (player + side) % 2);
-			if(fs.canUnitBeAdded(u, (player + side) % 2)) {
-				fs.addUnit(u, (player + side) % 2);
-			}
+			Game.currentGame.createUnit(myUnit, (player + side) % 2);
 		}
 		
 	}

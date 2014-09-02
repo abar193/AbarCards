@@ -8,16 +8,11 @@ import units.TriggeringCondition;
 import units.UnitPower;
 import effects.*;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import decks.DeckPackReader;
 import players.*;
-
-// TODO: CreateUnitSpell should call events
-// TODO: Pull Card spell should call "Lost X Card" 
-
 
 /**
  * Main class, with everything necessary for playing the game. 
@@ -264,6 +259,24 @@ public class Game {
 		else return false;
 	}
 	
+	/** Creates and places on field unit, performing all checks, and 
+	 * triggering spawn-relevant events
+	 * @param uc unit card for unit
+	 * @param player player's number
+	 * @return true, if unit has been placed 
+	 */
+	public boolean createUnit(UnitCard uc, int player) {
+		Unit u = factory.createUnit(uc, player);
+		try {
+			field.addUnit(u, player);
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+		u.respondToEvent(TriggeringCondition.OnCreate, null);
+		this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
+		return true;
+	}
+	
 	/**
 	 * Plays card of player. Summons unit, or casts spell, depending of card type.
 	 * @param c
@@ -271,24 +284,22 @@ public class Game {
 	 */
 	public void playCard(BasicCard c, int player) {
 		if(canPlayCard(c, player)) {
-			playersData[player].playCard(c);
+			
 			// Drawing
 			players.get(player).reciveAction("Playing " + c.name);
 			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
 
 			if(c.type == CardType.Unit) {
-				Unit u = factory.createUnit((UnitCard)c, player);
-				try {
-					field.addUnit(u, player);
-				} catch (IllegalArgumentException e) {
+				if(!createUnit((UnitCard)c, player)) 
 					players.get(player).reciveAction("Can't add that");
-				}
-				u.respondToEvent(TriggeringCondition.OnCreate, null);
-				this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
-
+				else 
+					playersData[player].playCard(c);
 			} else if (c.type == CardType.Spell) {
-				SpellCard card = (SpellCard)c;
-				card.exequte(player);
+				SpellCard card = (SpellCard)c;	
+				if(card.validate(player)) {
+					card.exequte(player);
+					playersData[player].playCard(c);
+				}
 			}
 			
 			recalculateFieldModifiers();

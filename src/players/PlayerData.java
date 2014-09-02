@@ -100,8 +100,12 @@ public class PlayerData {
 				case RemoveHealth:
 					this.representingUnit.damage(ps.value);
 					break;
-				case PullCard:
-					this.pullCard(ps.value);
+				case PullCard: {
+					ArrayList<BasicCard> cards = this.pullCard(ps.value);
+					if(cards != null) 
+						src.Game.currentGame.informLostCards(cards, this.playerNumber);
+					break;
+				}
 				default:
 			}
 		}
