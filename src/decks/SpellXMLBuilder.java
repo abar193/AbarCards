@@ -7,7 +7,6 @@ import java.util.Stack;
 
 import effects.*;
 import cards.SpellCard;
-
 import units.UnitPower;
 import units.UnitFilter;
 import units.UnitFilterType;
@@ -87,8 +86,11 @@ public class SpellXMLBuilder {
 				b = new Buff(type, att.getValue("v"));
 				break;
 			}
-			default: { 
-				System.out.println("Error! Unknown tag: " + tag);
+			default: {
+				if(src.Game.currentGame != null)
+					src.Game.currentGame.displayError("Unknown tag " + tag);
+				else 
+					System.out.println("Unknown tag " + tag);
 			}
 		}
 		return null;
@@ -156,8 +158,11 @@ public class SpellXMLBuilder {
 				break;
 			}
 			default: { 
-				System.out.println("Error! Unknown tag: " + tag);
-			}
+				if(src.Game.currentGame != null)
+					src.Game.currentGame.displayError("Unknown tag " + tag);
+				else 
+					System.out.println("Unknown tag " + tag);
+				}
 		}
 		System.out.println("Parsing Error! Corrupt XML hierarchy at tag " + tag);
 		return null;

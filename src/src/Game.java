@@ -1,6 +1,7 @@
 package src;
 
 import cards.*;
+import ui.ConsoleVS;
 import units.Unit;
 import units.Unit.Quality;
 import units.UnitFactory;
@@ -246,6 +247,13 @@ public class Game {
 		}
 	}
 	
+	public void displayError(String m) {
+		if(players != null) {
+			players.get(0).visual().displayError(m);
+			players.get(1).visual().displayError(m);
+		}
+	}
+	
 	/**
 	 * Checks if player may play his card.
 	 * @param c card to play
@@ -400,7 +408,7 @@ public class Game {
 		d1.shuffleCards();
 		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 		d2.shuffleCards();
-		RealPlayer p1 = new RealPlayer();
+		RealPlayer p1 = new RealPlayer(new ConsoleVS());
 		SimpleBot p2 = new SimpleBot();
 		
 		g.play(p1, p2, d1, d2, 15, 15);

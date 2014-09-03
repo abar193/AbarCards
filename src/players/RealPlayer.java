@@ -2,6 +2,7 @@ package players;
 
 import src.FieldSituation;
 import src.Game;
+import ui.VisualSystemInterface;
 import units.Unit;
 import units.Unit.Quality;
 
@@ -29,9 +30,12 @@ public class RealPlayer implements PlayerInterface {
 	private ArrayList<String> messages; 
 	private boolean myTurn;
 	
-	public RealPlayer() {
+	public VisualSystemInterface visual;
+	
+	public RealPlayer(VisualSystemInterface vs) {
 		messages = new ArrayList<String>();
 		myTurn = false;
+		visual = vs;
 	}
 	
 	@Override
@@ -47,106 +51,7 @@ public class RealPlayer implements PlayerInterface {
 			redrawNeeded = false;
 		}
 		
-		System.out.println(String.format("Enemy has %d/%d $ and %d health", 
-				enemy.availableMana, enemy.totalMana, enemy.health));
-		System.out.println(String.format("Enemy hand has %d cards, deck %d cards.",  
-				enemy.handSize, enemy.deckSize));
-		System.out.println("Field: ");
-		for(int i = 0; i < 79; i++) {
-			System.out.print("=");
-		}
-		System.out.println();
-		displayFieldSide(field.allUnitFromOneSide(enemy.playerNumber, false), false);
-		for(int i = 0; i < 39; i++) {
-			System.out.print("- ");
-		}
-		System.out.println();
-		displayFieldSide(field.allUnitFromOneSide(you.playerNumber, false), true);
-		for(int i = 0; i < 79; i++) {
-			System.out.print("=");
-		}
-		
-		System.out.println(String.format("\nYou have %d/%d $ and %d health", 
-				you.getAvailableMana(), you.getTotalMana(), you.getHealth()));
-		System.out.println(String.format("Your deck has %d cards, your hand: ", you.getDeckSize()));
-		
-		
-		ArrayList<BasicCard> cards = you.getHand();
-		printCards(cards.subList(0, Math.min(5, cards.size())), 0);
-		if(cards.size() > 5) {
-			printCards(cards.subList(5, cards.size()), 5);
-		}
-	}
-	
-	/**
-	 * Displays single side of a FieldSituation (draws ArrayList<Unit> like cards).
-	 * @param arr array to display
-	 */
-	private void displayFieldSide(ArrayList<Unit> arr, boolean mySide) {
-		int t = latestSituation.tauntUnitsForPlayer(opponent.playerNumber);
-		for(int i = 0; i < arr.size(); i++) {
-			if((mySide && !arr.get(i).canAttack()) || (!mySide && t > 0 && 
-					(!arr.get(i).hasQuality(Quality.Taunt) 
-					|| arr.get(i).hasQuality(Quality.Stealth)))) 
-			{
-				System.out.print(String.format("|%10s|", arr.get(i).myCard.name));
-			} else {
-				System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
-			}
-		}
-		System.out.println();
-		for(int i = 0; i < arr.size(); i++) {
-			String s;
-			String d = arr.get(i).myCard.fullDescription;
-			if(d != null && d != "") {
-				s = String.format("i%10s|", arr.get(i).descriptionString());
-			} else {
-				s = String.format("|%10s|", arr.get(i).descriptionString());
-			}
-			System.out.print(s);
-		}
-		System.out.println();
-		for(int i = 0; i < arr.size(); i++) {
-			BasicCard bc = arr.get(i).myCard;  
-			if(bc.type == CardType.Unit) {
-				System.out.print(String.format("|%2dd/%2dh%2d$|", arr.get(i).getCurrentDamage(),
-						arr.get(i).getCurrentHealth(), arr.get(i).myCard.cost));
-			}
-		}
-		System.out.println();
-	}
-
-	
-	private void printCards(List<BasicCard> cards, int k) {
-		for(int i = 0; i < cards.size(); i++) {
-			if(cards.get(i).cost <= me.getAvailableMana()) 
-				System.out.print(String.format("%c%10s|", qwerty[i+k], cards.get(i).name));
-			else 
-				System.out.print(String.format("|%10s|", cards.get(i).name));
-		}
-		System.out.println();
-		for(int i = 0; i < cards.size(); i++) {
-			String s;
-			String d = cards.get(i).fullDescription;
-			if(d != null && d != "") {
-				s = String.format("i%10s|", cards.get(i).description);
-			} else {
-				s = String.format("|%10s|", cards.get(i).description);
-			}
-			System.out.print(s);
-		}
-		
-		System.out.println();
-		for(int i = 0; i < cards.size(); i++) {
-			BasicCard bc = cards.get(i);  
-			if(bc.type == CardType.Unit) {
-				System.out.print(String.format("|%2dd/%2dh%2d$|", ((UnitCard) bc).getDamage(),
-						((UnitCard) bc).getHealth(), bc.cost));
-			} else if(bc.type == CardType.Spell) {
-				System.out.format("|Spell  %2d$|", bc.cost);
-			}
-		}
-		System.out.println();
+		visual.displayFieldState(you, field, enemy);
 	}
 	
 	/**
@@ -154,10 +59,7 @@ public class RealPlayer implements PlayerInterface {
 	 */
 	@Override
 	public void reciveAction(String m) {
-		if(!myTurn) {
-			messages.add("> " + m);
-		}
-		System.out.println("> " + m);
+		visual.displayMessage(m);
 	}
 
 	// For keyboard console input.
@@ -335,6 +237,11 @@ public class RealPlayer implements PlayerInterface {
 		}
 		
 		return latestSituation.allUnitFromOneSide((me.playerNumber + p) % 2, false).get(u);
+	}
+
+	@Override
+	public VisualSystemInterface visual() {
+		return visual;
 	}
 
 }

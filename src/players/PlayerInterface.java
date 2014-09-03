@@ -37,4 +37,6 @@ public interface PlayerInterface extends Runnable {
 	public void run();
 	
 	public Unit selectTarget();
+	
+	public ui.VisualSystemInterface visual();
 }

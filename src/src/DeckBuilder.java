@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import ui.ConsoleVS;
 import cards.*;
 import decks.DeckPackReader;
 
@@ -300,7 +301,7 @@ public class DeckBuilder {
 	public void launchGame(Deck d, char v) {
 		DeckPackReader dpr = new DeckPackReader();
 		d.shuffleCards();
-		players.RealPlayer r = new players.RealPlayer();
+		players.RealPlayer r = new players.RealPlayer(new ConsoleVS());
 		Game g = new Game();
 		saveDeck();
 		switch (v) {
