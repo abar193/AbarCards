@@ -56,4 +56,16 @@ public class BotVS implements VisualSystemInterface {
 
 	}
 
+	@Override
+	public void setInputInterface(InputInterface i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void read() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -408,7 +408,7 @@ public class Game {
 		d1.shuffleCards();
 		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 		d2.shuffleCards();
-		RealPlayer p1 = new RealPlayer(new ConsoleVS());
+		RealPlayer p1 = new RealPlayer(new ConsoleVS(g));
 		SimpleBot p2 = new SimpleBot();
 		
 		g.play(p1, p2, d1, d2, 15, 15);

@@ -18,4 +18,6 @@ public interface VisualSystemInterface {
 	public void dispaySpell(SpellCard s, int player);
 	public void displayUnitDamage(Unit u, int damage);
 	
+	public void setInputInterface(InputInterface i);
+	public void read();
 }

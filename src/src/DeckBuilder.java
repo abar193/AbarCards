@@ -301,8 +301,8 @@ public class DeckBuilder {
 	public void launchGame(Deck d, char v) {
 		DeckPackReader dpr = new DeckPackReader();
 		d.shuffleCards();
-		players.RealPlayer r = new players.RealPlayer(new ConsoleVS());
 		Game g = new Game();
+		players.RealPlayer r = new players.RealPlayer(new ConsoleVS(g));
 		saveDeck();
 		switch (v) {
 			case 'A': {
