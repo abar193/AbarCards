@@ -2,6 +2,7 @@ package src;
 
 import cards.*;
 import ui.ConsoleVS;
+import ui.SwingVS;
 import units.Unit;
 import units.Unit.Quality;
 import units.UnitFactory;
@@ -94,7 +95,9 @@ public class Game {
 		tauntUnit.setQuality(Quality.Taunt);
 		tauntUnit.myCard.fullDescription = "Has taunt";
 		field.addUnit(tauntUnit, player2.playerNumber);
-		
+		tauntUnit = new Unit(new UnitCard(1, 14, 1, "Tanker", ""), 
+				player1.playerNumber);
+		field.addUnit(tauntUnit, player1.playerNumber);
 		/* * * Game cycle * * */
 		field.refreshUnits();
 		int i = 0;
@@ -408,7 +411,7 @@ public class Game {
 		d1.shuffleCards();
 		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 		d2.shuffleCards();
-		RealPlayer p1 = new RealPlayer(new ConsoleVS(g));
+		RealPlayer p1 = new RealPlayer(new SwingVS(g));
 		SimpleBot p2 = new SimpleBot();
 		
 		g.play(p1, p2, d1, d2, 15, 15);
