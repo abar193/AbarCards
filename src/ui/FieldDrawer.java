@@ -14,6 +14,8 @@ import units.Unit;
 
 public class FieldDrawer extends Panel {
 
+	public SwingVS parent;
+	
 	private static final long serialVersionUID = 3562732874731857165L;
 	
 	private FieldSituation fs;
@@ -22,6 +24,14 @@ public class FieldDrawer extends Panel {
 	
 	public FieldDrawer() {
 		fs = new FieldSituation();
+		this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                float x = evt.getPoint().x;
+                float y = evt.getPoint().y;
+                int side = (int)(y / (getHeight() / 2));
+                setLastClick((side + 1) % 2, (int)(x / (getWidth()/10)));
+            }
+		});
 	}
 
 	public FieldDrawer(LayoutManager arg0) {
@@ -55,6 +65,7 @@ public class FieldDrawer extends Panel {
 	public void setLastClick(int side, int unit) {
 		selectedSide = side;
 		selectedUnit = unit;
+		parent.reciveUnitClick(side, unit);
 		repaint();
 	}
 	

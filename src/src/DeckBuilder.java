@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import ui.ConsoleVS;
+import ui.SwingVS;
 import cards.*;
 import decks.DeckPackReader;
 
@@ -302,7 +303,7 @@ public class DeckBuilder {
 		DeckPackReader dpr = new DeckPackReader();
 		d.shuffleCards();
 		Game g = new Game();
-		players.RealPlayer r = new players.RealPlayer(new ConsoleVS(g));
+		players.RealPlayer r = new players.RealPlayer(new SwingVS(g));
 		saveDeck();
 		switch (v) {
 			case 'A': {

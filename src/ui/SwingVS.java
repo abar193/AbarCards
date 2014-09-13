@@ -28,6 +28,9 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	
 	private static final long serialVersionUID = 1L;
 	
+	private Game parent; 
+	private InputInterface input;
+	
 	private CardsDrawer cardsDrawer;
 	private JTextArea outputMessages;
 	private FieldDrawer fieldDrawer; 
@@ -42,15 +45,20 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	int playerNumber;
 	
 	boolean turnEnded;
+	boolean targeting = false; 
 	
 	public SwingVS(Game g) {
+		parent = g;
+		
 		setSize(800, 600);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
             }
         });
+		
 	}
 
 	
@@ -69,6 +77,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
         add(outputMessages, BorderLayout.LINE_START);
         
         fieldDrawer = new FieldDrawer();
+        fieldDrawer.parent = this;
         if(latestSituation != null) fieldDrawer.setSituation(latestSituation, playerNumber);
         add(fieldDrawer, BorderLayout.CENTER);
         
@@ -90,6 +99,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
         add(right, BorderLayout.LINE_END);
         
         cardsDrawer = new CardsDrawer();
+        cardsDrawer.parent = this;
         cardsDrawer.setPreferredSize(new Dimension(800, 100));
         if(cards != null) cardsDrawer.setCards(cards);
         add(cardsDrawer, BorderLayout.PAGE_END);
@@ -171,16 +181,57 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 
 	@Override
 	public void setInputInterface(InputInterface i) {
-		// TODO Auto-generated method stub
-		
+		input = i;	
 	}
 	
-
+	public void reciveCardClick(int card) {
+		targeting = false;
+		if(me.getHand().size() > card) {
+			if(parent.canPlayCard(me.getHand().get(card), me.playerNumber)) {
+				input.playUnitCard(card);
+			} else {
+				displayMessage("Can't play that");
+			}
+		}
+	}
+	
+	int selectedUnit = 0;
+	Unit pickedUnit;
+	boolean pickingUnit = false;
+	
+	public void reciveUnitClick(int side, int unit) {
+		if(pickingUnit) {
+			if(latestSituation.allUnitFromOneSide((side + playerNumber) % 2, false).size() > unit) {
+				pickedUnit = latestSituation.allUnitFromOneSide((side + playerNumber) % 2, false).get(unit);
+			}
+		}
+		if(targeting) {
+			if(side == 0)
+				targeting = false;
+			else {
+				if(parent.attackIsValid(selectedUnit, unit, me.playerNumber, (playerNumber + 1) % 2)) {
+					input.makeUnitsAttack(selectedUnit, unit);
+				} else {
+					displayError("Invalid target");
+				}
+			}
+		} else if(side == 0) {
+			ArrayList<Unit>myArmy = latestSituation.allUnitFromOneSide(me.playerNumber, false);
+			
+			if(myArmy.size() > unit && myArmy.get(unit).canAttack()) {
+				displayMessage("Select target: ");
+				targeting = true;
+				selectedUnit = unit;
+			} else {
+				displayError("Invalid unit selected");
+			}
+		}
+	}
+	
 	@Override
 	public void read() {
-		Random r = new Random();
 		turnEnded = false;
-		while(r.nextInt(100) != 0 && !turnEnded) {
+		while(!turnEnded) {
 			try { 
 				Thread.sleep(100);
 			} catch (Exception e) {
@@ -189,9 +240,24 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		}
 	}
 
-
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		turnEnded = true;
+	}
+
+
+	@Override
+	public Unit provideUnit() {
+		pickedUnit = null;
+		pickingUnit = true;
+		displayMessage("Pick unit target");
+		while(pickedUnit == null) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+		}
+		pickingUnit = false;
+		return pickedUnit;
 	}
 }

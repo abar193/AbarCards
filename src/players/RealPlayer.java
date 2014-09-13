@@ -64,33 +64,7 @@ public class RealPlayer implements PlayerInterface, InputInterface {
 
 	@Override
 	public Unit selectTarget() {
-		int p, u;
-		System.out.print("Enter player to target (0 - you, 1 - he): ");
-		try {
-			p = System.in.read();
-			while(p != '0' && p != '1') {
-				p = System.in.read();
-			}
-		} catch(java.io.IOException e){
-			p = '0'; 
-		}
-		p -= '0';
-		System.out.print("Enter unit to target: ");
-		try {
-			u = 0;
-			while(u < '0' || p > '9') {
-				u = System.in.read();
-				if(u - '0' >= latestSituation.allUnitFromOneSide((me.playerNumber + p)%2, false).size()) {
-					System.out.println("Can't target that! #" + Integer.toString(u-'0'));
-					u = 0;
-				}
-			}
-			u -= 48;
-		} catch(java.io.IOException e){
-			u = 0; 
-		}
-		
-		return latestSituation.allUnitFromOneSide((me.playerNumber + p) % 2, false).get(u);
+		return visual.provideUnit();
 	}
 
 	@Override

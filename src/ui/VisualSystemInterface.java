@@ -19,5 +19,6 @@ public interface VisualSystemInterface {
 	public void displayUnitDamage(Unit u, int damage);
 	
 	public void setInputInterface(InputInterface i);
+	public Unit provideUnit();
 	public void read();
 }

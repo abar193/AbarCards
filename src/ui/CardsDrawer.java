@@ -12,10 +12,14 @@ import cards.UnitCard;
 
 public class CardsDrawer extends Panel {
 
+	
+	public SwingVS parent;
+	
 	private static final long serialVersionUID = -4212993318911101034L;
 
 	private ArrayList<BasicCard> cards;
 	int lastClick = 0;
+	
 	public CardsDrawer() {
 		cards = new ArrayList<BasicCard>(0);
 		this.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -43,11 +47,17 @@ public class CardsDrawer extends Panel {
 			}
 	    	g2.drawString(dstr, cardSize * i + 7, 60);
 	    }
-	 
+	    
 	}
 	
-	public void setLastClick(int lc) {
+	public void setLastClick(final int lc) {
 		lastClick = lc;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				parent.reciveCardClick(lc);
+			}
+		}).start();
 		repaint();
 	}
 	

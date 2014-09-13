@@ -68,4 +68,10 @@ public class BotVS implements VisualSystemInterface {
 		
 	}
 
+	@Override
+	public Unit provideUnit() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

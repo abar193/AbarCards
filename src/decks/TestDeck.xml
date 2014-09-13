@@ -57,6 +57,26 @@
 			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
+	<Spell Name="Bomb" Description="131" Cost="2">
+		<Fulldesc txt="Deals 3 damage to selected unit and 1 to adjusted ones."/>
+		<TargedetSpell targeter="player">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="Hurt" v="3"/>
+				</BuffSpell>
+				<TargedetSpell targeter="neighbor" o="-1">
+					<BuffSpell>
+						<Buff type="Hurt" v="1"/>
+					</BuffSpell>
+				</TargedetSpell>
+				<TargedetSpell targeter="neighbor" o="1">
+					<BuffSpell>
+						<Buff type="Hurt" v="1"/>
+					</BuffSpell>
+				</TargedetSpell>
+			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
 	<Unit Name="Cameramen" Description="Stu" Damage="2" Health="2" Cost="2">
 		<Fulldesc txt="Silences targedet unit on spawn"/>
 		<Power condition="OnCreate">
