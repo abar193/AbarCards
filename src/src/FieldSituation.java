@@ -17,7 +17,7 @@ public class FieldSituation {
 	/**
 	 * Maximum amount of units allowed to stay on a side.
 	 */
-	public static final int MAXFIELDUNITS = 6; 
+	public static final int MAXFIELDUNITS = 8; 
 	
 	private ArrayList<ArrayList<Unit>> playerUnits;
 	private ArrayList<ArrayList<Unit>> playerBuildings;

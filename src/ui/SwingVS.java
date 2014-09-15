@@ -45,7 +45,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	int playerNumber;
 	
 	boolean turnEnded;
-	boolean targeting = false; 
+	public boolean targeting = false; 
 	
 	public SwingVS(Game g) {
 		parent = g;
@@ -101,7 +101,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
         cardsDrawer = new CardsDrawer();
         cardsDrawer.parent = this;
         cardsDrawer.setPreferredSize(new Dimension(800, 100));
-        if(cards != null) cardsDrawer.setCards(cards);
+        if(cards != null) cardsDrawer.setCards(cards, 0, 0);
         add(cardsDrawer, BorderLayout.PAGE_END);
         pack();
         setVisible(true);
@@ -138,7 +138,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		}
 		
 		if(cardsDrawer != null) {
-			cardsDrawer.setCards(p1.getHand());
+			cardsDrawer.setCards(p1.getHand(), 0, 0);
 		} else {
 			cards = p1.getHand();
 		}
@@ -195,11 +195,16 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		}
 	}
 	
-	int selectedUnit = 0;
+	public int selectedUnit = 0;
 	Unit pickedUnit;
 	boolean pickingUnit = false;
 	
 	public void reciveUnitClick(int side, int unit) {
+		//System.out.println(String.format("Clicked unit %d for side %d", unit, side));
+		if(unit >= latestSituation.countUnitsForSide((playerNumber + side) % 2, false)) {
+			unit = -1; // target hero
+			//System.out.println("===>Transformed to -1");
+		}
 		if(pickingUnit) {
 			if(latestSituation.allUnitFromOneSide((side + playerNumber) % 2, false).size() > unit) {
 				pickedUnit = latestSituation.allUnitFromOneSide((side + playerNumber) % 2, false).get(unit);
@@ -210,6 +215,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 				targeting = false;
 			else {
 				if(parent.attackIsValid(selectedUnit, unit, me.playerNumber, (playerNumber + 1) % 2)) {
+					targeting = false;
 					input.makeUnitsAttack(selectedUnit, unit);
 				} else {
 					displayError("Invalid target");
@@ -218,10 +224,12 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		} else if(side == 0) {
 			ArrayList<Unit>myArmy = latestSituation.allUnitFromOneSide(me.playerNumber, false);
 			
-			if(myArmy.size() > unit && myArmy.get(unit).canAttack()) {
-				displayMessage("Select target: ");
-				targeting = true;
-				selectedUnit = unit;
+			if(myArmy.size() > unit && unit >= 0) {
+				if(myArmy.get(unit).canAttack()) {
+					displayMessage("Select target: ");
+					targeting = true;
+					selectedUnit = unit;
+				}
 			} else {
 				displayError("Invalid unit selected");
 			}

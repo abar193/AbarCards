@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
@@ -33,6 +34,7 @@ public class CardsDrawer extends Panel {
 	public void paint (Graphics g) {
 	    Graphics2D g2 = (Graphics2D) g;
 	    int cardSize = this.getWidth() / 10;
+	    g2.setFont(new Font("SansSerif", Font.PLAIN, 12));
 	    for(int i = 0; i < cards.size(); i++) {
 	    	g2.drawRect(cardSize * i + 5, 5, cardSize - 10, this.getHeight() - 10);
 	    	g2.drawString(cards.get(i).name, cardSize * i + 7, 20);
@@ -61,7 +63,7 @@ public class CardsDrawer extends Panel {
 		repaint();
 	}
 	
-	public void setCards(ArrayList<BasicCard> c) {
+	public void setCards(ArrayList<BasicCard> c, int mana, int maxmana) {
 		cards = c;
 		repaint();
 	}

@@ -1,10 +1,14 @@
 package ui;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 import cards.BasicCard;
 import cards.CardType;
@@ -29,7 +33,7 @@ public class FieldDrawer extends Panel {
                 float x = evt.getPoint().x;
                 float y = evt.getPoint().y;
                 int side = (int)(y / (getHeight() / 2));
-                setLastClick((side + 1) % 2, (int)(x / (getWidth()/10)));
+                setLastClick((side + 1) % 2, (int)(x / (getWidth() / fs.MAXFIELDUNITS)));
             }
 		});
 	}
@@ -38,25 +42,60 @@ public class FieldDrawer extends Panel {
 		super(arg0);
 	}
 	
+	private void drawCenteredStringAt(Graphics2D g2, String s, int startX, int width, 
+			int height) 
+	{
+		FontMetrics fm = g2.getFontMetrics();
+		int point = startX + width / 2 - fm.stringWidth(s) / 2;
+		g2.drawString(s, point, height);
+	}
+	
+	private void drawUnitsLine(Graphics2D g2, ArrayList<Unit> units, ArrayList<Integer> marked, int centerHeight) {
+		int unitWidth = this.getWidth() / fs.MAXFIELDUNITS;
+	    int uOffset = centerHeight - unitWidth / 2;
+	    for(int x = 0; x < units.size(); x++) {
+	    	if(marked.get(x) == 0) g2.setColor(Color.BLACK);
+	    	else if(marked.get(x) == 1) g2.setColor(Color.GREEN);
+	    	else if(marked.get(x) == 2) g2.setColor(Color.BLUE); 
+	    	else g2.setColor(Color.RED);
+    		g2.drawOval(unitWidth * x, uOffset - unitWidth / 2, unitWidth, unitWidth);
+    		Unit u = units.get(x);
+    		drawCenteredStringAt(g2, u.myCard.name, unitWidth * x, unitWidth, uOffset - 15);
+    		drawCenteredStringAt(g2, u.descriptionString(), unitWidth * x, unitWidth, uOffset + 5);
+    		drawCenteredStringAt(g2, String.format("%2dd/%2dh%2d$", u.getCurrentDamage(),
+    				u.getCurrentHealth(), u.myCard.cost), unitWidth * x, unitWidth, uOffset + 15);
+   
+    	}
+	}
+	
 	public void paint (Graphics g) {
 	    Graphics2D g2 = (Graphics2D) g;
 	    
-	    int unitWidth = this.getWidth() / 10;
+	    int unitWidth = this.getWidth() / fs.MAXFIELDUNITS;
 	    int unitHeight = this.getHeight() / 2;
-	    int uOffset = unitHeight / 2 - unitWidth / 2;
-	    for(int y = 1; y >= 0; y--) {
-	    	int ry = (y + 1) % 2;
-	    	int player = (y + playerNumber) % 2;
-	    	for(int x = 0; x < fs.countUnitsForSide(player, false); x++) {
-	    		g2.drawOval(unitWidth * x, unitHeight * ry + uOffset, unitWidth, unitWidth);
-	    		Unit u = fs.unitForPlayer(x, player);
-	    		g2.drawString(u.myCard.name, unitWidth * x + 10, unitHeight * ry + uOffset - 5);
-	    		g2.drawString(u.descriptionString(), unitWidth * x + 10, unitHeight * ry + unitHeight / 2 - 10);
-	    		g2.drawString(String.format("%2dd/%2dh%2d$", u.getCurrentDamage(),
-	    				u.getCurrentHealth(), u.myCard.cost), 
-	    				unitWidth * x, unitHeight * ry + unitHeight / 2 + 3);
+	    g2.setFont(new Font("SansSerif", Font.BOLD, 12));
+	    
+	    ArrayList<Unit> units = fs.allUnitFromOneSide((playerNumber + 1) % 2, true);
+	    ArrayList<Integer> statuses = new ArrayList<Integer>(units.size());
+	    int taunts = fs.tauntUnitsForPlayer((playerNumber + 1) % 2);
+	    for(Unit u : units) {
+	    	if((taunts == 0 || u.hasQuality(Unit.Quality.Taunt)) && (!u.hasQuality(Unit.Quality.Stealth))) {
+	    		statuses.add(-1);
+	    	} else {
+	    		statuses.add(0);
 	    	}
 	    }
+	    drawUnitsLine(g2, fs.allUnitFromOneSide((playerNumber + 1) % 2, true), statuses, unitHeight * 2 / 3);
+	    
+	    units = fs.allUnitFromOneSide(playerNumber, true);
+	    statuses = new ArrayList<Integer>(units.size());
+	    
+	    for(int i = 0; i < units.size(); i++) {
+	    	if(parent.targeting && parent.selectedUnit == i) statuses.add(2);
+	    	else statuses.add(units.get(i).canAttack() ? 1 : 0);
+	    }
+	    drawUnitsLine(g2, fs.allUnitFromOneSide(playerNumber, true), statuses, unitHeight * 5 / 3);
+	    
 	    
 	    g2.drawLine(0, unitHeight, this.getWidth(), unitHeight);
 	 
