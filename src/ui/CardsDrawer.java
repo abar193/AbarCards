@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,6 +20,7 @@ public class CardsDrawer extends Panel {
 	private static final long serialVersionUID = -4212993318911101034L;
 
 	private ArrayList<BasicCard> cards;
+	private int mana, maxmana;
 	int lastClick = 0;
 	
 	public CardsDrawer() {
@@ -36,7 +38,11 @@ public class CardsDrawer extends Panel {
 	    int cardSize = this.getWidth() / 10;
 	    g2.setFont(new Font("SansSerif", Font.PLAIN, 12));
 	    for(int i = 0; i < cards.size(); i++) {
+	    	if(cards.get(i).cost <= mana) g2.setColor(Color.GREEN);
+	    	else g2.setColor(Color.BLACK);
 	    	g2.drawRect(cardSize * i + 5, 5, cardSize - 10, this.getHeight() - 10);
+	    	g2.setColor(Color.BLACK);
+	    	
 	    	g2.drawString(cards.get(i).name, cardSize * i + 7, 20);
 	    	g2.drawString(cards.get(i).description, cardSize * i + 7, 40);
 	    	String dstr = "";
@@ -49,6 +55,8 @@ public class CardsDrawer extends Panel {
 			}
 	    	g2.drawString(dstr, cardSize * i + 7, 60);
 	    }
+	    
+	    g2.drawString(String.format("%d/%d", mana, maxmana), this.getWidth() * 2 / 3, 15);
 	    
 	}
 	
@@ -65,6 +73,8 @@ public class CardsDrawer extends Panel {
 	
 	public void setCards(ArrayList<BasicCard> c, int mana, int maxmana) {
 		cards = c;
+		this.mana = mana;
+		this.maxmana = maxmana;
 		repaint();
 	}
 

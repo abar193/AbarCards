@@ -101,7 +101,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
         cardsDrawer = new CardsDrawer();
         cardsDrawer.parent = this;
         cardsDrawer.setPreferredSize(new Dimension(800, 100));
-        if(cards != null) cardsDrawer.setCards(cards, 0, 0);
+        if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana(), me.getTotalMana());
         add(cardsDrawer, BorderLayout.PAGE_END);
         pack();
         setVisible(true);
@@ -138,7 +138,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		}
 		
 		if(cardsDrawer != null) {
-			cardsDrawer.setCards(p1.getHand(), 0, 0);
+			cardsDrawer.setCards(p1.getHand(), p1.getAvailableMana(), p1.getTotalMana());
 		} else {
 			cards = p1.getHand();
 		}
