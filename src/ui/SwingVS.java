@@ -201,15 +201,17 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	
 	public void reciveUnitClick(int side, int unit) {
 		//System.out.println(String.format("Clicked unit %d for side %d", unit, side));
-		if(unit >= latestSituation.countUnitsForSide((playerNumber + side) % 2, false)) {
-			unit = -1; // target hero
-			//System.out.println("===>Transformed to -1");
-		}
+		
 		if(pickingUnit) {
-			if(latestSituation.allUnitFromOneSide((side + playerNumber) % 2, false).size() > unit) {
-				pickedUnit = latestSituation.allUnitFromOneSide((side + playerNumber) % 2, false).get(unit);
+			if(latestSituation.allUnitFromOneSide((side + playerNumber) % 2, true).size() > unit && unit >= 0) {
+				pickedUnit = latestSituation.allUnitFromOneSide((side + playerNumber) % 2, true).get(unit);
 			}
 		}
+		
+		if(unit >= latestSituation.countUnitsForSide((playerNumber + side) % 2, false)) {
+			unit = -1; // target hero
+		}
+		
 		if(targeting) {
 			if(side == 0)
 				targeting = false;

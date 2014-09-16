@@ -260,8 +260,9 @@ public class Unit {
 				break;
 			case ModQuality:
 				modQualities |= b.value;
+				break;
 			default:
-				System.out.println("Unknown buff" + b.type.toString());
+				System.out.println("Unit: Unknown buff " + b.type.toString());
 				break;
 			
 		}

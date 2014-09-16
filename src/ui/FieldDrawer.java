@@ -42,13 +42,6 @@ public class FieldDrawer extends Panel {
 		super(arg0);
 	}
 	
-	private void drawCenteredStringAt(Graphics2D g2, String s, int startX, int width, 
-			int height) 
-	{
-		FontMetrics fm = g2.getFontMetrics();
-		int point = startX + width / 2 - fm.stringWidth(s) / 2;
-		g2.drawString(s, point, height);
-	}
 	
 	private void drawUnitsLine(Graphics2D g2, ArrayList<Unit> units, ArrayList<Integer> marked, int centerHeight) {
 		int unitWidth = this.getWidth() / fs.MAXFIELDUNITS;
@@ -60,9 +53,9 @@ public class FieldDrawer extends Panel {
 	    	else g2.setColor(Color.RED);
     		g2.drawOval(unitWidth * x, uOffset - unitWidth / 2, unitWidth, unitWidth);
     		Unit u = units.get(x);
-    		drawCenteredStringAt(g2, u.myCard.name, unitWidth * x, unitWidth, uOffset - 15);
-    		drawCenteredStringAt(g2, u.descriptionString(), unitWidth * x, unitWidth, uOffset + 5);
-    		drawCenteredStringAt(g2, String.format("%2dd/%2dh%2d$", u.getCurrentDamage(),
+    		DrawingOperations.drawCenteredStringAt(g2, u.myCard.name, unitWidth * x, unitWidth, uOffset - 15);
+    		DrawingOperations.drawCenteredStringAt(g2, u.descriptionString(), unitWidth * x, unitWidth, uOffset + 5);
+    		DrawingOperations.drawCenteredStringAt(g2, String.format("%2dd/%2dh%2d$", u.getCurrentDamage(),
     				u.getCurrentHealth(), u.myCard.cost), unitWidth * x, unitWidth, uOffset + 15);
    
     	}
