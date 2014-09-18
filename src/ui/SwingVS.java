@@ -131,6 +131,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	{
 		me = p1;
 		opponent = p2;
+		latestSituation = field;
 		playerNumber = p1.playerNumber;
 		
 		if(enemyHand != null) {
@@ -145,9 +146,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		
 		if(fieldDrawer != null) {
 			fieldDrawer.setSituation(field, p1.playerNumber);
-		} else {
-			latestSituation = field;
-		}
+		} 
 		
 		if(enemyDeck != null) {
 			enemyDeck.setText(Integer.toString(p2.deckSize));
