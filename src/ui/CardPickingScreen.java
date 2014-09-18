@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -13,6 +14,8 @@ import javax.swing.JFrame;
 
 import src.DeckBuilder;
 import cards.BasicCard;
+import cards.CardType;
+import cards.UnitCard;
 
 /**
  * Class for drawing available cards for player to choose. Placed inside CardPickingFrame
@@ -46,7 +49,17 @@ public class CardPickingScreen extends Panel {
 
 	public void printCardAt(Graphics2D g2, BasicCard card, int startX, int startY, int width, int height) {
 		g2.drawRect(startX, startY, width, height);
-		DrawingOperations.drawCenteredStringAt(g2, card.name, startX, width, startY + 10);
+		DrawingOperations.drawCenteredStringAt(g2, card.name, startX, width, startY + 15);
+		DrawingOperations.drawCenteredStringAt(g2, card.description, startX, width, startY + 30);
+		String type;
+		if(card.type == CardType.Unit) {
+			UnitCard bc = (UnitCard)card;
+			type = String.format("|%2dd/%2dh%2d$|", bc.getDamage(),
+					bc.getHealth(), bc.cost);
+		} else {
+			type = String.format("|%6s%3d$|", "Spell", card.cost);
+		}
+		DrawingOperations.drawCenteredStringAt(g2, type, startX, width, startY + height - 30);
 	}
 	
 	public void click(int c) {
@@ -55,6 +68,7 @@ public class CardPickingScreen extends Panel {
 	
 	public void paint (Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
+		g2.setFont(new Font("SansSerif", Font.BOLD, 12));
 		
 		if(cards == null) return;
 		int cardWidth = (this.getWidth() - 50) / 5;

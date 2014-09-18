@@ -140,7 +140,6 @@ public class CardPickingFrame extends JFrame implements ActionListener {
         layout.putConstraint(SpringLayout.WEST, overToggle, 5,
                 SpringLayout.NORTH, overlay);
         
-        
         setVisible(true);
 	}
 
@@ -167,7 +166,6 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 			jb.setText(c.name);
 			jb.setActionCommand("_" + Integer.toString(i++));
 			jb.addActionListener(this);
-			System.out.println("Add " + c.name);
 			selectedCardsText.add(jb);
 		}
 		selectedCardsText.revalidate();
@@ -209,7 +207,6 @@ public class CardPickingFrame extends JFrame implements ActionListener {
         	try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         }
