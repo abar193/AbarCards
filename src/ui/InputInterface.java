@@ -2,6 +2,11 @@ package ui;
 
 import cards.SpellCard;
 
+/**
+ * Interface for all possible player-side inputs
+ * @author Abar
+ *
+ */
 public interface InputInterface {
 	public void playSpellCard(SpellCard sc);
 	public void playUnitCard(int uc);

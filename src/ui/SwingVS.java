@@ -24,6 +24,11 @@ import units.TriggeringCondition;
 import units.Unit;
 import cards.BasicCard;
 
+/** 
+ * Brand new (lagging) VS with GUI and mouse clicks.
+ * @author Abar
+ *
+ */
 public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowListener,*/ ActionListener {
 	
 	private static final long serialVersionUID = 1L;

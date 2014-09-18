@@ -14,6 +14,11 @@ import javax.swing.JFrame;
 import src.DeckBuilder;
 import cards.BasicCard;
 
+/**
+ * Class for drawing available cards for player to choose. Placed inside CardPickingFrame
+ * @author Abar
+ *
+ */
 public class CardPickingScreen extends Panel {
 
 	private static final long serialVersionUID = 3908875203258467002L;

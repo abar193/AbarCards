@@ -22,6 +22,12 @@ import cards.BasicCard;
 import cards.UnitCard;
 import src.DeckBuilder;
 
+
+/**
+ * Frame for picking cards to play them in deck. UI class for DeckBuilder controller.
+ * @author Abar
+ *
+ */
 public class CardPickingFrame extends JFrame implements ActionListener {
 
 	DeckBuilder parent;
@@ -80,14 +86,12 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 		bottomLayer.add(left, BorderLayout.LINE_START);
         
 		Panel cent = new Panel();
-		cent.setBackground(java.awt.Color.GREEN);
 		cent.setSize(600, 400);
 		bottomLayer.add(cent, BorderLayout.CENTER);
 		cent.setLayout(new BoxLayout(cent, BoxLayout.LINE_AXIS));
 		
 		picker = new CardPickingScreen();
 		picker.parent = this;
-		picker.setBackground(java.awt.Color.GRAY);
 		picker.setMinimumSize(new Dimension(400, 400));
         picker.setBounds(0, 0, 500, 400);
         if(cards != null) picker.setDrawnCards(cards, 0); 
@@ -96,7 +100,7 @@ public class CardPickingFrame extends JFrame implements ActionListener {
         
         selectedCardsText = new Panel();
         selectedCardsText.setLayout(new BoxLayout(selectedCardsText, BoxLayout.Y_AXIS));
-        selectedCardsText.setBackground(java.awt.Color.ORANGE);
+        selectedCardsText.setBackground(java.awt.Color.LIGHT_GRAY);
         selectedCardsText.setSize(100, 450);
         selectedCardsText.setMaximumSize(new Dimension(100, 450));
         selectedCardsText.setMinimumSize(new Dimension(100, 450));
@@ -120,16 +124,16 @@ public class CardPickingFrame extends JFrame implements ActionListener {
         pane.add(bottomLayer, JLayeredPane.DEFAULT_LAYER);
         
         overlay = new Panel();
-        overlay.setBackground(java.awt.Color.BLUE);
         SpringLayout layout = new SpringLayout();
         
         overlay.setLayout(layout);
+        overlay.setBackground(java.awt.Color.GREEN);
         overlay.setBounds(200, 100, 400, 400);
         overlay.setEnabled(false);
         
-        JButton overToggle = new JButton();
-        overToggle.setText("Toggle");
-        overToggle.addActionListener(this);
+        JLabel overToggle = new JLabel();
+        overToggle.setText("Load old deck, or create new:");
+
         overlay.add(overToggle);
         layout.putConstraint(SpringLayout.NORTH, overToggle, 5,
                 SpringLayout.NORTH, overlay);
@@ -166,7 +170,6 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 			System.out.println("Add " + c.name);
 			selectedCardsText.add(jb);
 		}
-		selectedCardsText.setBackground(java.awt.Color.red);
 		selectedCardsText.revalidate();
 		selectedCardsText.repaint();
 	}

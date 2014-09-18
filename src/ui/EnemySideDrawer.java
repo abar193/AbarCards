@@ -6,9 +6,13 @@ import java.awt.LayoutManager;
 import java.awt.Panel;
 
 
+/**
+ * Located on the top of the page this class should display any opponent-relevant information
+ * @author Abar
+ *
+ */
 public class EnemySideDrawer extends Panel {
 
-	
 	private static final long serialVersionUID = -552044581190090915L;
 	int cardsCount = 0;
 	

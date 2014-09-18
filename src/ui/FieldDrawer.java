@@ -16,6 +16,10 @@ import cards.UnitCard;
 import src.FieldSituation;
 import units.Unit;
 
+/**
+ * Class for drawing on-field situation. Calls reciveUnitClick method on SwingVS parent - should be set manualy before use of class
+ * @author Abar
+ */
 public class FieldDrawer extends Panel {
 
 	public SwingVS parent;

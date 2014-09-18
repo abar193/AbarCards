@@ -15,6 +15,11 @@ import units.Unit;
 import units.Unit.Quality;
 import cards.SpellCard;
 
+/**
+ * Good Old Console VS, currently not in use
+ * @author Abar
+ *
+ */
 public class ConsoleVS implements VisualSystemInterface {
 
 	private InputInterface input;

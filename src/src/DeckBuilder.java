@@ -288,7 +288,8 @@ public class DeckBuilder implements ActionListener {
 		for(int i = 0; i < names.length; i++) {
 			if(arg0.getActionCommand().equals(names[i])) {
 				selectedCards = new ArrayList<BasicCard>(15);
-				fullDeck = new DeckPackReader().parseFile(links[i]);
+				ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+				fullDeck.addAll(0, classCards);
 				frame.disableOverlay();
 				drawCards(fullDeck, startPos);
 				return;
@@ -297,7 +298,8 @@ public class DeckBuilder implements ActionListener {
 		
 		final int c = arg0.getActionCommand().charAt(arg0.getActionCommand().length() - 1) - '0';
 		selectedCards = new ArrayList<BasicCard>(15);
-		fullDeck = new DeckPackReader().parseFile(links[c]);
+		ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[c]);
+		fullDeck.addAll(0, classCards);
 		frame.disableOverlay();
 		loadDeck(deckFiles().get(c));
 		

@@ -12,9 +12,12 @@ import cards.BasicCard;
 import cards.CardType;
 import cards.UnitCard;
 
+/**
+ * Located in bottom side of the frame this class draws cards, held by player (player's hand)
+ * @author Abar
+ */
 public class CardsDrawer extends Panel {
 
-	
 	public SwingVS parent;
 	
 	private static final long serialVersionUID = -4212993318911101034L;
