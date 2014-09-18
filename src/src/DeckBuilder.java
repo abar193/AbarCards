@@ -178,8 +178,10 @@ public class DeckBuilder implements ActionListener {
 		    	try{ 
 		    		int cost = Integer.parseInt(splits[1]);
 		    		for(BasicCard c : fullDeck) {
-		    			if(c.name.equals(splits[0]) && c.cost == cost) 
+		    			if(c.name.equals(splits[0]) && c.cost == cost) { 
 		    				selectedCards.add(c);
+		    				break;
+		    			}
 		    		}
 		    	} catch (NumberFormatException e) {
 		    		System.out.println("Contaminated file, at line " + splits[0]);
@@ -302,7 +304,6 @@ public class DeckBuilder implements ActionListener {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				loadDeck(deckFiles().get(c));
 				drawCards(fullDeck, 0);
 			}
 		}).start();
