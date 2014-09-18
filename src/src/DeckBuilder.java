@@ -1,5 +1,7 @@
 package src;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,17 +14,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import ui.CardPickingFrame;
 import ui.ConsoleVS;
 import ui.SwingVS;
 import cards.*;
 import decks.DeckPackReader;
 
-public class DeckBuilder {
+public class DeckBuilder implements ActionListener {
 	
 	private final int CARDS_IN_A_ROW = 5;
 	private final String DECK_NAME = "HeroDeck.Cards.";
 
-	private final char qwerty[] = {'q', 'w', 'e', 'r', 't'};
 	private final String[] names = {"Machines"};
 	private final String[] links = {"MachinesDeck.xml"};
 	
@@ -30,6 +32,9 @@ public class DeckBuilder {
 	public ArrayList<BasicCard> fullDeck;
 
 	private int playerChoose;
+	private int startPos = 0;
+	CardPickingFrame frame;
+	
 	
 	/** Splits lines in fullDescription word by word, cuts words longer than 10 chars
 	 * into smaller ones, and groups small words if their sum length < 10.
@@ -97,144 +102,32 @@ public class DeckBuilder {
 	 * start + CARDS_IN_A_ROW > deck.size 
 	 */
 	public void drawCards(ArrayList<BasicCard> deck, int start) {
-		String[][] splits = splitLines(deck, start);
-		
-		int maxFulldesc = 0;
-		for(int i = 0; i < splits.length; i++) {
-			if(splits[i].length > maxFulldesc) 
-				maxFulldesc = splits[i].length;
-		}
-		
-		// Top line
-		System.out.format(" %26s%26s%26s\n", 
-				"A - Play Vs Terran AI", 
-				"S - Play Vs Zerg AI",
-				"D - Play Vs Protoss AI");
-		
-		System.out.print(" ");
-		for(int i = 0; i < 26; i++) {
-			System.out.print(" - ");
-		}
-		System.out.println();
-		
-		// Names line
-		for(int x = 0; x < CARDS_IN_A_ROW; x++) {
-			System.out.format("%c%10s|", qwerty[x], deck.get(x + start).name);
-		}
-		System.out.println(" Your deck:");
-		int y = 0;
-		
-		// Description line
-		for(int x = 0; x < CARDS_IN_A_ROW; x++) {
-			System.out.format("|%10s|", deck.get(x + start).description);
-		}
-		if(selectedCards.size() > y) {
-			System.out.format(" %2d %10s\n", y, selectedCards.get(y).name);
-		} else {
-			System.out.format(" %2d %10s\n", y, "");
-		}
-		y++;
-		
-		// Stats line
-		for(int x = 0; x < CARDS_IN_A_ROW; x++) {
-			if(deck.get(x + start).type == CardType.Unit) {
-				UnitCard bc = (UnitCard)deck.get(x + start);
-				System.out.print(String.format("|%2dd/%2dh%2d$|", bc.getDamage(),
-						bc.getHealth(), bc.cost));
-			} else {
-				System.out.format("|%6s%3d$|", "Spell", deck.get(x + start).cost);
-			}
-		}
-		if(selectedCards.size() > y) {
-			System.out.format(" %2d %10s\n", y, selectedCards.get(y).name);
-		} else {
-			System.out.format(" %2d %10s\n", y, "");
-		}
-		y++;
-		
-		// All fullDesc lines, from splits
-		int yl = 0;
-		for(; yl < maxFulldesc; yl++) {
-			for(int x = 0; x < CARDS_IN_A_ROW; x++) {
-				String s = "";
-				if(splits[x].length > yl)
-					if(splits[x][yl] != null) s = splits[x][yl];
-				System.out.format("|%10s|", s);
-			}
-			if(selectedCards.size() > y + yl) {
-				System.out.format(" %2d %10s\n", y + yl, selectedCards.get(y + yl).name);
-			} else {
-				System.out.format(" %2d %10s\n", y + yl, "");
-			}
-		}
-		
-		y += yl;
-		
-		// Finish selectedCards
-		while(y < Math.max(15, selectedCards.size())) {
-			if(selectedCards.size() > y) 
-				System.out.format("%60s %2d %10s\n", " ", y, selectedCards.get(y).name);
-			else 
-				System.out.format("%60s %2d \n", " ", y);
-			y++;
-		}
-		
-		// Final lines
-		System.out.println("(P)revious    (N)ext   (Z)Quit");
-		
-		System.out.print(" ");
-		for(int i = 0; i < 26; i++) {
-			System.out.print(" - ");
-		}
-		System.out.println();
-		System.out.print(": ");
+		frame.setDrawnCards(deck, start, selectedCards);
+		frame.repaint();
 	}
 	
-	/** Lets player chose cards, until he is satisfied */
-	public void pickCards() {
-		int start = 0;
-		String s = "";
-		Scanner input = new Scanner(System.in);
-		s = input.nextLine(); // skip first user's enter from "ChooseYourHero" part
-		while(!s.equals("z")) {
-			drawCards(fullDeck, start);
-			s = input.nextLine();
-			int v = 0;
-			try { 
-				v = Integer.parseInt(s);
-				if(v <= selectedCards.size()) {
-					selectedCards.remove(v);
-				}
-			} catch (NumberFormatException e) {
-				if(s.length() > 0) {
-					if(s.toUpperCase().equals("P")) {
-						start = Math.max(0, start - CARDS_IN_A_ROW);
-					} else if(s.toUpperCase().equals("N")) {
-						start = Math.min(fullDeck.size() - CARDS_IN_A_ROW, start + CARDS_IN_A_ROW);
-					} else if(s.toUpperCase().equals("A") || s.toUpperCase().equals("S")
-							|| s.toUpperCase().equals("D")) {
-						Deck d = validDeck();
-						if(d != null) {
-							launchGame(d, s.toUpperCase().charAt(0));
-							input.close();
-							return;
-						}
-					} 
-					int i = 0;
-					for(char c: qwerty) {
-						if(s.toLowerCase().charAt(0) == c) {
-							if(selectedCards.size() < 15) {
-								selectedCards.add(fullDeck.get(start + i));
-								break;
-							}
-						}
-						i++;
-					}
-				}
-			}
+	public void removeSelecteCard(int i) {
+		if(i < selectedCards.size()) {
+			selectedCards.remove(i);
+			drawCards(fullDeck, startPos);
 		}
-		
-		input.close();
+	}
+	
+	public void selectCard(BasicCard c) {
+		if(selectedCards.size() < 15) { 
+			selectedCards.add(c);
+			drawCards(fullDeck, startPos);
+		}
+	}
+	
+	public void incPage() {
+		startPos = Math.min(fullDeck.size() - 10, startPos + 10);
+		drawCards(fullDeck, startPos);
+	}
+	
+	public void decPage() {
+		startPos = Math.max(0, startPos - 10);
+		drawCards(fullDeck, startPos);
 	}
 	
 	/**
@@ -299,14 +192,36 @@ public class DeckBuilder {
 		}
 	}
 	
+	public void startGame(String command) {
+		System.out.println("Launching: 1");
+		Deck d = validDeck();
+		if(d == null) return;
+		
+		
+		switch(command) {
+			case "Play vs Terran Ai":
+				System.out.println("Launching: 1.1");
+				launchGame(d, 'A');
+				break;
+			case "Play vs Passive Ai":
+				System.out.println("Launching: 1.2");
+				launchGame(d, 'S');
+				break;
+			default: 
+				break;
+		}
+	}
+	
 	public void launchGame(Deck d, char v) {
 		DeckPackReader dpr = new DeckPackReader();
+		System.out.println("Launching: 2");
 		d.shuffleCards();
 		Game g = new Game();
 		players.RealPlayer r = new players.RealPlayer(new SwingVS(g));
 		saveDeck();
 		switch (v) {
 			case 'A': {
+				System.out.println("Launching: 2.1");
 				Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 				d2.shuffleCards();
 				g.play(r, new players.SimpleBot(), d, d2, 15, 15);
@@ -314,12 +229,14 @@ public class DeckBuilder {
 			}
 			case 'S':
 			case 'D': {
+				System.out.println("Launching: 2.2");
 				Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 				d2.shuffleCards();
 				g.play(r, new players.PassiveBot(), d, d2, 15, 15);
 				break;
 			}
 			default: 
+				System.out.println("Launching: 2.3");
 		}
 	}
 	
@@ -337,50 +254,24 @@ public class DeckBuilder {
 	
 	public void chooseDeck() {
 		ArrayList<File> files = deckFiles();
+		frame.enableOverlay();
 		if(files != null && files.size() > 0) {
-			System.out.println("Load your previous deck: ");
 			
 			for(int i = 0; i < files.size(); i++) {
-				System.out.format("%c - %s\n", qwerty[i], files.get(i).getName());
+				frame.addOverlayOption(files.get(i).getName(), this);
 			}
 		}
-		
-		System.out.println("Choose your hero: ");
 		
 		for(int i = 0; i < names.length; i++) {
-			System.out.format("%d - %s\n", i, names[i]);
+			frame.addOverlayOption(names[i], this);
 		}
-		char i = 0;
-		while(true) {
-			try {
-				i = (char)System.in.read();
-			} catch (Exception e) {
-				
-			}
-			if(i - '0' >= 0 && i - '0' < names.length) {
-				ArrayList<BasicCard> c = new DeckPackReader().parseFile(links[i-'0']);
-				fullDeck.addAll(0, c);
-				pickCards();
-				return;
-			} else {
-				for(int j = 0; j < files.size(); j++) {
-					if(i == qwerty[j]) {
-						String fname = files.get(j).getName(); 
-						int num = fname.charAt(fname.length() - 1) - '0';
-						ArrayList<BasicCard> c = new DeckPackReader().parseFile(links[num]);
-						fullDeck.addAll(0, c);
-						loadDeck(files.get(j));
-						pickCards();
-						return;
-					}
-				}
-			}
-		}
+
 	}
 	
 	public DeckBuilder(ArrayList<BasicCard> deck) {
 		fullDeck = deck;
 		selectedCards = new ArrayList<BasicCard>(15);
+		frame = new CardPickingFrame(this);
 	}
 	
 	public static void main(String[] arg) {
@@ -388,6 +279,34 @@ public class DeckBuilder {
 		ArrayList<BasicCard> c = dpr.parseFile("NeutralsDeck.xml");
 		DeckBuilder db = new DeckBuilder(c);
 		db.chooseDeck();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		for(int i = 0; i < names.length; i++) {
+			if(arg0.getActionCommand().equals(names[i])) {
+				selectedCards = new ArrayList<BasicCard>(15);
+				fullDeck = new DeckPackReader().parseFile(links[i]);
+				frame.disableOverlay();
+				drawCards(fullDeck, startPos);
+				return;
+			}
+		}
+		
+		final int c = arg0.getActionCommand().charAt(arg0.getActionCommand().length() - 1) - '0';
+		selectedCards = new ArrayList<BasicCard>(15);
+		fullDeck = new DeckPackReader().parseFile(links[c]);
+		frame.disableOverlay();
+		loadDeck(deckFiles().get(c));
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				loadDeck(deckFiles().get(c));
+				drawCards(fullDeck, 0);
+			}
+		}).start();
+		
 	}
 
 }
