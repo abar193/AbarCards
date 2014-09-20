@@ -256,7 +256,7 @@ public class ConsoleVS implements VisualSystemInterface {
 							int tu, tp = opponent.playerNumber;
 							tu = (c == '-') ? -1 : c - '0';
 							
-							if(parent.attackIsValid(selectedUnit, tu, me.playerNumber, tp)) {
+							if(parent.attackIsValid(selectedUnit, tu, me.playerNumber)) {
 								input.makeUnitsAttack(selectedUnit, tu);
 							} else {
 								displayError("Invalid target");

@@ -12,6 +12,7 @@ public abstract class BasicCard {
 	public String name; 
 	public String description;
 	public String fullDescription;
+	public int deckNum;
 	
 	/**
 	 * Creates new instance of BasicCard

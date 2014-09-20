@@ -1,7 +1,7 @@
 package players;
 
 import src.FieldSituation;
-import src.Game;
+import src.GameInterface;
 import ui.VisualSystemInterface;
 import ui.InputInterface;
 import units.Unit;
@@ -19,8 +19,8 @@ import cards.*;
  *
  */
 public class RealPlayer implements PlayerInterface, InputInterface {
-
-	private Game parent;
+	
+	private GameInterface parent;
 	
 	private FieldSituation latestSituation;
 	private PlayerData me;
@@ -58,7 +58,7 @@ public class RealPlayer implements PlayerInterface, InputInterface {
 	}
 
 	@Override
-	public void setParentGame(Game g) {
+	public void setParentGameInterface(GameInterface g) {
 		parent = g;
 	}
 
@@ -96,8 +96,8 @@ public class RealPlayer implements PlayerInterface, InputInterface {
 
 	@Override
 	public void makeUnitsAttack(int u1, int u2) {
-		if(parent.attackIsValid(u1, u2, me.playerNumber, opponent.playerNumber)) {
-			parent.commitAttack(u1, u2, me.playerNumber, opponent.playerNumber);
+		if(parent.attackIsValid(u1, u2, me.playerNumber)) {
+			parent.commitAttack(u1, u2, me.playerNumber);
 		} else {
 			reciveAction("Invalid target");
 		}

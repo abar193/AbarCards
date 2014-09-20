@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import src.FieldSituation;
-import src.Game;
+import src.GameInterface;
 import units.TriggeringCondition;
 import units.Unit;
 import cards.BasicCard;
@@ -33,7 +33,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Game parent; 
+	private GameInterface parent; 
 	private InputInterface input;
 	
 	private CardsDrawer cardsDrawer;
@@ -52,7 +52,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	boolean turnEnded;
 	public boolean targeting = false; 
 	
-	public SwingVS(Game g) {
+	public SwingVS(GameInterface g) {
 		parent = g;
 		
 		setSize(800, 600);
@@ -220,7 +220,7 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 			if(side == 0)
 				targeting = false;
 			else {
-				if(parent.attackIsValid(selectedUnit, unit, me.playerNumber, (playerNumber + 1) % 2)) {
+				if(parent.attackIsValid(selectedUnit, unit, me.playerNumber)) {
 					targeting = false;
 					input.makeUnitsAttack(selectedUnit, unit);
 				} else {

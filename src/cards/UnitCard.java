@@ -15,6 +15,10 @@ public class UnitCard extends BasicCard {
 	public int qualities;
 	public String cardClass;
 	
+	public UnitCard() {
+		super("", "");
+	}
+	
 	public UnitCard(int damage, int health, int cost, String name, String desc) {
 		super(name, desc, cost);
 		baseHealth = health;

@@ -1,7 +1,7 @@
 package players;
 
 import src.FieldSituation;
-import src.Game;
+import src.GameInterface;
 import ui.VisualSystemInterface;
 import units.Unit;
 
@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class SimpleBot implements PlayerInterface {
 
-	private Game parent;
+	private GameInterface parent;
 	private FieldSituation latestSituation;
 	private PlayerData me;
 	private PlayerOpenData opponent;
@@ -62,12 +62,6 @@ public class SimpleBot implements PlayerInterface {
 	}
 
 	@Override
-	public void setParentGame(Game g) {
-		parent = g;
-
-	}
-
-	@Override
 	public void run() {
 		
 		attackWithAllUnits();
@@ -86,7 +80,7 @@ public class SimpleBot implements PlayerInterface {
 			if(totalAvailableDamage >= opponent.health && enemyTaunts == 0) { // Finish him
 				for(int i = 0; i < myDeck.size(); i++) {
 					if(myDeck.get(i).canAttack()) {
-						parent.commitAttack(i, -1, me.playerNumber, opponent.playerNumber);
+						parent.commitAttack(i, -1, me.playerNumber);
 						myDeck = latestSituation.allUnitFromOneSide(me.playerNumber, false);
 					}
 				}
@@ -101,7 +95,7 @@ public class SimpleBot implements PlayerInterface {
 									false);
 							i = 0;
 						} else {
-							parent.commitAttack(i, -1, me.playerNumber, opponent.playerNumber);
+							parent.commitAttack(i, -1, me.playerNumber);
 						}
 					} else {
 						i++;
@@ -132,6 +126,12 @@ public class SimpleBot implements PlayerInterface {
 	public VisualSystemInterface visual() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setParentGameInterface(GameInterface g) {
+		parent = g;
+		
 	}
 
 }

@@ -1,8 +1,7 @@
 package players;
 
 import src.FieldSituation;
-
-import src.Game;
+import src.GameInterface;
 import units.Unit;
 
 /**
@@ -26,17 +25,26 @@ public interface PlayerInterface extends Runnable {
 	public void reciveAction(String m);
 	
 	/**
-	 * Sets reference to an actual Game.
+	 * Sets reference to an the parent GameInterface.
 	 * @param g Game
 	 */
-	public void setParentGame(Game g);
+	public void setParentGameInterface(GameInterface g);
 	
 	/**
 	 * Here should player make his decisions and call methods like playCard or commitAttack on Game. 
 	 */
 	public void run();
 	
+	/**
+	 * Called by game - asks player to provide unit target
+	 * 
+	 * @return
+	 */
 	public Unit selectTarget();
 	
+	/**
+	 * Called by game: provide visual system to display some information, or error message
+	 * @return
+	 */
 	public ui.VisualSystemInterface visual();
 }

@@ -1,7 +1,7 @@
 package players;
 
 import src.FieldSituation;
-import src.Game;
+import src.GameInterface;
 import ui.VisualSystemInterface;
 import units.Unit;
 
@@ -23,11 +23,6 @@ public class PassiveBot implements PlayerInterface {
 	}
 
 	@Override
-	public void setParentGame(Game g) {
-
-	}
-
-	@Override
 	public void run() {
 
 	}
@@ -42,6 +37,12 @@ public class PassiveBot implements PlayerInterface {
 	public VisualSystemInterface visual() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setParentGameInterface(GameInterface g) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

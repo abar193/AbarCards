@@ -21,7 +21,7 @@ import players.*;
  * @author Abar
  *
  */
-public class Game {
+public class Game implements GameInterface {
 	
 	/**
 	 * Stores 2 players.
@@ -67,8 +67,8 @@ public class Game {
 		}
 		playersData[0].setPlayerNumber(0);
 		playersData[1].setPlayerNumber(1);
-		p1.setParentGame(this);
-		p2.setParentGame(this);
+		p1.setParentGameInterface(this);
+		p2.setParentGameInterface(this);
 	}
 	
 	
@@ -154,7 +154,8 @@ public class Game {
 	 * @param playerT opponent players number
 	 * @return true if attack is valid
 	 */
-	public boolean attackIsValid(int attacker, int target, int playerA, int playerT) {
+	public boolean attackIsValid(int attacker, int target, int playerA) {
+		int playerT = (playerA + 1) % 2;
 		if(target == -1) {
 			if(field.unitExist(attacker, playerA) && (field.tauntUnitsForPlayer(playerT) == 0)) {
 				return true;
@@ -222,8 +223,9 @@ public class Game {
 	/**
 	 * Makes two units attack each other (attackIsValid(a, t, pa, pt) is called first)
 	 */
-	public void commitAttack(int a, int t, int pa, int pt) {
-		if(attackIsValid(a, t, pa, pt)) {
+	public void commitAttack(int a, int t, int pa) {
+		if(attackIsValid(a, t, pa)) {
+			int pt = (pa + 1) % 2;
 			Unit attacker = field.unitForPlayer(a, pa);
 			if(t == -1) {
 				String s = attacker.myCard.name + " VS Hero";

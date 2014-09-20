@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Deck>
+<Deck num="0">
 	<!--  "Solid" group -->
 	<Unit Name="Solid 2-1" Description="" Damage="2" Health="1" Cost="1">
-	<Fulldesc txt="123456789 azazazazazazazazazaza"/>
+	<Fulldesc txt="123456789 long long text sometimesitsevenlonger"/>
 	</Unit>
 	<Unit Name="Solid 1-2" Description="" Damage="1" Health="2" Cost="1">
 	</Unit>

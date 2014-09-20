@@ -30,6 +30,7 @@ public class DeckPackReader extends DefaultHandler {
 	private UnitPower power;
 	private SpellCard spell;
 	private SpellXMLBuilder spellBuilder;
+	private int deckNumber;
 	
 	private static final boolean IS_JAR = true;
 	
@@ -81,6 +82,7 @@ public class DeckPackReader extends DefaultHandler {
     		
     		if(localName.equals("Unit")) {
     			unit = tmp;
+    			unit.deckNum = deckNumber;
     		} else {
     			helper = tmp;
     		}
@@ -88,6 +90,7 @@ public class DeckPackReader extends DefaultHandler {
     		SpellCard sc = spellBuilder.reciveOpenTag(localName, atts);
     		if(sc != null) {
     			spell = sc;
+    			spell.deckNum = deckNumber;
     		}
     	} else if(localName.contains("Filter")) {
     		if(power != null) {
@@ -130,6 +133,9 @@ public class DeckPackReader extends DefaultHandler {
 				src.Game.currentGame.displayError("Unknown tag " + localName);
 			else 
 				System.out.println("Unknown tag " + localName);
+    	} else if(localName.equals("Deck")) {
+    		if(atts.getValue("num") != null)
+    			deckNumber = Integer.parseInt(atts.getValue("num"));	
     	}
     }
     
@@ -187,6 +193,7 @@ public class DeckPackReader extends DefaultHandler {
 	        return resultingCard;
     	} catch (Exception e) {
     		System.out.println("Exception " + e.getMessage());
+    		e.printStackTrace();
     		return null;
     	}
         
@@ -197,7 +204,7 @@ public class DeckPackReader extends DefaultHandler {
 		DeckPackReader dpr = new DeckPackReader();
 		ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml");
 		for(BasicCard c : bc) {
-			System.out.format("%s %s %d\n", c.name, c.fullDescription, c.cost);
+			System.out.format("%s %s %d %d\n", c.name, c.fullDescription, c.cost, c.deckNum);
 		}
 	}
 
