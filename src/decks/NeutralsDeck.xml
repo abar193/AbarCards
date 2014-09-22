@@ -28,7 +28,7 @@
 	<Unit Name="Solid 8-8" Description="" Damage="8" Health="8" Cost="10">
 	</Unit>
 	<!--  Taunters group -->
-	<Unit Name="Taunt 0-4" Description="" Damage="0" Health="4" Cost="1">
+	<Unit Name="Taunt 0-4" Description="Taunt" Damage="0" Health="4" Cost="1">
 		<Qualities v="4"/>
 	</Unit>
 	<Unit Name="Taunt 2-2" Description="" Damage="2" Health="2" Cost="2">
