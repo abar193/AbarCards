@@ -1,6 +1,7 @@
 package cards;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.json.*;
@@ -35,6 +36,14 @@ public class CardJSONOperations {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public Map<String, String> mapFromCard(BasicCard c) {
+		Map<String, String> m = new LinkedHashMap<String, String>();
+		m.put("Name", c.name);
+		m.put("Cost", Integer.toString(c.cost));
+		m.put("Deck", Integer.toString(c.deckNum));
+		return m;
 	}
 
 	

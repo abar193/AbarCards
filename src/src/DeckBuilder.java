@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import network.ServerGame;
 import ui.CardPickingFrame;
 import ui.ConsoleVS;
 import ui.SwingVS;
@@ -199,7 +200,6 @@ public class DeckBuilder implements ActionListener {
 		Deck d = validDeck();
 		if(d == null) return;
 		
-		
 		switch(command) {
 			case "Play vs Terran Ai":
 				System.out.println("Launching: 1.1");
@@ -209,9 +209,24 @@ public class DeckBuilder implements ActionListener {
 				System.out.println("Launching: 1.2");
 				launchGame(d, 'S');
 				break;
+			case "Socket: vs Terran Ai":
+				System.out.println("Watch out, we got a sockets there!");
+				onlineGame(d, 'T');
 			default: 
 				break;
 		}
+	}
+	
+	public void onlineGame(Deck d, char c) {
+		String opponent = "";
+		if(c == 'T') opponent = "Terran";
+		if(ServerGame.instance().validateDeck(selectedCards, opponent)) {
+			if(ServerGame.instance().play()) {
+				players.RealPlayer r = new players.RealPlayer(new SwingVS(ServerGame.instance()));
+				r.setParentGameInterface(ServerGame.instance());
+			}
+		}
+		
 	}
 	
 	public void launchGame(Deck d, char v) {
@@ -226,7 +241,8 @@ public class DeckBuilder implements ActionListener {
 				System.out.println("Launching: 2.1");
 				Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 				d2.shuffleCards();
-				g.play(r, new players.SimpleBot(), d, d2, 15, 15);
+				g.configure(r, new players.SimpleBot(), d, d2, 15, 15);
+				g.play();
 				break;
 			}
 			case 'S':
@@ -234,7 +250,8 @@ public class DeckBuilder implements ActionListener {
 				System.out.println("Launching: 2.2");
 				Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
 				d2.shuffleCards();
-				g.play(r, new players.PassiveBot(), d, d2, 15, 15);
+				g.configure(r, new players.PassiveBot(), d, d2, 15, 15);
+				g.play();
 				break;
 			}
 			default: 

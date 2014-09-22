@@ -72,11 +72,7 @@ public class Game implements GameInterface {
 	}
 	
 	
-	/** Launches the game */
-	public void play(PlayerInterface p1, PlayerInterface p2, Deck d1, Deck d2, int h1, int h2) {
-		
-		factory = new UnitFactory();
-		
+	public void configure(PlayerInterface p1, PlayerInterface p2, Deck d1, Deck d2, int h1, int h2) {
 		/* * * Initialization * * */
 		field = new FieldSituation();
 		currentGame = this;
@@ -88,16 +84,13 @@ public class Game implements GameInterface {
 		playersData[0].pullCard(2);
 		playersData[1].pullCard(3);
 		
-		/* * * Test games * * */ 
+	}
+	
+	/** Launches the game */
+	public void play() {
 		
-		Unit tauntUnit = new Unit(new UnitCard(0, 2, 1, "Bunker", ""), 
-				player2.playerNumber);
-		tauntUnit.setQuality(Quality.Taunt);
-		tauntUnit.myCard.fullDescription = "Has taunt";
-		field.addUnit(tauntUnit, player2.playerNumber);
-		tauntUnit = new Unit(new UnitCard(1, 14, 1, "Tanker", ""), 
-				player1.playerNumber);
-		field.addUnit(tauntUnit, player1.playerNumber);
+		factory = new UnitFactory();
+		
 		/* * * Game cycle * * */
 		field.refreshUnits();
 		int i = 0;
@@ -416,7 +409,8 @@ public class Game implements GameInterface {
 		RealPlayer p1 = new RealPlayer(new SwingVS(g));
 		SimpleBot p2 = new SimpleBot();
 		
-		g.play(p1, p2, d1, d2, 15, 15);
+		g.configure(p1, p2, d1, d2, 15, 15);
+		g.play(); 
 	}
 	
 	/** For tests only */
