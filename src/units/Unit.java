@@ -1,9 +1,15 @@
 package units;
 
+import cards.BasicCard;
 import cards.UnitCard;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.ArrayList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 /**
  * Represents single unit from battelfield. 
@@ -57,7 +63,43 @@ public class Unit {
 	private ArrayList<UnitPower> powers;
 	private boolean canAttack;
 	
+	public Map<String, String> toMap() {
+		Map<String, String> m = new LinkedHashMap<String, String>();
+		m.put("MyCard", JSONValue.toJSONString(cards.CardJSONOperations.instance.mapFromCard(myCard)));
+		m.put("ModDmg", Integer.toString(modDmg));
+		m.put("ModHealth", Integer.toString(modHealth));
+		m.put("ModQualities", Integer.toString(modQualities));
+		m.put("MyPlayer", Integer.toString(myPlayer));
+		m.put("CurrentHealth", Integer.toString(currentHealth));
+		m.put("MaxHealth", Integer.toString(maxHealth));
+		m.put("CurrentDamage", Integer.toString(currentDamage));
+		m.put("Qualities", Integer.toString(qualities));
+		m.put("AttackedAlready", Integer.toString(attackedAlready));
+		m.put("CanAttack", Integer.toString(canAttack ? 1 : 0));
+		return m;
+	}
 	
+	@SuppressWarnings("unchecked")
+	public Unit(Map m) {
+		try { 
+			myCard = (UnitCard) cards.CardJSONOperations.instance.cardFromMap((Map)m.get("MyCard"));
+		} catch(ClassCastException e) {
+			myCard = (UnitCard) cards.CardJSONOperations.instance.
+					cardFromMap((Map)JSONValue.parse((String)m.get("MyCard")));
+		}
+		
+		modDmg = Integer.parseInt((String) m.get("ModDmg"));
+		modHealth = Integer.parseInt((String) m.get("ModHealth"));
+		modQualities = Integer.parseInt((String) m.get("ModQualities"));
+		myPlayer = Integer.parseInt((String) m.get("MyPlayer"));
+		currentHealth = Integer.parseInt((String) m.get("CurrentHealth"));
+		maxHealth = Integer.parseInt((String) m.get("MaxHealth"));
+		currentDamage = Integer.parseInt((String) m.get("CurrentDamage"));
+		qualities = Integer.parseInt((String) m.get("Qualities"));
+		attackedAlready = Integer.parseInt((String) m.get("AttackedAlready"));
+		canAttack = Integer.parseInt((String) m.get("CanAttack")) == 1;
+	}
+		
 	/* Initialisation */
 	public Unit(UnitCard card, int player) {
 		currentHealth = card.getHealth();
@@ -291,5 +333,10 @@ public class Unit {
 				p.exequte(this, myPlayer);
 			}
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("U[%s, %d/%d]", myCard.name, getCurrentDamage(), getCurrentHealth());
 	}
 }

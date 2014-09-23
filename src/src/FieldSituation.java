@@ -2,7 +2,14 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
+
+import cards.BasicCard;
+import units.PlayerUnit;
 import units.TriggeringCondition;
 import units.Unit;
 import units.UnitFilter;
@@ -35,6 +42,52 @@ public class FieldSituation {
 		}};
 		
 		heroes = new ArrayList<Unit>(2);
+	}
+	
+
+	public Map toMap() {
+		Map m = new LinkedHashMap();
+		for(int j = 0; j < 2; j++) {
+			JSONArray jarr = new JSONArray();
+			Iterator<Unit> i = playerUnits.get(j).iterator();
+			while(i.hasNext()) {
+				jarr.add(i.next().toMap());
+			}
+			
+			m.put(Integer.toString(j), jarr);
+			m.put("Hero" + Integer.toString(j), (heroes.get(j).toMap()));
+		}
+		return m;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public FieldSituation(Map m) {
+		
+		playerUnits = new ArrayList<ArrayList<Unit>>(2);
+		heroes = new ArrayList<Unit>(2);
+		for(int j = 0; j < 2; j++) {
+			JSONArray jarr;
+			try { 
+				jarr = (JSONArray) m.get(Integer.toString(j));
+			} catch(ClassCastException e) {
+				jarr = (JSONArray) JSONValue.parse((String) m.get(Integer.toString(j)));
+			}
+			
+			ArrayList<Unit> arr = new ArrayList<Unit>(jarr.size());
+			playerUnits.add(arr);
+			java.util.Iterator<Map> i = jarr.iterator();
+			while(i.hasNext()) {
+				arr.add(new Unit(i.next()));
+			}
+			Unit h;
+			try { 
+				h = new Unit((Map)m.get("Hero" + Integer.toString(j)));
+			} catch(ClassCastException e) {
+				h = new Unit((Map)JSONValue.parse((String) m.get("Hero" + Integer.toString(j))));
+			}
+			
+			heroes.add(h);
+		}	
 	}
 	
 	/**

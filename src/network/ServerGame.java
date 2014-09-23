@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import cards.BasicCard;
 import cards.CardJSONOperations;
@@ -15,6 +16,10 @@ import javax.websocket.*;
 
 import org.json.simple.*;
 import org.json.*;
+
+import players.PlayerData;
+import players.PlayerOpenData;
+import src.FieldSituation;
 
 /**
  * Represents client side of the GameInterface, revives user input and sends it to websocket server. 	
@@ -32,7 +37,21 @@ public class ServerGame implements GameInterface {
 	String responseMessage;
 	CardJSONOperations jsonop = new CardJSONOperations();
 	Session s;
-	
+	players.PlayerInterface pli;
+
+	public static ServerGame instance() {
+		if(!initialising) {
+			createServerGame();
+		}
+		while(instance == null) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return instance;
+	}
 	
 	public static void createServerGame() {
 		try {
@@ -49,18 +68,8 @@ public class ServerGame implements GameInterface {
 		instance = this;
 	}
 	
-	public static ServerGame instance() {
-		if(!initialising) {
-			createServerGame();
-		}
-		while(instance == null) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		return instance;
+	public void setPI(players.PlayerInterface pli) {
+		this.pli = pli;
 	}
 	
 	@OnOpen
@@ -70,10 +79,26 @@ public class ServerGame implements GameInterface {
 
 	@OnMessage
 	public void onMessage(String message, Session session) {
-		if(message.equals("Hi")) return; // connected
-
-		responseMessage = message;
 		System.out.println("Got msg: " + message);
+		
+		if(message.equals("Hi")) return; // connected
+		
+		if(message.contains("target")) {
+			JSONObject jobj = (JSONObject) JSONValue.parse(message);
+			if(((String)jobj.get("target")).equals("player")) {
+				playerAnalyser(jobj);
+			}
+			
+			return;
+		}
+		while(responseMessage != null) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		responseMessage = message;
 	}
 
 
@@ -114,7 +139,7 @@ public class ServerGame implements GameInterface {
 		
 		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj));
 	
-		return resp.equals(ServerResponses.ResponseTrue);
+		return resp.equals(ServerResponses.ResponseOk);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -191,6 +216,30 @@ public class ServerGame implements GameInterface {
 		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj));
 		if(!resp.equals(ServerResponses.ResponseOk)) {
 			System.err.println("Not ok in playCard, response: " + resp);
+		}
+	}
+	
+	public void playerAnalyser(JSONObject jobj) {
+		while(pli == null) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		switch((String)jobj.get("action")) {
+			case "run":
+				pli.run();
+				break;
+			case "reciveAction":
+				pli.reciveAction((String)jobj.get("message"));
+				break;
+			case "reciveInfo":
+				PlayerData pd = new PlayerData((Map)jobj.get("yourData"));
+				FieldSituation fs = new FieldSituation((Map)jobj.get("field"));
+				PlayerOpenData pod = new PlayerOpenData((Map)jobj.get("enemyData"));
+				pli.reciveInfo(pd, fs, pod);
+				break;
 		}
 	}
 	

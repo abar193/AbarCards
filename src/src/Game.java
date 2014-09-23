@@ -112,7 +112,8 @@ public class Game implements GameInterface {
 			/* * * Wait for player * * */
 			Thread t = new Thread(players.get(i%2));
 			Thread tk = new Thread(new ThreadKiller(t));
-			t.start();
+			if(!(t instanceof Runnable)) players.get(i%2).run();
+			else t.start();
 			tk.start();
 			try { 
 				t.join();

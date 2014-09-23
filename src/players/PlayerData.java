@@ -2,16 +2,19 @@ package players;
 
 import cards.Deck;
 import cards.BasicCard;
-
 import players.PlayerInterface;
-
 import units.PlayerUnit;
-
 import effects.AbstractSpell;
 import effects.PlayerValueSpell;
 import effects.PlayerValueModifier;
 
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.json.simple.*;
+import org.json.*;
 
 /**
  * Stores all the important information about player's state like his deck,
@@ -26,6 +29,7 @@ public class PlayerData {
 	public static int MAXHANDLIMIT = 10;
 	
 	private Deck myDeck;
+	private int myDeckSize;
 	private ArrayList<BasicCard> myHand;
 	
 	private int totalMana;
@@ -176,7 +180,7 @@ public class PlayerData {
 	
 	public void setPlayerNumber(int pn) {
 		playerNumber = pn;
-		switch(pn) {
+		/*switch(pn) {
 			case 0:
 				myPlayer.reciveAction("You go first");
 				break;
@@ -185,7 +189,7 @@ public class PlayerData {
 				break;
 			default: 
 				myPlayer.reciveAction("You are #" + Integer.toString(pn-1)); // unreachable
-		}
+		}*/
 	}
 	
 	public int getHealth() {
@@ -201,7 +205,8 @@ public class PlayerData {
 	}
 	
 	public int getDeckSize() {
-		return myDeck.getSize();
+		if(myDeck == null) return myDeckSize;
+		else return myDeck.getSize();
 	}
 	
 	public int getHandSize() {
@@ -210,6 +215,50 @@ public class PlayerData {
 	
 	public ArrayList<BasicCard> getHand() {
 		return myHand;
+	}
+	
+	public Map<String, String> toMap() {
+		Map<String, String> m = new LinkedHashMap<String, String>();
+		m.put("TotalMana", Integer.toString(getTotalMana()));
+		m.put("AvailableMana", Integer.toString(this.getAvailableMana()));
+		m.put("Health", Integer.toString(getHealth()));
+		m.put("DeckSize", Integer.toString(this.getDeckSize()));
+		m.put("PlayerNumber", Integer.toString(this.playerNumber));
+		JSONArray jarr = new JSONArray();
+		cards.CardJSONOperations op = new cards.CardJSONOperations();
+		for(int i = 0; i < this.myHand.size(); i++) {
+			jarr.add(op.mapFromCard(this.myHand.get(i)));
+		}
+		m.put("Hand", JSONValue.toJSONString(jarr));
+		return m;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public PlayerData(Map m) {
+		int pn = Integer.parseInt((String) m.get("PlayerNumber"));
+		int ds = Integer.parseInt((String) m.get("DeckSize"));
+		int h  = Integer.parseInt((String) m.get("Health"));
+		int am = Integer.parseInt((String) m.get("AvailableMana"));
+		int tm = Integer.parseInt((String) m.get("TotalMana"));
+		
+		JSONArray jarr;
+		try { 
+			jarr = (JSONArray) m.get("Hand");
+		} catch(ClassCastException e) {
+			jarr = (JSONArray) JSONValue.parse((String) m.get("Hand"));
+		}
+		
+		myHand = new ArrayList<BasicCard>(jarr.size());
+		java.util.Iterator<Map> i = jarr.iterator();
+		cards.CardJSONOperations op = new cards.CardJSONOperations();
+		while(i.hasNext()) {
+			myHand.add(op.cardFromMap(i.next()));
+		}
+		this.playerNumber = pn;
+		this.myDeckSize = ds;
+		representingUnit = new PlayerUnit(new cards.UnitCard(0, h, 0, "Hero", ""), 0);
+		this.availableMana = am;
+		this.totalMana = tm;
 	}
 	
 	/** 
@@ -235,4 +284,5 @@ public class PlayerData {
 		pod.handSize = this.getHandSize();
 		pod.playerNumber = this.playerNumber;
 	}
+
 }

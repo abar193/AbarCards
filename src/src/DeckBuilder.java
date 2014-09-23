@@ -224,6 +224,7 @@ public class DeckBuilder implements ActionListener {
 			if(ServerGame.instance().play()) {
 				players.RealPlayer r = new players.RealPlayer(new SwingVS(ServerGame.instance()));
 				r.setParentGameInterface(ServerGame.instance());
+				ServerGame.instance().setPI(r);
 			}
 		}
 		

@@ -15,6 +15,8 @@ public class CardJSONOperations {
 	private static final String[] names = {"Neutrals", "Machines"};
 	private static final String[] links = {"NeutralsDeck.xml", "MachinesDeck.xml"};
 	
+	public static CardJSONOperations instance = new CardJSONOperations();
+	
 	public BasicCard cardFromMap(Map<String, String> m) {
 		try { 
 			String name = m.get("Name");
