@@ -205,7 +205,8 @@ public class FieldSituation {
 	public ArrayList<Unit> allUnitFromOneSide(int player, boolean includeHero) {
 		ArrayList<Unit> al = new ArrayList<Unit>(playerUnits.get(player));
 		if(includeHero)
-			al.add(heroes.get(player));
+			if(heroes.size() == 2)
+				al.add(heroes.get(player));
 		return al;
 	}
 	

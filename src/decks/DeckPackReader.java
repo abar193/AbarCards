@@ -202,7 +202,7 @@ public class DeckPackReader extends DefaultHandler {
 	public static void main(String[] args) throws Exception {
         
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml");
+		ArrayList<BasicCard> bc = dpr.parseFile("BotImbaDeck.xml");
 		for(BasicCard c : bc) {
 			System.out.format("%s %s %d %d\n", c.name, c.fullDescription, c.cost, c.deckNum);
 		}

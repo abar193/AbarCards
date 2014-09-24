@@ -3,6 +3,7 @@ package network;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,11 +35,12 @@ public class ServerGame implements GameInterface {
 	private static boolean initialising = false;
 	
 	Object o = new Object();
-	String responseMessage;
 	CardJSONOperations jsonop = new CardJSONOperations();
 	Session s;
 	players.PlayerInterface pli;
-
+	
+	EnumMap<PossibleServerActions, String> response = new EnumMap<PossibleServerActions, String>(PossibleServerActions.class);
+			
 	public static ServerGame instance() {
 		if(!initialising) {
 			createServerGame();
@@ -83,22 +85,25 @@ public class ServerGame implements GameInterface {
 		
 		if(message.equals("Hi")) return; // connected
 		
-		if(message.contains("target")) {
-			JSONObject jobj = (JSONObject) JSONValue.parse(message);
-			if(((String)jobj.get("target")).equals("player")) {
-				playerAnalyser(jobj);
+		try {
+			final JSONObject jobj = (JSONObject) JSONValue.parse(message);
+			if(jobj.containsKey("target")) {
+				if(((String)jobj.get("target")).equals("player")) {
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							playerAnalyser(jobj);
+						}
+					}).start();
+				}
+				return;
+			} else if(jobj.containsKey("response")) {
+				response.put(PossibleServerActions.fromString((String)jobj.get("response")),
+						(String)jobj.get("status"));
 			}
-			
-			return;
+		} catch (Exception e) {
+			System.err.println("Error in message: " + message);
 		}
-		while(responseMessage != null) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		responseMessage = message;
 	}
 
 
@@ -107,23 +112,30 @@ public class ServerGame implements GameInterface {
         System.out.println(closeReason.toString());
     }
     
-	private String sendMessageAndAwaitAnswer(String message) {
+	private String sendMessageAndAwaitAnswer(String message, String action) {
 		System.out.println("Sending: " + message);
-		synchronized(o) {
-			try {
-				responseMessage = null;
-				s.getBasicRemote().sendText(message);
-				while(responseMessage == null) {
-					Thread.sleep(100);
+		synchronized(s) {
+			if (s.isOpen()) {
+				try {
+					response.put(PossibleServerActions.fromString(action), null);
+					s.getBasicRemote().sendText(message);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				
-			}
+			} else System.err.println("Session closed");
 		}
-		return responseMessage;
+		
+		try {
+			while(response.get(PossibleServerActions.fromString(action)) == null) {
+				Thread.sleep(100);
+			}
+			return response.get(PossibleServerActions.fromString(action));
+		} catch (InterruptedException e) {
+		}
+		return null;
+		
 	}
+	
     
 	@SuppressWarnings("unchecked")
 	public boolean validateDeck(ArrayList<BasicCard> c, String enemy) {
@@ -137,8 +149,8 @@ public class ServerGame implements GameInterface {
 		obj.put("deck", jarr);
 		obj.put("opponent", enemy);
 		
-		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj));
-	
+		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj), "deck");
+		System.out.println("Validate got " + resp);
 		return resp.equals(ServerResponses.ResponseOk);
 	}
 	
@@ -147,12 +159,13 @@ public class ServerGame implements GameInterface {
 		JSONObject obj = new JSONObject();
 		obj.put("action", "play");
 		
-		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj));
+		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj), "play");
+		System.out.println("Play got " + resp);
 		if(resp.equals(ServerResponses.ResponseIllegal)) {
 			System.err.println("Illegal move in play with output msg = " + JSONValue.toJSONString(obj));
 		}
 		
-		return resp.equals(ServerResponses.ResponseTrue);
+		return resp.equals(ServerResponses.ResponseOk);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -161,9 +174,10 @@ public class ServerGame implements GameInterface {
 		JSONObject jobj = new JSONObject();
 		jobj.put("action", "canPlayCard");
 		jobj.put("card", jsonop.mapFromCard(c));
-		jobj.put("player", player);
+		jobj.put("player", Integer.toString(player));
 		
-		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj));
+		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "canPlayCard");
+		System.out.println("Resp got" + resp);
 		if(resp.equals(ServerResponses.ResponseIllegal)) {
 			System.err.println("Illegal move in canPlayCard with output msg = " + JSONValue.toJSONString(jobj));
 		}
@@ -176,8 +190,8 @@ public class ServerGame implements GameInterface {
 		JSONObject jobj = new JSONObject();
 		jobj.put("action", "playCard");
 		jobj.put("card", jsonop.mapFromCard(c));
-		jobj.put("player", player);
-		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj));
+		jobj.put("player", Integer.toString(player));
+		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "playCard");
 		if(!resp.equals(ServerResponses.ResponseOk)) {
 			System.err.println("Not ok in playCard, response: " + resp);
 		}
@@ -188,11 +202,11 @@ public class ServerGame implements GameInterface {
 	public boolean attackIsValid(int attacker, int target, int playerA) {
 		JSONObject jobj = new JSONObject();
 		jobj.put("action", "attackIsValid");
-		jobj.put("attacker", attacker);
-		jobj.put("target", target);
-		jobj.put("player", playerA);
+		jobj.put("attacker", Integer.toString(attacker));
+		jobj.put("target", Integer.toString(target));
+		jobj.put("player", Integer.toString(playerA));
 		
-		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj));
+		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "attackIsValid");
 		if(resp.equals(ServerResponses.ResponseIllegal)) {
 			System.err.println("Illegal move in attackIsValid with output msg = " + JSONValue.toJSONString(jobj));
 		}
@@ -209,11 +223,11 @@ public class ServerGame implements GameInterface {
 	public void commitAttack(int a, int t, int pa) {
 		JSONObject jobj = new JSONObject();
 		jobj.put("action", "commitAttack");
-		jobj.put("attacker", a);
-		jobj.put("target", t);
-		jobj.put("player", pa);
+		jobj.put("attacker", Integer.toString(a));
+		jobj.put("target", Integer.toString(t));
+		jobj.put("player", Integer.toString(pa));
 		
-		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj));
+		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "commitAttack");
 		if(!resp.equals(ServerResponses.ResponseOk)) {
 			System.err.println("Not ok in playCard, response: " + resp);
 		}
@@ -243,7 +257,4 @@ public class ServerGame implements GameInterface {
 		}
 	}
 	
-	public static void main(String[] args) {
-		ServerGame.instance().canPlayCard(null, 0);
-	}
 }

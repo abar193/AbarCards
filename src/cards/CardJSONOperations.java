@@ -12,8 +12,8 @@ import decks.DeckPackReader;
 
 public class CardJSONOperations {
 
-	private static final String[] names = {"Neutrals", "Machines"};
-	private static final String[] links = {"NeutralsDeck.xml", "MachinesDeck.xml"};
+	private static final String[] names = {"Neutrals", "Machines", "Terran"};
+	private static final String[] links = {"NeutralsDeck.xml", "MachinesDeck.xml", "BotImbaDeck.xml"};
 	
 	public static CardJSONOperations instance = new CardJSONOperations();
 	
@@ -24,6 +24,9 @@ public class CardJSONOperations {
 			int deck = Integer.parseInt(m.get("Deck"));
 			ArrayList<BasicCard> myDeck = singleAllDeck().get(deck);
 			java.util.Iterator<BasicCard> i = myDeck.iterator();
+			if(name.equals("Hero")) {
+				return new UnitCard(0, 15, 0, "Hero", "");
+			}
 			while(i.hasNext()) {
 				BasicCard c = i.next();
 				if(c.name.equals(name)) {
@@ -37,6 +40,7 @@ public class CardJSONOperations {
 		} catch (NumberFormatException | NullPointerException e) {
 			e.printStackTrace();
 		}
+		System.err.println("Can't create card: " + m.toString());
 		return null;
 	}
 	

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Deck>
+<Deck num="2">
 	<Unit Name="Marine" Description="" Damage="2" Health="1" Cost="1">
 		<Qualities v="8"/>
 		<Fulldesc txt="Has charge"/>
