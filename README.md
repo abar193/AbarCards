@@ -36,6 +36,6 @@ What I'm working on for now:
 	
 	2 User Interface 
 	
-	? I'd like to extend mechanics of the game, add new reaces and stuff
+	? I'd like to extend mechanics of the game, add new races and stuff
 
     
