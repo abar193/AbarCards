@@ -23,16 +23,16 @@ import players.*;
  */
 public class Game implements GameInterface {
 	
-	/**
-	 * Stores 2 players.
-	 */
+	/* Stores 2 players. */
 	private ArrayList<PlayerInterface> players;
-	/** Stores playerData for both players */
+	/* Stores playerData for both players */
 	private PlayerData[] playersData;
-	/** Field, where all units, building (and heroes?) are standing*/
+	/* Field, where all units, building (and heroes?) are standing*/
 	private FieldSituation field;
 	public UnitFactory factory;
 	
+	private Thread playerThread;
+	private int playerTurn;
 	/**
 	 * Initialises player-relevant variables, and randomly puts chooses Player1 and Player2 from 
 	 * 		p1 and p2. Order of p1 and p2 is irrelevant, the key thing is that d1 shall store 
@@ -110,19 +110,20 @@ public class Game implements GameInterface {
 					playersData[(i+1)%2].craeteOpenData());
 			
 			/* * * Wait for player * * */
-			Thread t = new Thread(players.get(i%2));
-			Thread tk = new Thread(new ThreadKiller(t));
-			if(!(t instanceof Runnable)) players.get(i%2).run();
-			else t.start();
+			playerTurn = i % 2;
+			playerThread = new Thread(players.get(i%2));
+			Thread tk = new Thread(new ThreadKiller(playerThread));
+			if(!(playerThread instanceof Runnable)) players.get(i%2).run();
+			else playerThread.start();
 			tk.start();
 			try { 
-				t.join();
+				playerThread.join();
 				if(tk.isAlive()) 
 					tk.interrupt();
 			} catch (InterruptedException e) {
 				
 			}
-			t.interrupt();
+			playerThread.interrupt();
 			/* * * End turn * * */
 			playersData[i%2].auras.removeOutdatedAuras();
 			for(Unit u : field.allUnitFromOneSide(i%2, false)) {
@@ -417,5 +418,13 @@ public class Game implements GameInterface {
 	/** For tests only */
 	public void applyFieldSituation(FieldSituation newField) {
 		field = newField;
+	}
+
+
+	@Override
+	public void endTurn(int player) {
+		if(playerTurn == player) {
+			playerThread.interrupt();
+		}
 	}
 }

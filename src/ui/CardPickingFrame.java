@@ -126,10 +126,11 @@ public class CardPickingFrame extends JFrame implements ActionListener {
         
         pane.add(bottomLayer, JLayeredPane.DEFAULT_LAYER);
         
-        overlay = new Panel();
+        Panel toverlay = new Panel();
         SpringLayout layout = new SpringLayout();
         
-        overlay.setLayout(layout);
+        toverlay.setLayout(layout);
+        overlay = toverlay;
         overlay.setBackground(java.awt.Color.GREEN);
         overlay.setBounds(200, 100, 400, 400);
         overlay.setEnabled(false);
@@ -214,6 +215,7 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 			}
         }
         overlay.add(option);
+        
         ((SpringLayout)overlay.getLayout()).putConstraint(SpringLayout.NORTH, option, 5,
                 SpringLayout.NORTH, overlay);
         ((SpringLayout)overlay.getLayout()).putConstraint(SpringLayout.WEST, option, 5,

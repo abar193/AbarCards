@@ -1,7 +1,7 @@
 package network;
 
 public enum PossibleServerActions {
-	play, canPlayCard, playCard, attackIsValid, commitAttack, deck, err;
+	play, canPlayCard, playCard, attackIsValid, commitAttack, deck, endTurn, err;
 	
 	public static PossibleServerActions fromString(String s) {
 		switch(s) {
@@ -17,6 +17,8 @@ public enum PossibleServerActions {
 				return commitAttack;
 			case "deck":
 				return deck;
+			case "endTurn":
+				return endTurn;
 			default:
 				return err;
 		}

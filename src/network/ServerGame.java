@@ -233,6 +233,16 @@ public class ServerGame implements GameInterface {
 		}
 	}
 	
+
+	@Override
+	public void endTurn(int player) {		
+		JSONObject jobj = new JSONObject();
+		jobj.put("action", "endTurn");
+		jobj.put("player", Integer.toString(player));
+		sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "endTurn"); 
+	}
+
+	
 	public void playerAnalyser(JSONObject jobj) {
 		while(pli == null) {
 			try {
@@ -255,6 +265,5 @@ public class ServerGame implements GameInterface {
 				pli.reciveInfo(pd, fs, pod);
 				break;
 		}
-	}
-	
+	}	
 }

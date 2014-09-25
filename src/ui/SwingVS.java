@@ -65,7 +65,6 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
         });
 		
 	}
-
 	
 	public void createAndShowGUI() {
 		setLayout(new BorderLayout());
@@ -257,8 +256,14 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		turnEnded = true;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				parent.endTurn(playerNumber);
+			}
+		}).start();
+		
 	}
-
 
 	@Override
 	public Unit provideUnit() {

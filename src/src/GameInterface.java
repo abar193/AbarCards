@@ -24,6 +24,12 @@ public interface GameInterface {
 	 */
 	public void commitAttack(Unit attacker, Unit target);
 	
+	/**
+	 * If it is players turn, ends it. 
+	 * @param player number of player who sends it
+	 */
+	public void endTurn(int player);
+	
 	/** Make two unit attack each other by unit's numbers */
 	public void commitAttack(int a, int t, int pa);
 }
