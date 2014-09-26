@@ -102,33 +102,33 @@ public class DeckBuilder implements ActionListener {
 	 * @throws IndexOutOfBoundsException exception if start < 0, or 
 	 * start + CARDS_IN_A_ROW > deck.size 
 	 */
-	public void drawCards(ArrayList<BasicCard> deck, int start) {
-		frame.setDrawnCards(deck, start, selectedCards);
+	public void drawCards() {
+		frame.setDrawnCards(fullDeck, startPos, selectedCards);
 		frame.repaint();
 	}
 	
 	public void removeSelecteCard(int i) {
 		if(i < selectedCards.size()) {
 			selectedCards.remove(i);
-			drawCards(fullDeck, startPos);
+			drawCards();
 		}
 	}
 	
 	public void selectCard(BasicCard c) {
 		if(selectedCards.size() < 15) { 
 			selectedCards.add(c);
-			drawCards(fullDeck, startPos);
+			drawCards();
 		}
 	}
 	
 	public void incPage() {
 		startPos = Math.min(fullDeck.size() - 10, startPos + 10);
-		drawCards(fullDeck, startPos);
+		drawCards();
 	}
 	
 	public void decPage() {
 		startPos = Math.max(0, startPos - 10);
-		drawCards(fullDeck, startPos);
+		drawCards();
 	}
 	
 	/**
@@ -309,7 +309,7 @@ public class DeckBuilder implements ActionListener {
 				ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
 				fullDeck.addAll(0, classCards);
 				frame.disableOverlay();
-				drawCards(fullDeck, startPos);
+				drawCards();
 				return;
 			}
 		}
@@ -324,7 +324,8 @@ public class DeckBuilder implements ActionListener {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				drawCards(fullDeck, 0);
+				startPos = 0;
+				drawCards();
 			}
 		}).start();
 		
