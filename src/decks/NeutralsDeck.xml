@@ -45,7 +45,7 @@
 	</Unit>
 	<!-- Chargers -->
 	<Unit Name="Mad nerd" Description="" Damage="0" Health="4" Cost="1">
-		<Fulldesc txt="Has charge and windfury... but no attack!"/>
+		<Fulldesc txt="Has charge and windfury... but no damage!"/>
 		<Qualities v="9"/>
 	</Unit>
 	<Unit Name="C 1-1" Description="" Damage="1" Health="1" Cost="1">

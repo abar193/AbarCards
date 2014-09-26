@@ -36,7 +36,7 @@ import org.json.simple.JSONValue;
 public class Unit {
 	/** Enum for qualities unit may have. They are stored in int value  */
 	public enum Quality {
-		Windfury(1), Stealth(2), Taunt(4), Charge(8);
+		Windfury(1), Stealth(2), Taunt(4), Charge(8), NoAttack(16);
 		private final int value;
 
 	    private Quality(int value) {
@@ -168,6 +168,7 @@ public class Unit {
 	
 	/* Status */
 	public boolean canAttack() {
+		if(hasQuality(Quality.NoAttack)) return false;
 		return (getCurrentDamage() > 0) & (canAttack | hasQuality(Quality.Charge)) & 
 				(attackedAlready <= (qualities & 1)); 
 	}
