@@ -104,6 +104,20 @@ public class FieldSituation {
 	}
 	
 	/**
+	 * Returns unit's position on field
+	 * @param u unit to be found
+	 * @return unit's position, or -1 if that unit does not belongs to u.myPlayer side 
+	 */
+	public int unitPosition(Unit u) {
+		int i = 0;
+		for(Unit o : this.allUnitFromOneSide(u.myPlayer, true)) {
+			if(o.equals(u)) return i;
+			else i++;
+		}
+		return -1;
+	}
+	
+	/**
 	 * Adds unit if it's allowed by canUnitBeAdded, throws IllegalArgumentException otherwise.
 	 * @param u unit to be added
 	 * @param p player's number

@@ -34,10 +34,11 @@ public class ServerGame implements GameInterface {
 	private static ServerGame instance;
 	private static boolean initialising = false;
 	
-	Object o = new Object();
-	CardJSONOperations jsonop = new CardJSONOperations();
-	Session s;
-	players.PlayerInterface pli;
+	private Object o = new Object();
+	private CardJSONOperations jsonop = new CardJSONOperations();
+	private Session s;
+	private players.PlayerInterface pli;
+	private FieldSituation latestSituation;
 	
 	EnumMap<PossibleServerActions, String> response = new EnumMap<PossibleServerActions, String>(PossibleServerActions.class);
 			
@@ -133,7 +134,19 @@ public class ServerGame implements GameInterface {
 		} catch (InterruptedException e) {
 		}
 		return null;
-		
+	}
+	
+	private void sendMessage(String message) {
+		System.out.println("Sending: " + message);
+		synchronized(s) {
+			if (s.isOpen()) {
+				try {
+					s.getBasicRemote().sendText(message);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else System.err.println("Session closed");
+		}
 	}
 	
     
@@ -232,9 +245,8 @@ public class ServerGame implements GameInterface {
 			System.err.println("Not ok in playCard, response: " + resp);
 		}
 	}
-	
 
-	@Override
+	@Override	
 	public void endTurn(int player) {		
 		JSONObject jobj = new JSONObject();
 		jobj.put("action", "endTurn");
@@ -242,6 +254,10 @@ public class ServerGame implements GameInterface {
 		sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "endTurn"); 
 	}
 
+	public void selectTarget() {
+		pli.selectTarget();
+		
+	}
 	
 	public void playerAnalyser(JSONObject jobj) {
 		while(pli == null) {
@@ -258,12 +274,22 @@ public class ServerGame implements GameInterface {
 			case "reciveAction":
 				pli.reciveAction((String)jobj.get("message"));
 				break;
-			case "reciveInfo":
+			case "reciveInfo": {
 				PlayerData pd = new PlayerData((Map)jobj.get("yourData"));
 				FieldSituation fs = new FieldSituation((Map)jobj.get("field"));
+				latestSituation = fs;
 				PlayerOpenData pod = new PlayerOpenData((Map)jobj.get("enemyData"));
 				pli.reciveInfo(pd, fs, pod);
 				break;
+			}
+			case "selectTarget": {
+				Unit u = pli.selectTarget();
+				JSONObject resObj = new JSONObject();
+				resObj.put("return", "selectTarget");
+				resObj.put("side", Integer.toString(u.myPlayer));
+				resObj.put("position", Integer.toString(latestSituation.unitPosition(u)));
+				sendMessage(JSONValue.toJSONString(resObj));
+			}
 		}
 	}	
 }

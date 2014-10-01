@@ -53,7 +53,6 @@ public class TestDeck {
 		md.addCard(new TestCard(9));
 		md.shuffleCards();
 		assertNotEquals("Possible, but unlikely", "|TC1||TC2||TC3||TC4||TC5||TC6||TC7||TC8||TC9|", md.output());
-		System.out.println(md.output());
 	}
 
 }

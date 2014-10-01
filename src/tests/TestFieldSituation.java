@@ -70,4 +70,20 @@ public class TestFieldSituation {
 		fs.addUnit(u4, 1);
 		assertEquals(0, fs.tauntUnitsForPlayer(1));
 	}
+	
+	public void testUnitPos() {
+		FieldSituation fs = new FieldSituation();
+		Unit u1 = new Unit(new UnitCard(1, 1, 1, "L", "a"), 0, 4);
+		Unit u2 = new Unit(new UnitCard(2, 2, 2, "M", "b"), 0);
+		Unit u3 = new Unit(new UnitCard(3, 3, 3, "N", "c"), 1);
+		fs.addUnit(u1, 0);
+		fs.addUnit(u2, 0);
+		fs.addUnit(u3, 1);
+		assertEquals(0, fs.unitPosition(u1));
+		assertEquals(1, fs.unitPosition(u2));
+		assertEquals(0, fs.unitPosition(u3));
+		assertEquals(u1, fs.unitForPlayer(0, 0));
+		assertEquals(u2, fs.unitForPlayer(1, 0));
+		assertEquals(u3, fs.unitForPlayer(0, 1));
+	}
 }
