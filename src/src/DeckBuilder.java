@@ -212,7 +212,13 @@ public class DeckBuilder implements ActionListener {
 			case "Socket: vs Terran Ai":
 				System.out.println("Watch out, we got a sockets there!");
 				onlineGame(d, 'T');
+				break;
+			case "Socket: vs Player":
+				System.out.println("Watch out, we got a sockets there!");
+				onlineGame(d, 'P');
+				break;
 			default: 
+				System.err.println("Break in startGame()");
 				break;
 		}
 	}
@@ -220,13 +226,23 @@ public class DeckBuilder implements ActionListener {
 	public void onlineGame(Deck d, char c) {
 		String opponent = "";
 		if(c == 'T') opponent = "Terran";
-		if(ServerGame.instance().validateDeck(selectedCards, opponent)) {
-			if(ServerGame.instance().play()) {
-				players.RealPlayer r = new players.RealPlayer(new SwingVS(ServerGame.instance()));
-				r.setParentGameInterface(ServerGame.instance());
-				ServerGame.instance().setPI(r);
-			}
+		else if(c == 'P') opponent = "Player";
+		ServerGame.instance().setDeckBuilder(this);
+		ServerGame.instance().validateDeck(selectedCards, opponent);
+	}
+	
+	/**
+	 * Called by ServerGame, when opponent for player is found
+	 */
+	public void gameApprowed() {
+		if(ServerGame.instance().play()) {
+			players.RealPlayer r = new players.RealPlayer(new SwingVS(ServerGame.instance()));
+			r.setParentGameInterface(ServerGame.instance());
+			ServerGame.instance().setPI(r);
 		}
+	}
+	
+	public void waitForGame() {
 		
 	}
 	

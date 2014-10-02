@@ -81,6 +81,11 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 		button.setText("Socket: vs Terran Ai");
 		button.addActionListener(this);
 		panel.add(button);
+		button = new JButton();
+		button.setText("Socket: vs Player");
+		button.addActionListener(this);
+		panel.add(button);
+		
 		bottomLayer.add(panel, BorderLayout.PAGE_START);
         
 		JButton left = new JButton();
@@ -249,7 +254,9 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 					parent.startGame(arg0.getActionCommand());
 				}
 			}).start();
-		} else if(arg0.getActionCommand().equals("Socket: vs Terran Ai")) {
+		} else if(arg0.getActionCommand().equals("Socket: vs Terran Ai") || 
+				arg0.getActionCommand().equals("Socket: vs Player")) 
+		{
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -257,7 +264,7 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 					parent.startGame(arg0.getActionCommand());
 				}
 			}).start();
-		}
+		} 
 	}	
 
 }

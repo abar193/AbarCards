@@ -10,6 +10,7 @@ import java.util.Map;
 
 import cards.BasicCard;
 import cards.CardJSONOperations;
+import src.DeckBuilder;
 import src.GameInterface;
 import units.Unit;
 
@@ -39,6 +40,7 @@ public class ServerGame implements GameInterface {
 	private Session s;
 	private players.PlayerInterface pli;
 	private FieldSituation latestSituation;
+	private DeckBuilder builder; 
 	
 	EnumMap<PossibleServerActions, String> response = new EnumMap<PossibleServerActions, String>(PossibleServerActions.class);
 			
@@ -75,6 +77,10 @@ public class ServerGame implements GameInterface {
 		this.pli = pli;
 	}
 	
+	public void setDeckBuilder(DeckBuilder db) {
+		builder = db;
+	}
+	
 	@OnOpen
 	public void onOpen(Session session) {
 		s = session;
@@ -94,6 +100,13 @@ public class ServerGame implements GameInterface {
 						@Override
 						public void run() {
 							playerAnalyser(jobj);
+						}
+					}).start();
+				} else if(((String)jobj.get("target")).equals("builder")) {
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							builderAnalyser(jobj);
 						}
 					}).start();
 				}
@@ -164,7 +177,16 @@ public class ServerGame implements GameInterface {
 		
 		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj), "deck");
 		System.out.println("Validate got " + resp);
-		return resp.equals(ServerResponses.ResponseOk);
+		
+		switch(resp) {
+			case ServerResponses.ResponseOk: 
+				builder.gameApprowed();
+				return true;
+			case ServerResponses.ResponseWait: 
+				builder.waitForGame();
+				return true;
+		}
+		return false;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -257,6 +279,14 @@ public class ServerGame implements GameInterface {
 	public void selectTarget() {
 		pli.selectTarget();
 		
+	}
+	
+	public void builderAnalyser(JSONObject jobj) {
+		switch((String)jobj.get("action")) {
+			case "play":
+				builder.gameApprowed();
+				break;
+		}
 	}
 	
 	public void playerAnalyser(JSONObject jobj) {
