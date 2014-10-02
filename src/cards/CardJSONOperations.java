@@ -12,8 +12,8 @@ import decks.DeckPackReader;
 
 public class CardJSONOperations {
 
-	private static final String[] names = {"Neutrals", "Machines", "Terran"};
-	private static final String[] links = {"NeutralsDeck.xml", "MachinesDeck.xml", "BotImbaDeck.xml"};
+	private static final String[] names = {"Hidden", "Neutrals", "Machines", "Terran"};
+	private static final String[] links = {"HiddenDeck.xml", "NeutralsDeck.xml", "MachinesDeck.xml", "BotImbaDeck.xml"};
 	
 	public static CardJSONOperations instance = new CardJSONOperations();
 	

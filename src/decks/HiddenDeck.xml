@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Contains helper units -->
+<Deck num="0">
+	<Unit Name="Cat" Description="" Damage="1" Health="1" Cost="0">
+	</Unit>	
+	<Unit Name="Small bear" Description="" Damage="2" Health="2" Cost="0">
+	</Unit>
+	<Unit Name="Imp" Description="" Damage="1" Health="1" Cost="0">
+	</Unit>
+	<Unit Name="Spammer" Description="" Damage="2" Health="2" Cost="0" Class="Machine">
+	</Unit>
+	<Unit Name="Toster" Description="" Damage="1" Health="1" Cost="0" Class="Machine">
+		<Qualities  v="8"/>
+	</Unit>
+</Deck>
