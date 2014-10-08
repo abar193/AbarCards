@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 
 <Deck num="1">
 	<!--  "Solid" group -->
@@ -71,8 +72,8 @@
 	</Unit>
 	<!--  Stealth-units  -->
 	<Unit Name="Sniper" Description="" Damage="0" Health="2" Cost="3">
-		<Qualities v="2"/>
 		<Fulldesc txt="Stealth, deals 2 damage to random enemy at the end of a turn"/>
+		<Qualities v="2"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
 				<BuffSpell>
@@ -149,22 +150,22 @@
 		<Fulldesc txt="Aura +1 damage for all units" />
 	</Unit>
 	<Unit Name="Drummer" Description="" Damage="1" Health="3" Cost="3">
-		<Aura type="1" value="1"/>
 		<Fulldesc txt="Aura +1 damage for all units" />
+		<Aura type="1" value="1"/>
 	</Unit>
 	<Unit Name="TopManager" Description="" Damage="3" Health="5" Cost="5">
+		<Fulldesc txt="Taunt, Aura +1 damage for all units" />
 		<Aura type="1" value="1"/>
 		<Qualities v="4"/>
-		<Fulldesc txt="Taunt, Aura +1 damage for all units" />
 	</Unit>
 	<!-- Health providers -->
 	<Unit Name="+1 H Aura" Description="" Damage="3" Health="3" Cost="4">
-		<Aura type="2" value="1"/>
 		<Fulldesc txt="Aura +1 health for all units" />
+		<Aura type="2" value="1"/>
 	</Unit>
 	<Unit Name="Med PhD" Description="" Damage="5" Health="5" Cost="7">
-		<Aura type="2" value="1"/>
 		<Fulldesc txt="OnSpawn: heals all allies for 2. Aura +1 health for all units." />
+		<Aura type="2" value="1"/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="all" acept="0">
 				<BuffSpell>
@@ -185,8 +186,8 @@
 		</Power>
 	</Unit>
 	<Unit Name="RCActivist" Description="" Damage="0" Health="1" Cost="1">
-		<Qualities v="2"/>
 		<Fulldesc txt="Stealth, OnTurnEnd: add 1 health to a random ally."/>
+		<Qualities v="2"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="0" targets="1" repeats="1">
 				<BuffSpell>
@@ -196,8 +197,8 @@
 		</Power>
 	</Unit>
 	<Unit Name="Field doc" Description="" Damage="5" Health="2" Cost="5">
-		<Qualities v="8"/>
 		<Fulldesc txt="OnSpawn: heal all +2. Charge" />
+		<Qualities v="8"/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="all" acept="0">
 				<BuffSpell>

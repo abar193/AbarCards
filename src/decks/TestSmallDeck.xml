@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 <Deck>
 	<Unit Name="Leroy" Description="2 11U" Damage="6" Health="2" Cost="1">
 		<Qualities v="8"/>
@@ -35,8 +36,7 @@
 	</Spell>
  	<Spell Name="Money" Description="+2$" Cost="0">
 		<Fulldesc txt="Adds 2$ available from this turn for a player"/>
-		<PlayerValueSpell type="AddAvailMana" value="2" acept="0">
-		</PlayerValueSpell>
+		<PlayerValueSpell type="AddAvailMana" value="2" acept="0"/>
 	</Spell>
 	<Unit Name="Private" Description="" Damage="2" Health="1" Cost="1">
 		<Qualities v="1"/>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <!ELEMENT deck (Unit | Spell)* >
+ <!ATTLIST deck num CDATA #REQUIRED>
+ 
+ <!ELEMENT Unit ((Fulldesc | Aura | Qualities | Power)*)>
+ <!ATTLIST Unit Name CDATA #REQUIRED>
+ <!ATTLIST Unit Description CDATA #REQUIRED>
+ <!ATTLIST Unit Damage CDATA #REQUIRED>
+ <!ATTLIST Unit Health CDATA #REQUIRED>
+ <!ATTLIST Unit Cost CDATA #REQUIRED>
+ <!ATTLIST Unit Class (Machine | Russian) #IMPLIED>
+ <!ATTLIST Unit SpecID CDATA #IMPLIED>
+ 
+ <!ELEMENT Fulldesc EMPTY>
+ <!ATTLIST Fulldesc txt CDATA #REQUIRED>
+ 
+ <!ELEMENT Aura EMPTY>
+ <!ATTLIST Aura type (0 | 1 | 2) #REQUIRED>
+ <!ATTLIST Aura value CDATA #REQUIRED>
+ 
+ <!ELEMENT Qualities EMPTY>
+ <!ATTLIST Qualities v CDATA #REQUIRED>
+ 
+ <!ELEMENT Power (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
+ 	| PlayerValueSpell |  Buff)*>
+ <!ATTLIST Power condition (OnCreate | OnTurnStart | OnTurnEnd | OnDamage | 
+ 	OnAllySpawn | OnAllyDamage | OnDeath | OnAllyDeath | BeforeCreate | Always) #REQUIRED>
+ 	
+ <!ELEMENT CreateUnitSpell (HelperUnit)>
+ <!ATTLIST CreateUnitSpell count CDATA #REQUIRED>
+ <!ATTLIST CreateUnitSpell side CDATA #REQUIRED>
+ 
+ <!ELEMENT HelperUnit (Fulldesc? | Aura? | Qualities? | Power?)>
+ <!ATTLIST HelperUnit Name CDATA #REQUIRED>
+ <!ATTLIST HelperUnit Description CDATA #REQUIRED>
+ <!ATTLIST HelperUnit Damage CDATA #REQUIRED>
+ <!ATTLIST HelperUnit Health CDATA #REQUIRED>
+ <!ATTLIST HelperUnit Cost CDATA #REQUIRED>
+ <!ATTLIST HelperUnit Class (Machine | Russian) #IMPLIED>
+ 
+ <!ELEMENT TargedetSpell (Filter | TargedetSpell | SpellContainer | BuffSpell 
+ 	| PlayerValueSpell |  Buff)*>
+ <!ATTLIST TargedetSpell targeter CDATA #REQUIRED>
+ <!ATTLIST TargedetSpell acept CDATA #IMPLIED>
+ <!ATTLIST TargedetSpell excludeSelf CDATA #IMPLIED>
+ <!ATTLIST TargedetSpell targets CDATA #IMPLIED>
+ <!ATTLIST TargedetSpell targets CDATA #IMPLIED>
+ <!ATTLIST TargedetSpell repeats (0|1) #IMPLIED>
+ <!ATTLIST TargedetSpell hero (0|1) #IMPLIED>
+ <!ATTLIST TargedetSpell o CDATA #IMPLIED>
+ 
+ <!ELEMENT SpellContainer (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
+ 	| PlayerValueSpell |  Buff)+>
+ 
+ <!ELEMENT BuffSpell (Buff)>
+ 
+ <!ELEMENT Buff EMPTY>
+ <!ATTLIST Buff type (AddHealth | AddDamage | AddQuality | Silence | HealthSetTo |
+  DamageSetTo | Hurt | Heal | Kill | ModDmg | ModHealth | ModQuality) #REQUIRED>
+ <!ATTLIST Buff v CDATA #REQUIRED> 
+ 
+ <!ELEMENT PlayerValueSpell EMPTY>
+ <!ATTLIST PlayerValueSpell type (AddAvailMana | AddUnavailMana | AddHealth
+ 	 | RemoveHealth | PullCard) #REQUIRED>
+ <!ATTLIST PlayerValueSpell value CDATA #REQUIRED>
+ <!ATTLIST PlayerValueSpell acept CDATA #REQUIRED>
+ 
+ <!ELEMENT Spell ((Fulldesc | Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
+ 	| PlayerValueSpell |  Buff)*)>
+ <!ATTLIST Spell Name CDATA #REQUIRED>
+ <!ATTLIST Spell Description CDATA #REQUIRED>
+ <!ATTLIST Spell Cost CDATA #REQUIRED>
+ 
+ 
+ <!ELEMENT Filter EMPTY>
+ <!ATTLIST Filter type (ClassEquals | HealthMore | HealthLess | DamageMore | DamageLess) #REQUIRED>
+ <!ATTLIST Filter v CDATA #REQUIRED>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 <!-- Contains helper units -->
 <Deck num="0">
 	<Unit Name="Cat" Description="" Damage="1" Health="1" Cost="0">

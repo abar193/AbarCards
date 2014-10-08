@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 <Deck num="2">
 	<Unit Name="Smart Lamp" Description="" Damage="1" Health="1" Cost="1" Class="Machine">
 		<Fulldesc txt="Aura +1 dmg for all units" />
