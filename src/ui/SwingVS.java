@@ -4,6 +4,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -16,7 +17,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.Random;
 
 import src.FieldSituation;
 import src.GameInterface;
@@ -29,11 +29,11 @@ import cards.BasicCard;
  * @author Abar
  *
  */
-public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowListener,*/ ActionListener {
-	
+public class SwingVS extends JPanel implements VisualSystemInterface, ActionListener {
+    
 	private static final long serialVersionUID = 1L;
 	
-	private GameInterface parent; 
+	private GameInterface parent;
 	private InputInterface input;
 	
 	private CardsDrawer cardsDrawer;
@@ -56,8 +56,6 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		parent = g;
 		
 		setSize(800, 600);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -71,7 +69,9 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
         enemyHand = new EnemySideDrawer();
         enemyHand.setPreferredSize(new Dimension(800, 100));
         enemyHand.setVisible(true);
-        if(opponent != null) enemyHand.setCards(opponent.handSize);
+        if(opponent != null) {
+			enemyHand.setCards(opponent.handSize);
+		}
         add(enemyHand, BorderLayout.PAGE_START);
         
         outputMessages = new JTextArea();
@@ -107,7 +107,6 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
         cardsDrawer.setPreferredSize(new Dimension(800, 100));
         if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana(), me.getTotalMana());
         add(cardsDrawer, BorderLayout.PAGE_END);
-        pack();
         setVisible(true);
 	}
 
@@ -137,11 +136,11 @@ public class SwingVS extends JFrame implements VisualSystemInterface, /*WindowLi
 		opponent = p2;
 		latestSituation = field;
 		playerNumber = p1.playerNumber;
-		
+
 		if(enemyHand != null) {
 			enemyHand.setCards(p2.handSize);
 		}
-		
+
 		if(cardsDrawer != null) {
 			cardsDrawer.setCards(p1.getHand(), p1.getAvailableMana(), p1.getTotalMana());
 		} else {

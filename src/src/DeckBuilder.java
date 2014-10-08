@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+
 import network.ServerGame;
 import ui.CardPickingFrame;
 import ui.ConsoleVS;
@@ -21,21 +25,22 @@ import ui.SwingVS;
 import cards.*;
 import decks.DeckPackReader;
 
-public class DeckBuilder implements ActionListener {
+public class DeckBuilder {
 	
-	private final int CARDS_IN_A_ROW = 5;
-	private final String DECK_NAME = "HeroDeck.Cards.";
+	private static final int CARDS_IN_A_ROW = 5;
+	private static final String DECK_NAME = "HeroDeck.Cards.";
 
-	private final String[] names = {"Machines"};
-	private final String[] links = {"MachinesDeck.xml"};
+	private static final String[] names = {"Machines"};
+	private static final String[] links = {"MachinesDeck.xml"};
 	
 	public ArrayList<BasicCard> selectedCards;
 	public ArrayList<BasicCard> fullDeck;
+	public String deckRace;
 
 	private int playerChoose;
 	private int startPos = 0;
-	CardPickingFrame frame;
-	
+	private CardPickingFrame frame;
+	private final MenuController controller;
 	
 	/** Splits lines in fullDescription word by word, cuts words longer than 10 chars
 	 * into smaller ones, and groups small words if their sum length < 10.
@@ -95,7 +100,7 @@ public class DeckBuilder implements ActionListener {
 		return splits;
 	}
 	
-	/** Prints title string, CARDS_IN_A_ROW cards from deck, and selected cards array
+	/** Prints title string, CARDS_IN_A_ROW cards from deck, and selected cards array.
 	 * 
 	 * @param deck source for drawing cards
 	 * @param start starting index, from where cards should be drawn 
@@ -115,7 +120,7 @@ public class DeckBuilder implements ActionListener {
 	}
 	
 	public void selectCard(BasicCard c) {
-		if(selectedCards.size() < 15) { 
+		if(selectedCards.size() < Deck.DECK_SIZE) { 
 			selectedCards.add(c);
 			drawCards();
 		}
@@ -154,6 +159,8 @@ public class DeckBuilder implements ActionListener {
 		try {
 		    writer = new BufferedWriter(new OutputStreamWriter(
 		          new FileOutputStream(DECK_NAME + playerChoose), "utf-8"));
+		    writer.write(String.format("%s\n", names[playerChoose]));
+		    
 		    for(BasicCard c : selectedCards) {
 		    	writer.write(String.format("%s %d\n", c.name, c.cost));
 		    }
@@ -164,120 +171,64 @@ public class DeckBuilder implements ActionListener {
 		}
 	}
 	
+	/** Called by CardPickingFrame, when user wants to get back. */
+	public void goBack() {
+	    controller.goBack();
+	}
+	
 	/** Reads deck from file, and stores cards to selectedCards */
-	public void loadDeck(File file) {
+	public void loadMyDeck(File file) {
 		BufferedReader reader = null;
 		try {
 		    reader = new BufferedReader(new InputStreamReader(
 		          new FileInputStream(file), "utf-8"));
 		    String s;
+		    s = reader.readLine();
+		    // Read race name
+		    for(int i = 0; i < names.length; i++) {
+		        if(s.startsWith(names[i])) {
+		            deckRace = names[i];
+		            ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+		            playerChoose = i;
+	                fullDeck.addAll(0, classCards);
+	                break;
+		        }
+		    }
+		    // Load deck
+		    int count = 0;
 		    while((s = reader.readLine()) != null) {
+		        if(++count > Deck.DECK_SIZE) break; 
 		    	String[] splits = new String[2];
 		    	int lastpost = s.lastIndexOf(" ");
 		    	splits[0] = s.substring(0, lastpost);
 		    	splits[1] = s.substring(lastpost + 1);
 		    	try{ 
 		    		int cost = Integer.parseInt(splits[1]);
+		    		boolean found = false;
 		    		for(BasicCard c : fullDeck) {
 		    			if(c.name.equals(splits[0]) && c.cost == cost) { 
 		    				selectedCards.add(c);
+		    				found = true;
 		    				break;
 		    			}
 		    		}
+		    		if(!found) {
+		    		    System.err.format("Not found %s card at %d cost\n", splits[0], cost);
+		    		}
 		    	} catch (NumberFormatException e) {
-		    		System.out.println("Contaminated file, at line " + splits[0]);
+		    		System.err.println("Contaminated file, at line " + splits[0]);
 		    	}
 		    }
 		} catch (IOException ex) {
-			System.out.println("Could not read your deck, sorry man.");
+			System.err.println("Could not read your deck, sorry man.");
 		} finally {
-		   try {reader.close();} catch (Exception ex) {}
-		}
-	}
-	
-	public void startGame(String command) {
-		System.out.println("Launching: 1");
-		Deck d = validDeck();
-		if(d == null) return;
-		
-		switch(command) {
-			case "Play vs Terran Ai":
-				System.out.println("Launching: 1.1");
-				launchGame(d, 'A');
-				break;
-			case "Play vs Passive Ai":
-				System.out.println("Launching: 1.2");
-				launchGame(d, 'S');
-				break;
-			case "Socket: vs Terran Ai":
-				System.out.println("Watch out, we got a sockets there!");
-				onlineGame(d, 'T');
-				break;
-			case "Socket: vs Player":
-				System.out.println("Watch out, we got a sockets there!");
-				onlineGame(d, 'P');
-				break;
-			default: 
-				System.err.println("Break in startGame()");
-				break;
-		}
-	}
-	
-	public void onlineGame(Deck d, char c) {
-		String opponent = "";
-		if(c == 'T') opponent = "Terran";
-		else if(c == 'P') opponent = "Player";
-		ServerGame.instance().setDeckBuilder(this);
-		ServerGame.instance().validateDeck(selectedCards, opponent);
-	}
-	
-	/**
-	 * Called by ServerGame, when opponent for player is found
-	 */
-	public void gameApprowed() {
-		if(ServerGame.instance().play()) {
-			players.RealPlayer r = new players.RealPlayer(new SwingVS(ServerGame.instance()));
-			r.setParentGameInterface(ServerGame.instance());
-			ServerGame.instance().setPI(r);
-		}
-	}
-	
-	public void waitForGame() {
-		
-	}
-	
-	public void launchGame(Deck d, char v) {
-		DeckPackReader dpr = new DeckPackReader();
-		System.out.println("Launching: 2");
-		d.shuffleCards();
-		Game g = new Game();
-		players.RealPlayer r = new players.RealPlayer(new SwingVS(g));
-		saveDeck();
-		switch (v) {
-			case 'A': {
-				System.out.println("Launching: 2.1");
-				Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
-				d2.shuffleCards();
-				g.configure(r, new players.SimpleBot(), d, d2, 15, 15);
-				g.play();
-				break;
-			}
-			case 'S':
-			case 'D': {
-				System.out.println("Launching: 2.2");
-				Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
-				d2.shuffleCards();
-				g.configure(r, new players.PassiveBot(), d, d2, 15, 15);
-				g.play();
-				break;
-			}
-			default: 
-				System.out.println("Launching: 2.3");
+		   try {reader.close();} 
+		   catch (Exception ex) {}
 		}
 	}
 	
 	/* Loads all saved deck files and returns them in array list */
-	private ArrayList<File> deckFiles() {
+	private static ArrayList<File> deckFiles() {
 		ArrayList<File> files = new ArrayList<File>();
 		for(int i = 0; i < names.length; i++) {
 			File f = new File(DECK_NAME + i);
@@ -288,63 +239,113 @@ public class DeckBuilder implements ActionListener {
 		return files;
 	}
 	
-	public void chooseDeck() {
-		ArrayList<File> files = deckFiles();
-		frame.enableOverlay();
-		if(files != null && files.size() > 0) {
-			
-			for(int i = 0; i < files.size(); i++) {
-				frame.addOverlayOption(files.get(i).getName(), this);
-			}
-		}
-		
-		for(int i = 0; i < names.length; i++) {
-			frame.addOverlayOption(names[i], this);
-		}
-
+	/**
+	 * Returns ArrayList of race names and save files names.
+	 * @param playDeck if set to true, then returns only save files 
+	 */
+	public static ArrayList<String> availableFiles(boolean playDeck) {
+	    ArrayList<File> files = deckFiles();
+	    int size = files.size() + ((!playDeck) ? names.length : 0);
+	    ArrayList<String> retnames = new ArrayList<String>(size);
+	    
+	    for(File f : files) {
+	        retnames.add(f.getName());
+	    }
+	    
+	    if(playDeck) return retnames;
+	    
+	    for(String s : names) {
+	        retnames.add(s);
+	    }
+	    return retnames;
 	}
 	
-	public DeckBuilder(ArrayList<BasicCard> deck) {
-		fullDeck = deck;
-		selectedCards = new ArrayList<BasicCard>(15);
-		frame = new CardPickingFrame(this);
+	/** 
+	 * Initialises DeckBuilder for use from MainMenu. 
+	 * @param raceName either name of race, or name of saved deck file 
+	 */
+	public DeckBuilder(String raceName, MenuController controller) {
+	    this.controller = controller;
+	    fullDeck = new DeckPackReader().parseFile("NeutralsDeck.xml");
+	    selectedCards = new ArrayList<BasicCard>(Deck.DECK_SIZE);
+	    boolean b = false;
+	    
+	    for(int i = 0; i < names.length; i++) {
+	        if(raceName.equals(names[i])) {
+	            ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+                fullDeck.addAll(0, classCards);
+                playerChoose = i;
+	        }
+	    }
+	    
+	    if(!b) loadMyDeck(new File(raceName));
+	    frame = new CardPickingFrame(this, playerChoose);
+	    
+	    new Thread(new Runnable() {
+            @Override
+            public void run() {
+                startPos = 0;
+                drawCards();
+            }
+        }).start();
 	}
 	
-	public static void main(String[] arg) {
-		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> c = dpr.parseFile("NeutralsDeck.xml");
-		DeckBuilder db = new DeckBuilder(c);
-		db.chooseDeck();
+	/** Gettter of frame. */
+	public CardPickingFrame frame() {
+	    return this.frame;
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		for(int i = 0; i < names.length; i++) {
-			if(arg0.getActionCommand().equals(names[i])) {
-				selectedCards = new ArrayList<BasicCard>(15);
-				ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
-				fullDeck.addAll(0, classCards);
-				frame.disableOverlay();
-				drawCards();
-				return;
-			}
-		}
-		
-		final int c = arg0.getActionCommand().charAt(arg0.getActionCommand().length() - 1) - '0';
-		selectedCards = new ArrayList<BasicCard>(15);
-		ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[c]);
-		fullDeck.addAll(0, classCards);
-		frame.disableOverlay();
-		loadDeck(deckFiles().get(c));
-		
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				startPos = 0;
-				drawCards();
-			}
-		}).start();
-		
-	}
-
+	
+	public static ArrayList<BasicCard> loadDeck(File file) {
+        BufferedReader reader = null;
+        ArrayList<BasicCard> selectedCards = new ArrayList<BasicCard>(15);
+        try {
+            reader = new BufferedReader(new InputStreamReader(
+                  new FileInputStream(file), "utf-8"));
+            String s;
+            s = reader.readLine();
+            DeckPackReader dpr = new DeckPackReader();
+            ArrayList<BasicCard> fullDeck = dpr.parseFile("NeutralsDeck.xml");
+            
+            for(int i = 0; i < names.length; i++) {
+                if(s.startsWith(names[i])) {
+                    ArrayList<BasicCard> classCards = dpr.parseFile(links[i]);
+                    fullDeck.addAll(0, classCards);
+                    break;
+                }
+            }
+            // Load deck
+            int count = 0;
+            while((s = reader.readLine()) != null) {
+                if(++count > Deck.DECK_SIZE) break; 
+                String[] splits = new String[2];
+                int lastpost = s.lastIndexOf(" ");
+                splits[0] = s.substring(0, lastpost);
+                splits[1] = s.substring(lastpost + 1);
+                try{ 
+                    int cost = Integer.parseInt(splits[1]);
+                    boolean found = false;
+                    for(BasicCard c : fullDeck) {
+                        if(c.name.equals(splits[0]) && c.cost == cost) { 
+                            selectedCards.add(c);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        System.err.format("Not found %s card at %d cost\n", splits[0], cost);
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Contaminated file, at line " + splits[0]);
+                }
+            }
+        } catch (IOException ex) {
+            System.err.println("Could not read your deck, sorry man.");
+        } finally {
+           try {reader.close();} 
+           catch (Exception ex) {}
+        }
+        
+        return selectedCards;
+    }
+	
 }

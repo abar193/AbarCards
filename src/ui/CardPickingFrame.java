@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
@@ -28,32 +28,33 @@ import src.DeckBuilder;
  * @author Abar
  *
  */
-public class CardPickingFrame extends JFrame implements ActionListener {
+public class CardPickingFrame extends JPanel implements ActionListener {
 
-	DeckBuilder parent;
+    private static final long serialVersionUID = 6581966660599964423L;
+    DeckBuilder parent;
 	CardPickingScreen picker;
 	ArrayList<BasicCard> cards;
 	JButton description;
 	Panel selectedCardsText;
 	JLayeredPane pane;
-	Panel bottomLayer, overlay;
+	Panel bottomLayer;
 	
-	public CardPickingFrame(DeckBuilder db) {
+	private static final String SAVE_COMMAND = "Save deck";
+	private static final String CANCEL_COMMAND = "Go back";
+	
+	public CardPickingFrame(DeckBuilder db, final int slotNum) {
 		parent = db;
-		
-		setSize(800, 600);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+		this.setSize(800, 600);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                createAndShowGUI(slotNum);
             }
         });
 	}
 	
-	public void createAndShowGUI() {
-		
-		//setLayout(new BorderLayout());
+	public void createAndShowGUI(int slot) {
+		setLayout(new BorderLayout());
+		System.out.println("Rendered");
 		
 		pane = new JLayeredPane();
 		pane.setSize(this.getSize());
@@ -69,20 +70,15 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 		Panel panel = new Panel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.setSize(800, 100);
+		JLabel lab = new JLabel();
+		lab.setText(String.format("Deck slot %d", slot));
+		panel.add(lab);
 		JButton button = new JButton();
-		button.setText("Play vs Terran Ai");
+		button.setText(SAVE_COMMAND);
 		button.addActionListener(this);
 		panel.add(button);
 		button = new JButton();
-		button.setText("Play vs Passive Ai");
-		button.addActionListener(this);
-		panel.add(button);
-		button = new JButton();
-		button.setText("Socket: vs Terran Ai");
-		button.addActionListener(this);
-		panel.add(button);
-		button = new JButton();
-		button.setText("Socket: vs Player");
+		button.setText(CANCEL_COMMAND);
 		button.addActionListener(this);
 		panel.add(button);
 		
@@ -131,24 +127,6 @@ public class CardPickingFrame extends JFrame implements ActionListener {
         
         pane.add(bottomLayer, JLayeredPane.DEFAULT_LAYER);
         
-        Panel toverlay = new Panel();
-        SpringLayout layout = new SpringLayout();
-        
-        toverlay.setLayout(layout);
-        overlay = toverlay;
-        overlay.setBackground(java.awt.Color.GREEN);
-        overlay.setBounds(200, 100, 400, 400);
-        overlay.setEnabled(false);
-        
-        JLabel overToggle = new JLabel();
-        overToggle.setText("Load old deck, or create new:");
-
-        overlay.add(overToggle);
-        layout.putConstraint(SpringLayout.NORTH, overToggle, 5,
-                SpringLayout.NORTH, overlay);
-        layout.putConstraint(SpringLayout.WEST, overToggle, 5,
-                SpringLayout.NORTH, overlay);
-        
         setVisible(true);
 	}
 
@@ -181,90 +159,26 @@ public class CardPickingFrame extends JFrame implements ActionListener {
 		selectedCardsText.repaint();
 	}
 	
-	public void enableOverlay() {
-		while(overlay == null) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		if(!overlay.isEnabled()) {
-	        pane.add(overlay, JLayeredPane.PALETTE_LAYER);
-	        overlay.setEnabled(true);
-	        bottomLayer.setEnabled(false);
-		}
-	}
-	
-	public void disableOverlay() {
-		if(overlay.isEnabled()) {
-	        pane.remove(overlay);
-	        overlay.setEnabled(false);
-	        bottomLayer.setEnabled(true);
-		}
-	}
-	
 	public void cardClicked(BasicCard card) {
 		parent.selectCard(card);
-	}
-	
-	public void addOverlayOption(String s, ActionListener listener) {
-		JButton option = new JButton();
-        option.setText(s);
-        option.addActionListener(listener);
-        while(overlay == null) {
-        	try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        }
-        overlay.add(option);
-        
-        ((SpringLayout)overlay.getLayout()).putConstraint(SpringLayout.NORTH, option, 5,
-                SpringLayout.NORTH, overlay);
-        ((SpringLayout)overlay.getLayout()).putConstraint(SpringLayout.WEST, option, 5,
-                SpringLayout.WEST, overlay);
-        
-        ((SpringLayout)overlay.getLayout()).putConstraint(SpringLayout.NORTH, option, 25, 
-        		SpringLayout.NORTH, overlay.getComponent(overlay.getComponentCount() - 2));
-        
-        overlay.revalidate();
 	}
 	
 	@Override
 	public void actionPerformed(final ActionEvent arg0) {
 		System.out.println(arg0.getActionCommand());
-		if(arg0.getActionCommand().equals("Toggle")) {
-			pane.remove(overlay);
-			bottomLayer.setEnabled(true);
-		} else if(arg0.getActionCommand().length() < 3 && arg0.getActionCommand().charAt(0) == '_') {
+		
+		if(arg0.getActionCommand().length() < 3 && arg0.getActionCommand().charAt(0) == '_') {
 			int p = Integer.parseInt(arg0.getActionCommand().substring(1));
 			parent.removeSelecteCard(p);
 		} else if(arg0.getActionCommand().equals("<")) {
 			parent.decPage();
 		} else if(arg0.getActionCommand().equals(">")) {
 			parent.incPage();
-		} else if(arg0.getActionCommand().startsWith("Play vs")) {
-			
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					System.out.println("Launching: 0");
-					parent.startGame(arg0.getActionCommand());
-				}
-			}).start();
-		} else if(arg0.getActionCommand().equals("Socket: vs Terran Ai") || 
-				arg0.getActionCommand().equals("Socket: vs Player")) 
-		{
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					System.out.println("Launching: s");
-					parent.startGame(arg0.getActionCommand());
-				}
-			}).start();
-		} 
+		} else if(arg0.getActionCommand().equals(SAVE_COMMAND)) {
+		    parent.saveDeck();
+		} else if(arg0.getActionCommand().equals(CANCEL_COMMAND)) {
+		    parent.goBack();
+		}
 	}	
 
 }

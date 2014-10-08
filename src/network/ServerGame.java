@@ -10,8 +10,8 @@ import java.util.Map;
 
 import cards.BasicCard;
 import cards.CardJSONOperations;
-import src.DeckBuilder;
 import src.GameInterface;
+import src.MenuController;
 import units.Unit;
 
 import javax.websocket.*;
@@ -40,7 +40,7 @@ public class ServerGame implements GameInterface {
 	private Session s;
 	private players.PlayerInterface pli;
 	private FieldSituation latestSituation;
-	private DeckBuilder builder; 
+	private MenuController controller; 
 	
 	EnumMap<PossibleServerActions, String> response = new EnumMap<PossibleServerActions, String>(PossibleServerActions.class);
 			
@@ -77,8 +77,8 @@ public class ServerGame implements GameInterface {
 		this.pli = pli;
 	}
 	
-	public void setDeckBuilder(DeckBuilder db) {
-		builder = db;
+	public void setMenuController(MenuController mc) {
+		controller = mc;
 	}
 	
 	@OnOpen
@@ -106,7 +106,7 @@ public class ServerGame implements GameInterface {
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
-							builderAnalyser(jobj);
+							menuAnalyser(jobj);
 						}
 					}).start();
 				}
@@ -180,10 +180,10 @@ public class ServerGame implements GameInterface {
 		
 		switch(resp) {
 			case ServerResponses.ResponseOk: 
-				builder.gameApprowed();
+				controller.gameApproved();
 				return true;
 			case ServerResponses.ResponseWait: 
-				builder.waitForGame();
+				controller.waitForGame();
 				return true;
 		}
 		return false;
@@ -276,19 +276,21 @@ public class ServerGame implements GameInterface {
 		sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "endTurn"); 
 	}
 
+	/** Passes to player "select player" request. */
 	public void selectTarget() {
 		pli.selectTarget();
-		
 	}
 	
-	public void builderAnalyser(JSONObject jobj) {
+	/** Analyses responses, that are coming for MenuController. */
+	public void menuAnalyser(JSONObject jobj) {
 		switch((String)jobj.get("action")) {
 			case "play":
-				builder.gameApprowed();
+				controller.gameApproved();
 				break;
 		}
 	}
 	
+	/** Analyses responses, that are coming for RealPlayer. */
 	public void playerAnalyser(JSONObject jobj) {
 		while(pli == null) {
 			try {
