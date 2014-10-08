@@ -142,6 +142,7 @@ public class MainMenu extends JFrame implements ActionListener {
                         .setStartSide(SLSide.RIGHT, playDecks)
                         .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                             state = MenuState.PickingPlayDeck;
+                            System.out.println("Animation finished");
                         }}))
                     .play();
             } else if(state == MenuState.PickingPlayDeck) {
@@ -251,9 +252,26 @@ public class MainMenu extends JFrame implements ActionListener {
         .play();
     }
     
+    /** Called by MenuController, when player quits game. */
+    public void quitGame() {
+        ((SLPanel) getContentPane()).createTransition()
+        .push(new SLKeyframe(configMain, 1f)
+            .setStartSide(SLSide.LEFT, button1)
+            .setStartSide(SLSide.LEFT, button2)
+            .setStartSide(SLSide.LEFT, button3)
+            .setEndSide(SLSide.RIGHT, gamePanel)
+            .setCallback(new SLKeyframe.Callback() {@Override public void done() {
+                state = MenuState.Main;
+                gamePanel.removeAll();
+            }}))
+        .play();
+    }
+    
     public void reciveVs(SwingVS vs) {
         gamePanel.removeAll();
         vs.setBackground(java.awt.Color.white);
+        if(vs == null) System.err.println("Null");
+        else System.out.println("Vs recived");
         gamePanel.add(vs);
         
         ((SLPanel) getContentPane()).createTransition()
@@ -298,6 +316,20 @@ public class MainMenu extends JFrame implements ActionListener {
         playDecks.add(rb);
         group.add(rb);
         
+        rb = new JRadioButton("Via server vs Easy bot");
+        rb.setBackground(playDecks.getBackground());
+        rb.setActionCommand("2");
+        rb.addActionListener(listener);
+        playDecks.add(rb);
+        group.add(rb);
+        
+        rb = new JRadioButton("Via server vs real player");
+        rb.setBackground(playDecks.getBackground());
+        rb.setActionCommand("3");
+        rb.addActionListener(listener);
+        playDecks.add(rb);
+        group.add(rb);
+        
         playDecks.add(new JLabel("Choose a deck to play with:"));
         names = DeckBuilder.availableFiles(true);
         for(String i : names) {
@@ -314,6 +346,12 @@ public class MainMenu extends JFrame implements ActionListener {
                 break;
             case 1: 
                 opponent = PossibleOpponents.SingleEasyBot;
+                break;
+            case 2: 
+                opponent = PossibleOpponents.SocketEasyBot;
+                break;
+            case 3: 
+                opponent = PossibleOpponents.SocketPlayer;
                 break;
             default:
         }

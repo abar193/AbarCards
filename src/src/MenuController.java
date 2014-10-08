@@ -12,6 +12,13 @@ import decks.DeckPackReader;
 
 public class MenuController {
 
+    private static MenuController instance;
+    
+    /** For use from SwingVS only. */
+    public static MenuController instance() {
+        return instance;
+    }
+    
     public enum PossibleOpponents {
         SinglePassiveBot, SingleEasyBot, SocketEasyBot, SocketPlayer;
     }
@@ -20,6 +27,7 @@ public class MenuController {
     
     public MenuController(MainMenu menu) {
         parent = menu;
+        instance = this;
     }
     
     public DeckBuilder provideDeckBuilder(String race) {
@@ -67,14 +75,20 @@ public class MenuController {
         g.play();
     }
     
+    public void quitGame() {
+        parent.quitGame();
+    }
+    
     /* Called by ServerGame */
     
     /** Called, when server is ready to play. */
     public void gameApproved() {
         if(ServerGame.instance().play()) {
-            players.RealPlayer r = new players.RealPlayer(new SwingVS(ServerGame.instance()));
+            SwingVS vs = new SwingVS(ServerGame.instance());
+            players.RealPlayer r = new players.RealPlayer(vs);
             r.setParentGameInterface(ServerGame.instance());
             ServerGame.instance().setPI(r);
+            parent.reciveVs(vs);
         }
     }
     

@@ -55,6 +55,8 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	public SwingVS(GameInterface g) {
 		parent = g;
 		
+		System.out.println("Constructed");
+		
 		setSize(800, 600);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -65,6 +67,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	}
 	
 	public void createAndShowGUI() {
+	    System.out.println("CaSG: started");
 		setLayout(new BorderLayout());
         enemyHand = new EnemySideDrawer();
         enemyHand.setPreferredSize(new Dimension(800, 100));
@@ -99,6 +102,10 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         butt.addActionListener(this);
         right.add(enemyDeck);
         right.add(butt);
+        butt = new JButton();
+        butt.setText("Quit");
+        butt.addActionListener(this);
+        right.add(butt);
         right.add(myDeck);
         add(right, BorderLayout.LINE_END);
         
@@ -108,6 +115,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana(), me.getTotalMana());
         add(cardsDrawer, BorderLayout.PAGE_END);
         setVisible(true);
+        System.out.println("CaSG: ended");
 	}
 
 	@Override
@@ -255,12 +263,16 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		turnEnded = true;
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				parent.endTurn(playerNumber);
-			}
-		}).start();
+		if(arg0.getActionCommand().equals("End turn")) {
+    		new Thread(new Runnable() {
+    			@Override
+    			public void run() {
+    				parent.endTurn(playerNumber);
+    			}
+    		}).start();
+		} else {
+		    src.MenuController.instance().quitGame();
+		}
 		
 	}
 

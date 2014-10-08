@@ -1,7 +1,5 @@
 package src;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,16 +10,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-
-import network.ServerGame;
 import ui.CardPickingFrame;
-import ui.ConsoleVS;
-import ui.SwingVS;
 import cards.*;
 import decks.DeckPackReader;
 
@@ -41,64 +31,6 @@ public class DeckBuilder {
 	private int startPos = 0;
 	private CardPickingFrame frame;
 	private final MenuController controller;
-	
-	/** Splits lines in fullDescription word by word, cuts words longer than 10 chars
-	 * into smaller ones, and groups small words if their sum length < 10.
-	 * @param deck ArrayList of cards, from where fullDescription is being read
-	 * @param start Starting index. Will be proceeded cards with 
-	 * 		indexes [start..start + CARDS_IN_A_ROW]
-	 * @return String[][] array, where first index stands for corresponding card, 
-	 * 		and second index - for cut lines of fullDescription. 	
-	 */
-	public String[][] splitLines(ArrayList<BasicCard> deck, int start) {
-		String[][] splits = new String[CARDS_IN_A_ROW][];
-		
-		for(int i = 0; i < CARDS_IN_A_ROW; i++) {
-			if(deck.get(start + i).fullDescription != null) {
-				ArrayList<String>arr = new ArrayList<String>(Arrays.asList(deck.get(start + i).
-						fullDescription.split(" ")));
-				for(int j = 0; j < arr.size() - 1;) {
-					if(arr.get(j).length() + arr.get(j+1).length() < 10) {
-						// If j and j+1 words can be combined
-						String s = arr.get(j);
-						s = s + " " + arr.get(j + 1);
-						arr.remove(j + 1);
-						arr.remove(j);
-						arr.add(j, s);
-					} else if(arr.get(j).length() > 10) {
-						// If j word is too long
-						String s = arr.get(j).substring(0, 10);
-						String z = arr.get(j).substring(10, arr.get(j).length());
-						arr.remove(j);
-						arr.add(j, z);
-						arr.add(j, s);
-					} else {
-						// Else = proceed to next word
-						j++;
-					}
-				}
-				for(int j = arr.size() - 1; j < arr.size();) {
-					// Split last word, if that is too big
-					if(arr.get(j).length() > 10) {
-						//If j word is too long
-						String s = arr.get(j).substring(0, 10);
-						String z = arr.get(j).substring(10, arr.get(j).length());
-						arr.remove(j);
-						arr.add(j, z);
-						arr.add(j, s);
-					} else {
-						j++;
-					}
-				}
-				splits[i] = arr.toArray(new String[arr.size()]);
-			} else {
-				// No fullDesciption - create just empty array
-				splits[i] = new String[0];
-			}
-		}
-		
-		return splits;
-	}
 	
 	/** Prints title string, CARDS_IN_A_ROW cards from deck, and selected cards array.
 	 * 
