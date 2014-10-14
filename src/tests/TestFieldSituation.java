@@ -86,4 +86,6 @@ public class TestFieldSituation {
 		assertEquals(u2, fs.unitForPlayer(1, 0));
 		assertEquals(u3, fs.unitForPlayer(0, 1));
 	}
+	
 }
+

@@ -33,6 +33,8 @@ public class Game implements GameInterface {
 	
 	private Thread playerThread;
 	private int playerTurn;
+	private boolean playingCard = false;
+	
 	/**
 	 * Initialises player-relevant variables, and randomly puts chooses Player1 and Player2 from 
 	 * 		p1 and p2. Order of p1 and p2 is irrelevant, the key thing is that d1 shall store 
@@ -108,6 +110,7 @@ public class Game implements GameInterface {
 			playersData[i%2].newTurn();
 			players.get(i%2).reciveInfo(playersData[i%2], field, 
 					playersData[(i+1)%2].craeteOpenData());
+			playingCard = false;
 			
 			/* * * Wait for player * * */
 			playerTurn = i % 2;
@@ -125,6 +128,8 @@ public class Game implements GameInterface {
 			}
 			playerThread.interrupt();
 			/* * * End turn * * */
+			
+			playingCard = false;
 			playersData[i%2].auras.removeOutdatedAuras();
 			for(Unit u : field.allUnitFromOneSide(i%2, false)) {
 				u.endTurn();
@@ -260,6 +265,8 @@ public class Game implements GameInterface {
 	 * @param player players number
 	 */
 	public boolean canPlayCard(BasicCard c, int player) {
+	    if(playingCard) return false;
+	    
 		if(c.type == CardType.Unit)
 			return playersData[player].canPlayCard(c);
 		else if(c.type == CardType.Spell) 
@@ -271,9 +278,9 @@ public class Game implements GameInterface {
 	 * triggering spawn-relevant events
 	 * @param uc unit card for unit
 	 * @param player player's number
-	 * @return true, if unit has been placed 
+	 * @return null if nothing was placed, or created unit 
 	 */
-	public boolean createUnit(UnitCard uc, int player) {
+	public Unit createUnit(UnitCard uc, int player) {
 		Unit u = factory.createUnit(uc, player);
 		try {
 			if(field.canUnitBeAdded(u, player)) {
@@ -281,11 +288,10 @@ public class Game implements GameInterface {
 				field.addUnit(u, player);
 			}
 		} catch (IllegalArgumentException e) {
-			return false;
+			return null;
 		}
-		u.respondToEvent(TriggeringCondition.OnCreate, null);
-		this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
-		return true;
+		
+		return u;
 	}
 	
 	/**
@@ -294,28 +300,43 @@ public class Game implements GameInterface {
 	 * @param player
 	 */
 	public void playCard(BasicCard c, int player) {
-		if(canPlayCard(c, player)) {
-			
-			// Drawing
-			players.get(player).reciveAction("Playing " + c.name);
-			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
-
-			if(c.type == CardType.Unit) {
-				if(!createUnit((UnitCard)c, player)) 
-					players.get(player).reciveAction("Can't add that");
-				else 
-					playersData[player].playCard(c);
-			} else if (c.type == CardType.Spell) {
-				SpellCard card = (SpellCard)c;	
-				if(card.validate(player)) {
-					card.exequte(player);
-					playersData[player].playCard(c);
-				}
-			}
-			
-			recalculateFieldModifiers();
-			updateInfoForAll();
-		}
+	    synchronized(playersData[player]) {
+    		if(canPlayCard(c, player)) {
+    		    playingCard = true;
+    			// Drawing
+    			players.get(player).reciveAction("Playing " + c.name);
+    			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
+    
+    			if(c.type == CardType.Unit) {
+    			    Unit u = createUnit((UnitCard)c, player); 
+    				if(u == null) 
+    					players.get(player).reciveAction("Can't add that");
+    				else {
+    					playersData[player].playCard(c);
+    					triggerCreatingEvents(u);
+    				}
+    			} else if (c.type == CardType.Spell) {
+    				SpellCard card = (SpellCard)c;	
+    				if(card.validate(player)) {
+    					card.exequte(player);
+    					playersData[player].playCard(c);
+    				}
+    			}
+    			
+    			recalculateFieldModifiers();
+    			updateInfoForAll();
+    			playingCard = false;
+    		}
+	    }
+	}
+	
+	/**
+	 * Called for freshly created unit, to trigger "OnCreate" and "OnAllySpawn" events.
+	 * @param u new units
+	 */
+	private void triggerCreatingEvents(Unit u) {
+	    u.respondToEvent(TriggeringCondition.OnCreate, null);
+        this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
 	}
 	
 	/**

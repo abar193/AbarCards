@@ -39,7 +39,7 @@ public class MainMenu extends JFrame implements ActionListener {
         Main, PickingBuildDeck, Building, PickingPlayDeck, Playing; 
     }
     
-    private final int SCREEN_WIDTH = 806;
+    private final int SCREEN_WIDTH = 806; // TODO: fix
     private final int SCREEN_HEIGHT = 626;
     private final int LEFT_BUTTONS_WIDTH = 150;
     
