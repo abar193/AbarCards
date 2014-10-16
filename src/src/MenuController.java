@@ -81,18 +81,21 @@ public class MenuController {
     
     /* Called by ServerGame */
     
-    /** Called, when server is ready to play. */
-    public void gameApproved() {
-        if(ServerGame.instance().play()) {
-            SwingVS vs = new SwingVS(ServerGame.instance());
-            players.RealPlayer r = new players.RealPlayer(vs);
-            r.setParentGameInterface(ServerGame.instance());
-            ServerGame.instance().setPI(r);
-            parent.reciveVs(vs);
-        }
+    /** Called, when server has validated deck. */
+    public void deckApproved() {
+        ServerGame.instance().play();
+    }
+    
+    /** Called, when server has created player game. */
+    public void gameCreated() {
+        SwingVS vs = new SwingVS(ServerGame.instance());
+        players.RealPlayer r = new players.RealPlayer(vs);
+        r.setParentGameInterface(ServerGame.instance());
+        ServerGame.instance().setPI(r);
+        parent.reciveVs(vs);
     }
     
     public void waitForGame() {
-        
+        parent.reciveWaitSignal();
     }
 }

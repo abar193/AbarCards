@@ -102,7 +102,7 @@ public class ServerGame implements GameInterface {
 							playerAnalyser(jobj);
 						}
 					}).start();
-				} else if(((String)jobj.get("target")).equals("builder")) {
+				} else if(((String)jobj.get("target")).equals("menu")) {
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
@@ -110,7 +110,7 @@ public class ServerGame implements GameInterface {
 						}
 					}).start();
 				}
-				return;
+				return; 
 			} else if(jobj.containsKey("response")) {
 				response.put(PossibleServerActions.fromString((String)jobj.get("response")),
 						(String)jobj.get("status"));
@@ -162,7 +162,6 @@ public class ServerGame implements GameInterface {
 		}
 	}
 	
-    
 	@SuppressWarnings("unchecked")
 	public boolean validateDeck(ArrayList<BasicCard> c, String enemy) {
 		JSONArray jarr = new JSONArray();
@@ -180,27 +179,12 @@ public class ServerGame implements GameInterface {
 		
 		switch(resp) {
 			case ServerResponses.ResponseOk: 
-				controller.gameApproved();
+				controller.deckApproved();
 				return true;
-			case ServerResponses.ResponseWait: 
-				controller.waitForGame();
-				return true;
+			case ServerResponses.ResponseFail: 
+				return false;
 		}
 		return false;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public boolean play() {
-		JSONObject obj = new JSONObject();
-		obj.put("action", "play");
-		
-		String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj), "play");
-		System.out.println("Play got " + resp);
-		if(resp.equals(ServerResponses.ResponseIllegal)) {
-			System.err.println("Illegal move in play with output msg = " + JSONValue.toJSONString(obj));
-		}
-		
-		return resp.equals(ServerResponses.ResponseOk);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -281,12 +265,34 @@ public class ServerGame implements GameInterface {
 		pli.selectTarget();
 	}
 	
+	@SuppressWarnings("unchecked")
+    public void play() {
+        JSONObject obj = new JSONObject();
+        obj.put("action", "play");
+        
+        String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(obj), "play");
+        System.out.println("Play got " + resp);
+        if(resp.equals(ServerResponses.ResponseIllegal)) {
+            System.err.println("Illegal move in play with output msg = " + JSONValue.toJSONString(obj));
+        }
+        if(resp.equals(ServerResponses.ResponseOk))
+            controller.gameCreated();
+        else if(resp.equals(ServerResponses.ResponseWait))
+            controller.waitForGame();
+    }
+	
 	/** Analyses responses, that are coming for MenuController. */
 	public void menuAnalyser(JSONObject jobj) {
 		switch((String)jobj.get("action")) {
-			case "play":
-				controller.gameApproved();
+			case "play": {
+			    String status = (String)jobj.get("status");
+			    if(status.equals(ServerResponses.ResponseOk)) {
+			        controller.gameCreated();
+			    } else if(status.equals(ServerResponses.ResponseWait)) {
+			        controller.waitForGame();
+			    }
 				break;
+			}
 		}
 	}
 	

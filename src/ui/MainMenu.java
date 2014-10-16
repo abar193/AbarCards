@@ -20,6 +20,7 @@ import aurelienribon.slidinglayout.SLConfig;
 import aurelienribon.slidinglayout.SLKeyframe;
 import aurelienribon.slidinglayout.SLPanel;
 import aurelienribon.slidinglayout.SLSide;
+import aurelienribon.slidinglayout.SLTransition;
 import aurelienribon.tweenengine.Tween;
 
 import java.awt.event.ActionEvent;
@@ -36,17 +37,20 @@ public class MainMenu extends JFrame implements ActionListener {
     private static final long serialVersionUID = -3549910545759711405L;
 
     private enum MenuState {
-        Main, PickingBuildDeck, Building, PickingPlayDeck, Playing; 
+        Main, PickingBuildDeck, Building, PickingPlayDeck, Playing, Waiting; 
     }
     
     private final int SCREEN_WIDTH = 806; // TODO: fix
     private final int SCREEN_HEIGHT = 626;
     private final int LEFT_BUTTONS_WIDTH = 150;
     
+    public boolean waiting = false;
+    
     /** Configs for screen animations. See slidinglayout descriptions. */
-    private SLConfig configMain, configBuildDeck, configChooseDeck, configGame;
+    private SLConfig configMain, configBuildDeck, configChooseDeck, configGame, configWaiting;
+    
     private JButton button1, button2, button3;
-    private JPanel buildDecks, playDecks;
+    private JPanel buildDecks, playDecks, waitingPanel;
     private JLayeredPane gamePanel;
     private MenuState state;
     private final MenuController controller;
@@ -106,7 +110,7 @@ public class MainMenu extends JFrame implements ActionListener {
                 .place(2, 0, button3)
             .endGrid()
             .place(0, 1, buildDecks);
-        
+       
         configChooseDeck = new SLConfig((SLPanel) this.getContentPane());
         configChooseDeck.col(LEFT_BUTTONS_WIDTH).col(1f).row(1f).gap(10, 10)
             .beginGrid(0, 0)
@@ -116,6 +120,24 @@ public class MainMenu extends JFrame implements ActionListener {
                 .place(2, 0, button3)
             .endGrid()
             .place(0, 1, playDecks);
+       
+        waitingPanel = new JPanel();
+        waitingPanel.setBackground(java.awt.Color.green);
+        waitingPanel.add(new JLabel("Waiting for the start"));
+        configWaiting = new SLConfig((SLPanel) this.getContentPane());
+        configWaiting.row(1f).row(9f).col(1f).gap(10, 10)
+            .place(0, 0, waitingPanel)
+            .beginGrid(1, 0)
+                .col(LEFT_BUTTONS_WIDTH)
+                .col(1f).row(1f)
+                .beginGrid(0, 0)
+                    .col(1f).row(75).row(75).row(50)
+                    .place(0, 0, button1)
+                    .place(1, 0, button2)
+                    .place(2, 0, button3)
+                .endGrid()
+                .place(0, 1, playDecks)
+            .endGrid();
         
         gamePanel = new JLayeredPane();
         //gamePanel = new JPanel();
@@ -133,6 +155,7 @@ public class MainMenu extends JFrame implements ActionListener {
         setVisible(true);
     }
     
+    // For that code below I should punish myself.
     @Override
     public void actionPerformed(final ActionEvent e) {
         if(e.getSource().equals(button1)) {
@@ -267,6 +290,17 @@ public class MainMenu extends JFrame implements ActionListener {
         .play();
     }
     
+    public void reciveWaitSignal() {
+        ((SLPanel) getContentPane()).createTransition()
+        .push(new SLKeyframe(configWaiting, 1f)
+            .setStartSide(SLSide.TOP, waitingPanel)
+            .setCallback(new SLKeyframe.Callback() {@Override public void done() {
+                state = MenuState.Waiting;
+                waiting = true;
+            }}))
+        .play();
+    }
+    
     public void reciveVs(SwingVS vs) {
         gamePanel.removeAll();
         vs.setBackground(java.awt.Color.white);
@@ -274,8 +308,10 @@ public class MainMenu extends JFrame implements ActionListener {
         else System.out.println("Vs recived");
         gamePanel.add(vs);
         
-        ((SLPanel) getContentPane()).createTransition()
-        .push(new SLKeyframe(configGame, 1f)
+        SLTransition trans;
+        SLKeyframe frame = new SLKeyframe(configGame, 1f);
+        trans = ((SLPanel) getContentPane()).createTransition();
+        trans.push(frame
             .setEndSide(SLSide.LEFT, button1)
             .setEndSide(SLSide.LEFT, button2)
             .setEndSide(SLSide.LEFT, button3)
@@ -283,8 +319,11 @@ public class MainMenu extends JFrame implements ActionListener {
             .setStartSide(SLSide.RIGHT, gamePanel)
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Playing;
-            }}))
-        .play();
+            }}));
+        
+        if(state == MenuState.Waiting) frame.setEndSide(SLSide.TOP, waitingPanel);
+        
+        trans.play();
     }
     
     private void updateDecks() {
