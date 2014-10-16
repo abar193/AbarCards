@@ -99,10 +99,7 @@ public class DeckPackReader extends DefaultHandler {
     				power.filter = f;
     		} else {
     			if(spellBuilder.reciveOpenFilterTag(localName, atts) != null)
-    				if(src.Game.currentGame != null)
-    					src.Game.currentGame.displayError("Error with tag 'filter'");
-    				else 
-    					System.out.println("Error with filter tag");
+					System.out.println("Error with filter tag");
     		}
     	} else if(localName.contains("Power")) {
     		power = spellBuilder.reciveOpenPowerTag(localName, atts);
@@ -129,10 +126,7 @@ public class DeckPackReader extends DefaultHandler {
     		AuraEffect aura = new AuraEffect(AuraType.fromInt(type), value, null);
     		unit.auraEffects[unit.auraEffects.length-1] = aura;
     	} else if(!localName.equals("Deck")) {
-    		if(src.Game.currentGame != null)
-				src.Game.currentGame.displayError("Unknown tag " + localName);
-			else 
-				System.out.println("Unknown tag " + localName);
+    		System.out.println("Unknown tag " + localName);
     	} else if(localName.equals("Deck")) {
     		if(atts.getValue("num") != null)
     			deckNumber = Integer.parseInt(atts.getValue("num"));	

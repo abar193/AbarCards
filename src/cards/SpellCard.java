@@ -23,11 +23,11 @@ public class SpellCard extends BasicCard {
 		this.spell = as;
 	}
 	
-	public boolean validate(int player) {
-		return spell.validate(player);
+	public boolean validate(int player, src.ProviderGameInterface cG) {
+		return spell.validate(player, cG);
 	}
 	
-	public void exequte(int player) {
-		spell.exequte(player);
+	public void exequte(int player, src.ProviderGameInterface cG) {
+		spell.exequte(player, cG);
 	}
 }

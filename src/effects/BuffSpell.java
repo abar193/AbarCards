@@ -9,14 +9,14 @@ public class BuffSpell extends AbstractSpell {
 	}
 
 	@Override
-	public boolean validate(int player) {
+	public boolean validate(int player, src.ProviderGameInterface currentGame) {
 		return target != null;
 	}
 
 	@Override
-	public void exequte(int playerNum) {
+	public void exequte(int playerNum, src.ProviderGameInterface currentGame) {
 		this.playerNum = playerNum;
-		buff.value = CustomValueDecoder.decodeValue(buff.svalue, playerNum, target);
+		buff.value = CustomValueDecoder.decodeValue(buff.svalue, playerNum, target, currentGame);
 		target.applyBuff(buff);
 	}
 

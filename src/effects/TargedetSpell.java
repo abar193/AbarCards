@@ -16,19 +16,19 @@ public class TargedetSpell extends AbstractSpell {
 	}
 
 	@Override
-	public boolean validate(int player) {
+	public boolean validate(int player, src.ProviderGameInterface currentGame) {
 		this.playerNum = player;
-		return targeter.hasTargets(playerNum, target);
+		return targeter.hasTargets(playerNum, target, currentGame);
 	}
 
 	@Override
-	public void exequte(int playerNum) {
+	public void exequte(int playerNum, src.ProviderGameInterface currentGame) {
 		this.playerNum = playerNum;
-		ArrayList<Unit> units = targeter.selectTargets(playerNum, target);
+		ArrayList<Unit> units = targeter.selectTargets(playerNum, target, currentGame);
 		if(units != null) {
 			for(Unit u : units) {
 				spell.target = u;
-				spell.exequte(playerNum);
+				spell.exequte(playerNum, currentGame);
 			}
 		}
 	}

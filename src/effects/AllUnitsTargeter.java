@@ -24,8 +24,8 @@ public class AllUnitsTargeter implements Targeter {
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int p, Unit u) {
-		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
+	public ArrayList<Unit> selectTargets(int p, Unit u, src.ProviderGameInterface currentGame) {
+		FieldSituation fs = currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
 			ArrayList<Unit> tmp = (filter == null) ? fs.allUnitFromOneSide((acceptablePlayers + p)
 					% 2, aceptHeroes) :
@@ -43,8 +43,8 @@ public class AllUnitsTargeter implements Targeter {
 	}
 	
 	@Override
-	public boolean hasTargets(int player, Unit u) {
-		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
+	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+		FieldSituation fs = currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
 			if(filter == null) {
 				return fs.allUnitFromOneSide((acceptablePlayers + player) % 2, aceptHeroes).size() 

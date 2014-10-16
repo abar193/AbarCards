@@ -21,14 +21,14 @@ public class PlayerValueSpell extends AbstractSpell {
 	}
 	
 	@Override
-	public boolean validate(int player) {
+	public boolean validate(int player, src.ProviderGameInterface currentGame) {
 		return true;
 	}
 
 	@Override
-	public void exequte(int playerNum) {
+	public void exequte(int playerNum, src.ProviderGameInterface currentGame) {
 		this.playerNum = playerNum;
-		Game.currentGame.applySpellToPlayer((playerNum + filter) % 2, this);
+		currentGame.applySpellToPlayer((playerNum + filter) % 2, this);
 	}
 
 }

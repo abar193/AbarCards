@@ -26,9 +26,9 @@ public class UnitPower {
 		return tc == c;
 	}
 	
-	public void exequte(Unit u, int player) {
+	public void exequte(Unit u, int player, src.ProviderGameInterface cG) {
 		spell.target = u;
-		spell.exequte(player);
+		spell.exequte(player, cG);
 	}
 
 }

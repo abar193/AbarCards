@@ -1,5 +1,6 @@
 package effects;
 
+import src.ProviderGameInterface;
 import units.Unit;
 import units.UnitFilter;
 
@@ -23,12 +24,12 @@ public abstract class AbstractSpell {
 	/**
 	 * Returns true, if spell can be casted - has enought targets, e.t.c.
 	 */
-	public abstract boolean validate(int player);
+	public abstract boolean validate(int player, src.ProviderGameInterface currentGame);
 	
 	/**
 	 * Executes spell. 
 	 */
-	public abstract void exequte(int player);
+	public abstract void exequte(int player, ProviderGameInterface currentGame);
 	
 	public void setFilter(UnitFilter f) {
 		filter = f;

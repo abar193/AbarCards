@@ -8,30 +8,33 @@ import org.junit.Test;
 import effects.*;
 import units.Unit;
 import src.FieldSituation;
+import src.Game;
 import units.Unit.Quality;
 
 public class TestSpellEffects {
 
 	FieldSituation fs;
 	Unit[] units;
-	
+	Game currentGame;
 	@Before
     public void setUp() {
-		fs = new FieldSituation();
+	    currentGame = new src.Game();
+	    
+	    fs = new FieldSituation(currentGame);
 		units = new Unit[5];
 		for(int i = 0; i < 5; i++) {
-			 units[0] = new Unit(new cards.UnitCard(i + 2, i + 2, 0, "", ""), 0);
+			 units[0] = new Unit(new cards.UnitCard(i + 2, i + 2, 0, "", ""), 0, null);
 			 fs.addUnit(units[0], 0);
 		}
-		src.Game.currentGame = new src.Game();
-		src.Game.currentGame.applyFieldSituation(fs);
+		
+		currentGame.applyFieldSituation(fs);
     }
 	 
 	@Test
 	public void testAll() {
 		BuffSpell bs = new BuffSpell(new Buff(BuffType.Hurt, "1"));
 		TargedetSpell ts = new TargedetSpell(new effects.AllUnitsTargeter(1, false), bs);
-		ts.exequte(1);
+		ts.exequte(1, currentGame);
 		for(int i = 0; i < 5; i++) {
 			assertEquals(i + 1, fs.allUnitFromOneSide(0, false).get(i).getCurrentHealth());
 		}
@@ -44,7 +47,7 @@ public class TestSpellEffects {
 		SpellContainer sc = new SpellContainer(bs0);
 		sc.add(bs1);
 		TargedetSpell ts = new TargedetSpell(new effects.AllUnitsTargeter(0, false), sc);
-		ts.exequte(0);
+		ts.exequte(0, currentGame);
 		for(int i = 0; i < 5; i++) {
 			assertEquals(i + 3, fs.allUnitFromOneSide(0, false).get(i).getCurrentHealth());
 			assertEquals(true, fs.allUnitFromOneSide(0, false).get(i).hasQuality(Quality.Taunt));

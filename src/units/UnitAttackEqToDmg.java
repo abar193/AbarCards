@@ -6,8 +6,8 @@ public class UnitAttackEqToDmg extends Unit {
 	
 	boolean silenced;
 	
-	public UnitAttackEqToDmg(UnitCard card, int player) {
-		super(card, player);
+	public UnitAttackEqToDmg(UnitCard card, int player, src.ProviderGameInterface cG) {
+		super(card, player, cG);
 		silenced = false;
 	}
 

@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import cards.UnitCard;
 
 public class PlayerUnit extends Unit {
-
-	public PlayerUnit(UnitCard card, int player) {
-		super(card, player);
+    
+	public PlayerUnit(UnitCard card, int player, src.ProviderGameInterface cG) {
+		super(card, player, cG);
 		
 	}	
-	
-	
 	
 	@Override
 	public void applyBuff(effects.Buff b) {

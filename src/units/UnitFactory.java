@@ -22,19 +22,19 @@ public class UnitFactory {
 	 * @param player player's number - 0/1, used to call addAuraForPlayer
 	 * @return unit created
 	 */
-	public Unit createUnit(UnitCard card, int player) {
+	public Unit createUnit(UnitCard card, int player, src.ProviderGameInterface cG) {
 		Unit u;
 		if(card instanceof cards.SpecialUnitCard) {
 			switch(((SpecialUnitCard)card).specialUnitRef) {
 				case DmgEqHealth:
-					u = new UnitAttackEqToDmg(card, player);
+					u = new UnitAttackEqToDmg(card, player, cG);
 					break;
 				case Other:
 				default: 
-					u = new Unit(card, player);
+					u = new Unit(card, player, cG);
 			}
 		} else {
-			u = new Unit(card, player);
+			u = new Unit(card, player, cG);
 		}
 		
 		if(card.qualities != 0) {
@@ -44,7 +44,7 @@ public class UnitFactory {
 		if(card.auraEffects != null) {
 			for(AuraEffect ae : card.auraEffects) {
 				ae.unit = u;
-				Game.currentGame.addAuraForPlayer(player, ae);
+				cG.addAuraForPlayer(player, ae);
 			}
 		}
 		

@@ -33,8 +33,8 @@ public class RandomTargeter implements Targeter {
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int p, Unit targ) {
-		FieldSituation fs = Game.currentGame.provideFieldSituation(); 
+	public ArrayList<Unit> selectTargets(int p, Unit targ, src.ProviderGameInterface currentGame) {
+		FieldSituation fs = currentGame.provideFieldSituation(); 
 		player = p;
 		Random r = new Random();
 		ArrayList<Unit> retValue = new ArrayList<Unit>(maxCount);
@@ -74,8 +74,8 @@ public class RandomTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u) {
-		FieldSituation fs = Game.currentGame.provideFieldSituation();
+	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+		FieldSituation fs = currentGame.provideFieldSituation();
 		
 		if(aceptPlayers == -1)
 			return fs.allUnits(aceptHeroes).size() > 0;

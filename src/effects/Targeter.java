@@ -20,10 +20,10 @@ public interface Targeter {
 	 * @param u source unit 
 	 * @return array of targets
 	 */
-	public ArrayList<Unit> selectTargets(int player, Unit u);
+	public ArrayList<Unit> selectTargets(int player, Unit u, src.ProviderGameInterface currentGame);
 	/**
 	 * Checks if there are enough units, matching required criteria
 	 * @return true, if spell associated with targeter can be casted.
 	 */
-	public boolean hasTargets(int player, Unit u);
+	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame);
 }

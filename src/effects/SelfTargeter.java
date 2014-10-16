@@ -11,7 +11,8 @@ public class SelfTargeter implements Targeter {
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int player, Unit u) {
+	public ArrayList<Unit> selectTargets(int player, Unit u, src.ProviderGameInterface currentGame) 
+	{
 		if(u == null) return null;
 		ArrayList<Unit> arr = new ArrayList<Unit>(1);
 		arr.add(u);
@@ -19,7 +20,7 @@ public class SelfTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u) {
+	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
 		return u != null;
 	}
 

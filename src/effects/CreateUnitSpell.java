@@ -2,8 +2,6 @@ package effects;
 
 import cards.UnitCard;
 import units.Unit;
-import units.UnitFactory;
-import src.Game;
 import src.FieldSituation;
 
 public class CreateUnitSpell extends AbstractSpell {
@@ -19,15 +17,15 @@ public class CreateUnitSpell extends AbstractSpell {
 	}
 
 	@Override
-	public boolean validate(int player) {
+	public boolean validate(int player, src.ProviderGameInterface currentGame) {
 		return true;
 	}
 
 	@Override
-	public void exequte(int player) {
-		int value = CustomValueDecoder.decodeValue(count, player, target);
+	public void exequte(int player, src.ProviderGameInterface currentGame) {
+		int value = CustomValueDecoder.decodeValue(count, player, target, currentGame);
 		for(int i = 0; i < value; i++) {
-			Game.currentGame.createUnit(myUnit, (player + side) % 2);
+			currentGame.createUnit(myUnit, (player + side) % 2);
 		}
 		
 	}

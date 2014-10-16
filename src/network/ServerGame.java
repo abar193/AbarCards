@@ -10,8 +10,11 @@ import java.util.Map;
 
 import cards.BasicCard;
 import cards.CardJSONOperations;
+import cards.UnitCard;
 import src.GameInterface;
 import src.MenuController;
+import src.ProviderGameInterface;
+import units.TriggeringCondition;
 import units.Unit;
 
 import javax.websocket.*;
@@ -19,6 +22,8 @@ import javax.websocket.*;
 import org.json.simple.*;
 import org.json.*;
 
+import effects.AbstractSpell;
+import effects.AuraEffect;
 import players.PlayerData;
 import players.PlayerOpenData;
 import src.FieldSituation;
@@ -30,7 +35,7 @@ import src.FieldSituation;
  */
 
 @ClientEndpoint
-public class ServerGame implements GameInterface {
+public class ServerGame implements GameInterface, ProviderGameInterface {
 	
 	private static ServerGame instance;
 	private static boolean initialising = false;
@@ -313,8 +318,8 @@ public class ServerGame implements GameInterface {
 				pli.reciveAction((String)jobj.get("message"));
 				break;
 			case "reciveInfo": {
-				PlayerData pd = new PlayerData((Map)jobj.get("yourData"));
-				FieldSituation fs = new FieldSituation((Map)jobj.get("field"));
+				PlayerData pd = new PlayerData((Map)jobj.get("yourData"), this);
+				FieldSituation fs = new FieldSituation((Map)jobj.get("field"), this);
 				latestSituation = fs;
 				PlayerOpenData pod = new PlayerOpenData((Map)jobj.get("enemyData"));
 				pli.reciveInfo(pd, fs, pod);
@@ -329,5 +334,48 @@ public class ServerGame implements GameInterface {
 				sendMessage(JSONValue.toJSONString(resObj));
 			}
 		}
-	}	
+	}
+
+    @Override
+    public FieldSituation provideFieldSituation() {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+        return latestSituation;
+    }
+
+    @Override
+    public Unit createUnit(UnitCard uc, int player) {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+        return null;
+    }
+
+    @Override
+    public Unit askPlayerForTarget(int player) {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+        return null;
+    }
+
+    @Override
+    public void applySpellToPlayer(int player, AbstractSpell spell) {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+    }
+
+    @Override
+    public void informAll(String m) {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+    }
+
+    @Override
+    public void addAuraForPlayer(int player, AuraEffect ae) {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+    }
+
+    @Override
+    public void informLostCards(ArrayList<BasicCard> cards, int player) {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+    }
+
+    @Override
+    public void passEventAboutUnit(Unit u, TriggeringCondition e) {
+        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+    }	
 }

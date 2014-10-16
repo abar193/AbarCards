@@ -19,8 +19,8 @@ public class TestPlayerData {
 
 	@Test
 	public void testInit() {
-		PlayerData player1 = new PlayerData(new Deck(), 30, null);
-		PlayerData player2 = new PlayerData(new Deck(), 30, null);
+		PlayerData player1 = new PlayerData(new Deck(), 30, null, null);
+		PlayerData player2 = new PlayerData(new Deck(), 30, null, null);
 		assertNotNull(player1);
 		assertNotNull(player2);
 	}
@@ -38,7 +38,7 @@ public class TestPlayerData {
 			TestCard c2 = new TestCard(2);
 			c2.cost = 1; 
 			d.addCard(c2);
-			PlayerData p = new PlayerData(d, 30, null);
+			PlayerData p = new PlayerData(d, 30, null, null);
 			
 			assertNull(p.pullCard(3));
 			assertEquals(30, p.getHealth());
@@ -57,7 +57,7 @@ public class TestPlayerData {
 			TestCard c2 = new TestCard(2);
 			c2.cost = 1; 
 			d.addCard(c2);
-			PlayerData p = new PlayerData(d, 30, null, 2);
+			PlayerData p = new PlayerData(d, 30, null, 2, null);
 			ArrayList<BasicCard> al = p.pullCard(3);
 			assertEquals(1, al.size());
 			assertEquals(c2, al.get(0));
@@ -77,7 +77,7 @@ public class TestPlayerData {
 		TestCard c2 = new TestCard(2);
 		c2.cost = 2; 
 		d.addCard(c2);
-		PlayerData p = new PlayerData(d, 30, null);
+		PlayerData p = new PlayerData(d, 30, null, null);
 		p.pullCard(3);
 		assertEquals(p.getAvailableMana(), 0);
 		assertEquals(p.getTotalMana(), 0);
@@ -103,10 +103,10 @@ public class TestPlayerData {
 	
 	@Test
 	public void testAura() {
-		PlayerData pd = new PlayerData(null, 30, null);
+		PlayerData pd = new PlayerData(null, 30, null, null);
 		pd.auras.addAura(new effects.AuraEffect(effects.AuraType.UnitDamage, 5, 3));
 		assertEquals(5, pd.auras.modifiersForType(effects.AuraType.UnitDamage));
-		Unit u = new Unit(new UnitCard(1, 1, 1, "", ""), 0);
+		Unit u = new Unit(new UnitCard(1, 1, 1, "", ""), 0, null);
 		pd.auras.addAura(new effects.AuraEffect(effects.AuraType.UnitHealth, 4, u));
 		assertEquals(2, pd.auras.aurasCount());
 		pd.auras.unitDies(u);

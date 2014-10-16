@@ -292,7 +292,7 @@ public class MainMenu extends JFrame implements ActionListener {
     
     public void reciveWaitSignal() {
         ((SLPanel) getContentPane()).createTransition()
-        .push(new SLKeyframe(configWaiting, 1f)
+        .push(new SLKeyframe(configWaiting, 0.1f)
             .setStartSide(SLSide.TOP, waitingPanel)
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Waiting;
@@ -301,7 +301,7 @@ public class MainMenu extends JFrame implements ActionListener {
         .play();
     }
     
-    public void reciveVs(SwingVS vs) {
+    public void reciveVs(final SwingVS vs) {
         gamePanel.removeAll();
         vs.setBackground(java.awt.Color.white);
         if(vs == null) System.err.println("Null");
@@ -319,6 +319,7 @@ public class MainMenu extends JFrame implements ActionListener {
             .setStartSide(SLSide.RIGHT, gamePanel)
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Playing;
+                vs.repaint();
             }}));
         
         if(state == MenuState.Waiting) frame.setEndSide(SLSide.TOP, waitingPanel);

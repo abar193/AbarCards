@@ -15,8 +15,10 @@ public class NeighborTargeter implements Targeter {
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int player, Unit u) {
-		Unit n = Game.currentGame.provideFieldSituation().neighborUnit(offset, u);
+	public ArrayList<Unit> selectTargets(int player, Unit u, 
+	        src.ProviderGameInterface currentGame) 
+	{
+		Unit n = currentGame.provideFieldSituation().neighborUnit(offset, u);
 		if(n == null) 
 			return null;
 		ArrayList<Unit> arr = new ArrayList<>(1);
@@ -25,8 +27,8 @@ public class NeighborTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u) {
-		return Game.currentGame.provideFieldSituation().neighborUnit(offset, u) != null;
+	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+		return currentGame.provideFieldSituation().neighborUnit(offset, u) != null;
 	}
 	
 	@Override

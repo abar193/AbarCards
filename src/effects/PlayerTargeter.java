@@ -16,11 +16,11 @@ public class PlayerTargeter implements Targeter {
 	}
 	
 	@Override
-	public ArrayList<Unit> selectTargets(int p, Unit t) {
-		Unit u = src.Game.currentGame.askPlayerForTarget(p);
+	public ArrayList<Unit> selectTargets(int p, Unit t, src.ProviderGameInterface currentGame) {
+		Unit u = currentGame.askPlayerForTarget(p);
 		if(!u.matchesFilter(filter)) {
 			while(!u.matchesFilter(filter)) {
-				u = src.Game.currentGame.askPlayerForTarget(p);
+				u = currentGame.askPlayerForTarget(p);
 			}
 		}
 		ArrayList<Unit> arr = new ArrayList<Unit>(1);
@@ -29,8 +29,8 @@ public class PlayerTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u) {
-		FieldSituation fs = src.Game.currentGame.provideFieldSituation();
+	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+		FieldSituation fs = currentGame.provideFieldSituation();
 		if(filter != null) {
 			return fs.countUnitsMatchingFilter(-1, filter, aceptHeroes) > 0;
 		}

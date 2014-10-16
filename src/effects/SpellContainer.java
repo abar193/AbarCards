@@ -21,16 +21,16 @@ public class SpellContainer extends AbstractSpell {
 	}
 	
 	@Override
-	public boolean validate(int player) {
+	public boolean validate(int player, src.ProviderGameInterface currentGame) {
 		return true;
 	}
 
 	@Override
-	public void exequte(int playerNum) {
+	public void exequte(int playerNum, src.ProviderGameInterface currentGame) {
 		this.playerNum = playerNum;
 		for(AbstractSpell s : spells) {
 			s.target = target;
-			s.exequte(playerNum);
+			s.exequte(playerNum, currentGame);
 		}
 
 	}

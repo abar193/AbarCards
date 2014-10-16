@@ -30,7 +30,9 @@ public class FieldSituation {
 	private ArrayList<ArrayList<Unit>> playerBuildings;
 	public ArrayList<Unit> heroes;
 	
-	public FieldSituation() {
+	private src.ProviderGameInterface currentGame;
+	
+	public FieldSituation(src.ProviderGameInterface cG) {
 		playerUnits = new ArrayList<ArrayList<Unit>>(2){{
 			add(new ArrayList<Unit>(MAXFIELDUNITS));
 			add(new ArrayList<Unit>(MAXFIELDUNITS));
@@ -42,6 +44,7 @@ public class FieldSituation {
 		}};
 		
 		heroes = new ArrayList<Unit>(2);
+		currentGame = cG;
 	}
 	
 
@@ -61,7 +64,7 @@ public class FieldSituation {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public FieldSituation(Map m) {
+	public FieldSituation(Map m, ProviderGameInterface cG) {
 		
 		playerUnits = new ArrayList<ArrayList<Unit>>(2);
 		heroes = new ArrayList<Unit>(2);
@@ -77,13 +80,13 @@ public class FieldSituation {
 			playerUnits.add(arr);
 			java.util.Iterator<Map> i = jarr.iterator();
 			while(i.hasNext()) {
-				arr.add(new Unit(i.next()));
+				arr.add(new Unit(i.next(), cG));
 			}
 			Unit h;
 			try { 
-				h = new Unit((Map)m.get("Hero" + Integer.toString(j)));
+				h = new Unit((Map)m.get("Hero" + Integer.toString(j)), cG);
 			} catch(ClassCastException e) {
-				h = new Unit((Map)JSONValue.parse((String) m.get("Hero" + Integer.toString(j))));
+				h = new Unit((Map)JSONValue.parse((String) m.get("Hero" + Integer.toString(j))), cG);
 			}
 			
 			heroes.add(h);

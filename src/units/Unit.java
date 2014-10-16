@@ -63,6 +63,8 @@ public class Unit {
 	private ArrayList<UnitPower> powers;
 	private boolean canAttack;
 	
+	private src.ProviderGameInterface currentGame;
+	
 	public Map<String, String> toMap() {
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		m.put("MyCard", JSONValue.toJSONString(cards.CardJSONOperations.instance.mapFromCard(myCard)));
@@ -80,7 +82,7 @@ public class Unit {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Unit(Map m) {
+	public Unit(Map m, src.ProviderGameInterface currentGame) {
 		try { 
 			myCard = (UnitCard) cards.CardJSONOperations.instance.cardFromMap((Map)m.get("MyCard"));
 		} catch(ClassCastException e) {
@@ -98,10 +100,11 @@ public class Unit {
 		qualities = Integer.parseInt((String) m.get("Qualities"));
 		attackedAlready = Integer.parseInt((String) m.get("AttackedAlready"));
 		canAttack = Integer.parseInt((String) m.get("CanAttack")) == 1;
+		this.currentGame = currentGame;
 	}
 		
 	/* Initialisation */
-	public Unit(UnitCard card, int player) {
+	public Unit(UnitCard card, int player, src.ProviderGameInterface currentGame) {
 		currentHealth = card.getHealth();
 		maxHealth = currentHealth;
 		currentDamage = card.getDamage();
@@ -113,6 +116,7 @@ public class Unit {
 		modHealth = 0;
 		modDmg = 0;
 		myPlayer = player;
+		this.currentGame = currentGame;
 	}
 	
 	public Unit(UnitCard card, int player, int qualities) {
@@ -243,8 +247,8 @@ public class Unit {
 	 */
 	public void damage(int d) {
 		currentHealth -= d;
-		if(src.Game.currentGame != null)
-			src.Game.currentGame.informAll(String.format("%s takes %d damage", 
+		if(currentGame != null)
+			currentGame.informAll(String.format("%s takes %d damage", 
 				myCard.name, d));
 		this.respondToEvent(TriggeringCondition.OnDamage, this);
 	}
@@ -323,15 +327,15 @@ public class Unit {
 	
 	public void respondToEvent(TriggeringCondition e, Unit otherU) {
 		if(e == TriggeringCondition.OnDamage) {
-			if(src.Game.currentGame != null)
-				src.Game.currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
+			if(currentGame != null)
+				currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
 		}
 		for(UnitPower p : powersMatchingCondition(e)) {
 			if(p.filter == null || otherU.matchesFilter(p.filter)) {
 				if(e != TriggeringCondition.Always)
-					src.Game.currentGame.informAll(String.format("%s invokes his power", 
+					currentGame.informAll(String.format("%s invokes his power", 
 							myCard.name));
-				p.exequte(this, myPlayer);
+				p.exequte(this, myPlayer, currentGame);
 			}
 		}
 	}

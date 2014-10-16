@@ -21,7 +21,7 @@ import players.*;
  * @author Abar
  *
  */
-public class Game implements GameInterface {
+public class Game implements GameInterface, ProviderGameInterface {
 	
 	/* Stores 2 players. */
 	private ArrayList<PlayerInterface> players;
@@ -73,14 +73,12 @@ public class Game implements GameInterface {
 		p2.setParentGameInterface(this);
 	}
 	
-	
 	public void configure(PlayerInterface p1, PlayerInterface p2, Deck d1, Deck d2, int h1, int h2) {
 		/* * * Initialization * * */
-		field = new FieldSituation();
-		currentGame = this;
+		field = new FieldSituation(this);
 		
-		PlayerData player1 = new PlayerData(d1, h1, p1);
-		PlayerData player2 = new PlayerData(d2, h2, p2);
+		PlayerData player1 = new PlayerData(d1, h1, p1, this);
+		PlayerData player2 = new PlayerData(d2, h2, p2, this);
 		initPlayers((PlayerInterface)p1, (PlayerInterface)p2, player1, player2);
 		
 		playersData[0].pullCard(2);
@@ -98,18 +96,22 @@ public class Game implements GameInterface {
 		int i = 0;
 		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
 			/* * * Init * * */
-			for(Unit u : field.allUnitFromOneSide(i%2, false)) {
+		    int player = i % 2;
+		    int opponent = (i + 1) % 2;
+			for(Unit u : field.allUnitFromOneSide(player, false)) {
 				u.startTurn();
 			}
 			recalculateFieldModifiers();
-			ArrayList<BasicCard> cards = playersData[i%2].pullCard(1);
+			ArrayList<BasicCard> cards = playersData[player].pullCard(1);
 			if(cards != null) 
-				informLostCards(cards, i%2);
+				informLostCards(cards, player);
 			
 			/* * * Player * * */
-			playersData[i%2].newTurn();
-			players.get(i%2).reciveInfo(playersData[i%2], field, 
-					playersData[(i+1)%2].craeteOpenData());
+			playersData[player].newTurn();
+			players.get(player).reciveInfo(playersData[player], field, 
+					playersData[opponent].craeteOpenData());
+			players.get(opponent).reciveInfo(playersData[opponent], field, 
+                    playersData[player].craeteOpenData());
 			playingCard = false;
 			
 			/* * * Wait for player * * */
@@ -270,7 +272,8 @@ public class Game implements GameInterface {
 		if(c.type == CardType.Unit)
 			return playersData[player].canPlayCard(c);
 		else if(c.type == CardType.Spell) 
-			return playersData[player].canPlayCard(c) & ((SpellCard)c).spell.validate(player);
+			return playersData[player].canPlayCard(c) 
+			        & ((SpellCard)c).spell.validate(player, this);
 		else return false;
 	}
 	
@@ -281,7 +284,7 @@ public class Game implements GameInterface {
 	 * @return null if nothing was placed, or created unit 
 	 */
 	public Unit createUnit(UnitCard uc, int player) {
-		Unit u = factory.createUnit(uc, player);
+		Unit u = factory.createUnit(uc, player, this);
 		try {
 			if(field.canUnitBeAdded(u, player)) {
 				u.respondToEvent(TriggeringCondition.BeforeCreate, null);
@@ -317,8 +320,8 @@ public class Game implements GameInterface {
     				}
     			} else if (c.type == CardType.Spell) {
     				SpellCard card = (SpellCard)c;	
-    				if(card.validate(player)) {
-    					card.exequte(player);
+    				if(card.validate(player, this)) {
+    					card.exequte(player, this);
     					playersData[player].playCard(c);
     				}
     			}
@@ -415,25 +418,6 @@ public class Game implements GameInterface {
 	 */
 	public void passEventAboutUnit(Unit u, TriggeringCondition e) {
 		field.passEventAboutUnit(u, e);
-	}
-	
-	public static Game currentGame;
-	
-	public static void main(String[] args) {		
-		Game g = new Game();
-		currentGame = g;
-		
-		DeckPackReader dpr = new DeckPackReader();
-		//URL url = getClass().getResource("decks/NeutralsDeck.xml");
-		Deck d1 = new Deck(dpr.parseFile("TestDeck.xml"));	
-		d1.shuffleCards();
-		Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
-		d2.shuffleCards();
-		RealPlayer p1 = new RealPlayer(new SwingVS(g));
-		SimpleBot p2 = new SimpleBot();
-		
-		g.configure(p1, p2, d1, d2, 15, 15);
-		g.play(); 
 	}
 	
 	/** For tests only */

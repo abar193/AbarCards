@@ -36,33 +36,39 @@ public class PlayerData {
 	private int availableMana;
 	
 	public PlayerUnit representingUnit;
-	
+    public int playerNumber;
+    public AuraStorage auras;
+    
 	private PlayerInterface myPlayer;
-	
-	public int playerNumber;
-	
-	public AuraStorage auras;
+	private src.ProviderGameInterface currentGame;
 	
 	/**
 	 * Creates new PlayerData instance with default MAXHANDLIMIT value.
 	 */
-	public PlayerData(Deck d, int startHealth, PlayerInterface player) {
+	public PlayerData(Deck d, int startHealth, PlayerInterface player, 
+	        src.ProviderGameInterface currentGame) 
+	{
 		totalMana = 0;
 		availableMana = 0;
-		representingUnit = new PlayerUnit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
+		representingUnit = new PlayerUnit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0, 
+		        currentGame);
 		myHand = new ArrayList<BasicCard>(10);
 		myDeck = d;
 		myPlayer = player;
 		auras = new AuraStorage();
+		this.currentGame = currentGame;
 	}
 	
 	/**
 	 * Creates new PlayerData with MAXHANDLIMIT set to maxHandCards.
 	 */
-	public PlayerData(Deck d, int startHealth, PlayerInterface player, int maxHandCards) {
+	public PlayerData(Deck d, int startHealth, PlayerInterface player, int maxHandCards,
+	        src.ProviderGameInterface currentGame) 
+	{
 		totalMana = 0;
 		availableMana = 0;
-		representingUnit = new PlayerUnit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0);
+		representingUnit = new PlayerUnit(new cards.UnitCard(0, startHealth, 0, "Hero", ""), 0,
+		        currentGame);
 		myHand = new ArrayList<BasicCard>(10);
 		myDeck = d;
 		MAXHANDLIMIT = maxHandCards;
@@ -107,7 +113,7 @@ public class PlayerData {
 				case PullCard: {
 					ArrayList<BasicCard> cards = this.pullCard(ps.value);
 					if(cards != null) 
-						src.Game.currentGame.informLostCards(cards, this.playerNumber);
+						currentGame.informLostCards(cards, this.playerNumber);
 					break;
 				}
 				default:
@@ -234,7 +240,7 @@ public class PlayerData {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public PlayerData(Map m) {
+	public PlayerData(Map m, src.ProviderGameInterface cG) {
 		int pn = Integer.parseInt((String) m.get("PlayerNumber"));
 		int ds = Integer.parseInt((String) m.get("DeckSize"));
 		int h  = Integer.parseInt((String) m.get("Health"));
@@ -256,7 +262,7 @@ public class PlayerData {
 		}
 		this.playerNumber = pn;
 		this.myDeckSize = ds;
-		representingUnit = new PlayerUnit(new cards.UnitCard(0, h, 0, "Hero", ""), 0);
+		representingUnit = new PlayerUnit(new cards.UnitCard(0, h, 0, "Hero", ""), 0, cG);
 		this.availableMana = am;
 		this.totalMana = tm;
 	}

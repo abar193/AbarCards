@@ -12,12 +12,14 @@ import units.Unit;
  */
 public class CustomValueDecoder {
 
-	public static int decodeValue(String value, int player, Unit target) {
+	public static int decodeValue(String value, int player, Unit target, 
+	        src.ProviderGameInterface currentGame) 
+	{
 		try {
 			int i = Integer.parseInt(value);
 			return i;
 		} catch (NumberFormatException e) {
-			FieldSituation fs = Game.currentGame.provideFieldSituation();
+			FieldSituation fs = currentGame.provideFieldSituation();
 			switch(value) {
 				case "EnemyUnitsCount":
 				case "EnemyUnitCount":

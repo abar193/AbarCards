@@ -87,10 +87,7 @@ public class SpellXMLBuilder {
 				break;
 			}
 			default: {
-				if(src.Game.currentGame != null)
-					src.Game.currentGame.displayError("Unknown tag " + tag);
-				else 
-					System.out.println("Unknown tag " + tag);
+				System.out.println("Unknown tag " + tag);
 			}
 		}
 		return null;
@@ -158,11 +155,8 @@ public class SpellXMLBuilder {
 				break;
 			}
 			default: { 
-				if(src.Game.currentGame != null)
-					src.Game.currentGame.displayError("Unknown tag " + tag);
-				else 
-					System.out.println("Unknown tag " + tag);
-				}
+				System.out.println("Unknown tag " + tag);
+			}
 		}
 		System.out.println("Parsing Error! Corrupt XML hierarchy at tag " + tag);
 		return null;

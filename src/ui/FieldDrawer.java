@@ -31,7 +31,7 @@ public class FieldDrawer extends Panel {
 	private int playerNumber = 0;
 	
 	public FieldDrawer() {
-		fs = new FieldSituation();
+		fs = new FieldSituation(null);
 		this.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 float x = evt.getPoint().x;
