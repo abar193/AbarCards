@@ -285,12 +285,14 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @param player player's number
 	 * @return null if nothing was placed, or created unit 
 	 */
-	public Unit createUnit(UnitCard uc, int player) {
+	public Unit createUnit(UnitCard uc, int player, boolean fromSpell) {
 		Unit u = factory.createUnit(uc, player, this);
 		try {
 			if(field.canUnitBeAdded(u, player)) {
 				u.respondToEvent(TriggeringCondition.BeforeCreate, null);
 				field.addUnit(u, player);
+				if(fromSpell) 
+				    triggerCreatingEvents(u);
 			}
 		} catch (IllegalArgumentException e) {
 			return null;
@@ -313,7 +315,7 @@ public class Game implements GameInterface, ProviderGameInterface {
     			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
     
     			if(c.type == CardType.Unit) {
-    			    Unit u = createUnit((UnitCard)c, player); 
+    			    Unit u = createUnit((UnitCard)c, player, false); 
     				if(u == null) 
     					players.get(player).reciveAction("Can't add that");
     				else {

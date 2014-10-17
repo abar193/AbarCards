@@ -251,8 +251,10 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	@Override
 	public void read() {
 		turnEnded = false;
-		this.cardsDrawer.repaint();
-		this.fieldDrawer.repaint();
+		if(this.cardsDrawer != null)
+		    this.cardsDrawer.repaint();
+		if(this.fieldDrawer != null)
+		    this.fieldDrawer.repaint();
 		while(!turnEnded) {
 			try { 
 				Thread.sleep(100);

@@ -25,7 +25,7 @@ public class CreateUnitSpell extends AbstractSpell {
 	public void exequte(int player, src.ProviderGameInterface currentGame) {
 		int value = CustomValueDecoder.decodeValue(count, player, target, currentGame);
 		for(int i = 0; i < value; i++) {
-			currentGame.createUnit(myUnit, (player + side) % 2);
+			Unit u = currentGame.createUnit(myUnit, (player + side) % 2, true);
 		}
 		
 	}
