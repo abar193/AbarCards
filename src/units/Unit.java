@@ -210,6 +210,8 @@ public class Unit {
 				return getCurrentHealth() < value;
 			case HealthMore:
 				return getCurrentHealth() > value;
+			case IsHero:
+			    return false;
 		}
 		return false;
 	}

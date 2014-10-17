@@ -18,12 +18,15 @@ public class PlayerTargeter implements Targeter {
 	@Override
 	public ArrayList<Unit> selectTargets(int p, Unit t, src.ProviderGameInterface currentGame) {
 		Unit u = currentGame.askPlayerForTarget(p);
+		if(u == null) return null;
 		if(!u.matchesFilter(filter)) {
 			while(!u.matchesFilter(filter)) {
 				u = currentGame.askPlayerForTarget(p);
 			}
 		}
 		ArrayList<Unit> arr = new ArrayList<Unit>(1);
+		if(u.matchesFilter(new UnitFilter(units.UnitFilterType.IsHero, "0")) && !aceptHeroes) 
+            return null;
 		arr.add(u);
 		return arr;
 	}

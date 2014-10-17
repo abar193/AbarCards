@@ -1,7 +1,7 @@
 package units;
 
 public enum UnitFilterType {
-	ClassEquals, HealthMore, HealthLess, DamageMore, DamageLess;
+	ClassEquals, HealthMore, HealthLess, DamageMore, DamageLess, IsHero;
 	
 	public static UnitFilterType fromString(String s) {
 		switch(s) {

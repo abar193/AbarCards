@@ -43,5 +43,13 @@ public class PlayerUnit extends Unit {
 			
 		}
 	}
+	
+	@Override
+	public boolean matchesFilter(UnitFilter f) {
+	    if(f == null) return true;
+	    if(f.type == UnitFilterType.IsHero) return true;
+	    else return super.matchesFilter(f);
+	}
+
 
 }
