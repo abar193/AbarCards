@@ -167,7 +167,7 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 	public void actionPerformed(final ActionEvent arg0) {
 		System.out.println(arg0.getActionCommand());
 		
-		if(arg0.getActionCommand().length() < 3 && arg0.getActionCommand().charAt(0) == '_') {
+		if(arg0.getActionCommand().length() <= 3 && arg0.getActionCommand().charAt(0) == '_') {
 			int p = Integer.parseInt(arg0.getActionCommand().substring(1));
 			parent.removeSelecteCard(p);
 		} else if(arg0.getActionCommand().equals("<")) {
