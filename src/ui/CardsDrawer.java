@@ -41,7 +41,7 @@ public class CardsDrawer extends Panel {
 	    int cardSize = this.getWidth() / 10;
 	    g2.setFont(new Font("SansSerif", Font.PLAIN, 12));
 	    for(int i = 0; i < cards.size(); i++) {
-	    	if(cards.get(i).cost <= mana) g2.setColor(Color.GREEN);
+	    	if(cards.get(i).cost <= mana && !parent.turnEnded) g2.setColor(Color.GREEN);
 	    	else g2.setColor(Color.BLACK);
 	    	g2.drawRect(cardSize * i + 5, 5, cardSize - 10, this.getHeight() - 10);
 	    	g2.setColor(Color.BLACK);

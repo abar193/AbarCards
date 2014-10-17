@@ -88,7 +88,8 @@ public class FieldDrawer extends Panel {
 	    statuses = new ArrayList<Integer>(units.size());
 	    
 	    for(int i = 0; i < units.size(); i++) {
-	    	if(parent.targeting && parent.selectedUnit == i) statuses.add(2);
+	        if(parent.turnEnded) statuses.add(0);
+	        else if(parent.targeting && parent.selectedUnit == i) statuses.add(2);
 	    	else statuses.add(units.get(i).canAttack() ? 1 : 0);
 	    }
 	    drawUnitsLine(g2, fs.allUnitFromOneSide(playerNumber, true), statuses, unitHeight * 5 / 3);

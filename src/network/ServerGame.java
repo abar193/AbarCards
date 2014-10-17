@@ -125,7 +125,6 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 		}
 	}
 
-
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         System.out.println(closeReason.toString());

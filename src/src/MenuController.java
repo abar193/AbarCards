@@ -45,6 +45,7 @@ public class MenuController {
         if(opp == PossibleOpponents.SinglePassiveBot || opp == PossibleOpponents.SingleEasyBot) {
             singleplayerGame(new Deck(cards), opp);
         } else {
+            parent.reciveWaitSignal();
             String opponent = ""; 
             if(opp == PossibleOpponents.SocketEasyBot) opponent = "Terran";
             else if(opp == PossibleOpponents.SocketPlayer) opponent = "Player";
@@ -96,6 +97,6 @@ public class MenuController {
     }
     
     public void waitForGame() {
-        parent.reciveWaitSignal();
+        //parent.reciveWaitSignal();
     }
 }

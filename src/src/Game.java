@@ -157,6 +157,8 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @return true if attack is valid
 	 */
 	public boolean attackIsValid(int attacker, int target, int playerA) {
+	    if(playerA != playerTurn) return false;
+	    
 		int playerT = (playerA + 1) % 2;
 		if(target == -1) {
 			if(field.unitExist(attacker, playerA) && (field.tauntUnitsForPlayer(playerT) == 0)) {
@@ -267,7 +269,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @param player players number
 	 */
 	public boolean canPlayCard(BasicCard c, int player) {
-	    if(playingCard) return false;
+	    if(player != playerTurn || playingCard) return false;
 	    
 		if(c.type == CardType.Unit)
 			return playersData[player].canPlayCard(c);

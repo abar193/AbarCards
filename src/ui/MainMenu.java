@@ -292,7 +292,7 @@ public class MainMenu extends JFrame implements ActionListener {
     
     public void reciveWaitSignal() {
         ((SLPanel) getContentPane()).createTransition()
-        .push(new SLKeyframe(configWaiting, 0.1f)
+        .push(new SLKeyframe(configWaiting, 1f)
             .setStartSide(SLSide.TOP, waitingPanel)
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Waiting;
