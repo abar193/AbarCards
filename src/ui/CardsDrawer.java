@@ -68,7 +68,7 @@ public class CardsDrawer extends Panel {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				parent.reciveCardClick(lc);
+				parent.receiveCardClick(lc);
 			}
 		}).start();
 		repaint();

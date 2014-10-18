@@ -63,11 +63,9 @@ public class SimpleBot implements PlayerInterface {
 
 	@Override
 	public void run() {
-		
 		attackWithAllUnits();
 		playAllCards();
 		attackWithAllUnits();
-		
 	}
 
 	protected void attackWithAllUnits() {
@@ -77,6 +75,8 @@ public class SimpleBot implements PlayerInterface {
 		Random r = new Random();
 		
 		while(totalAvailableUnits > 0) {
+		    if(Thread.interrupted()) return;
+		    
 			if(totalAvailableDamage >= opponent.health && enemyTaunts == 0) { // Finish him
 				for(int i = 0; i < myDeck.size(); i++) {
 					if(myDeck.get(i).canAttack()) {
@@ -86,6 +86,7 @@ public class SimpleBot implements PlayerInterface {
 				}
 			} else {
 				for(int i = 0; i < myDeck.size();) {
+				    if(Thread.interrupted()) return;
 					if(myDeck.get(i).canAttack()) {
 						if(availableTargets.size() > 0) {
 							parent.commitAttack(myDeck.get(i), 
@@ -107,6 +108,7 @@ public class SimpleBot implements PlayerInterface {
 	
 	protected void playAllCards() {
 		for(int i = 0; i < me.getHandSize(); ) {
+		    if(Thread.interrupted()) return;
 			if(me.canPlayCard(me.getHand().get(i))) {
 				parent.playCard(me.getHand().get(i), me.playerNumber);
 				i = 0;

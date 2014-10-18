@@ -194,7 +194,8 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		input = i;	
 	}
 	
-	public void reciveCardClick(int card) {
+	public void receiveCardClick(int card) {
+	    if(turnEnded) return;
 		targeting = false;
 		if(me.getHand().size() > card) {
 			if(parent.canPlayCard(me.getHand().get(card), me.playerNumber)) {
@@ -209,8 +210,8 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	Unit pickedUnit;
 	boolean pickingUnit = false;
 	
-	public void reciveUnitClick(int side, int unit) {
-		//System.out.println(String.format("Clicked unit %d for side %d", unit, side));
+	public void receiveUnitClick(int side, int unit) {
+		if(turnEnded) return;
 		
 		if(pickingUnit) {
 			if(latestSituation.allUnitFromOneSide((side + playerNumber) % 2, true).size() > unit && unit >= 0) {
@@ -258,8 +259,8 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		while(!turnEnded) {
 			try { 
 				Thread.sleep(100);
-			} catch (Exception e) {
-				
+			} catch (InterruptedException e) {
+				turnEnded = true;
 			}
 		}
 	}
@@ -275,6 +276,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
     			}
     		}).start();
 		} else {
+		    parent.playerQuits(this.playerNumber);
 		    src.MenuController.instance().quitGame();
 		}
 		

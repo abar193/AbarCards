@@ -102,7 +102,7 @@ public class FieldDrawer extends Panel {
 	public void setLastClick(int side, int unit) {
 		selectedSide = side;
 		selectedUnit = unit;
-		parent.reciveUnitClick(side, unit);
+		parent.receiveUnitClick(side, unit);
 		repaint();
 	}
 	

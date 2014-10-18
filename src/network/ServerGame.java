@@ -166,6 +166,13 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 		}
 	}
 	
+	public boolean cancelSearchGame() {
+	    JSONObject jobj = new JSONObject();
+	    jobj.put("command", "cancelSearchGame");
+	    String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "cancelSearchGame");
+        return resp.equals(ServerResponses.ResponseOk);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public boolean validateDeck(ArrayList<BasicCard> c, String enemy) {
 		JSONArray jarr = new JSONArray();
@@ -334,6 +341,14 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 			}
 		}
 	}
+	
+	@Override
+    public void playerQuits(int player) {
+	    JSONObject jobj = new JSONObject();
+        jobj.put("action", "quitGame");
+        jobj.put("player", Integer.toString(player));
+        sendMessage(JSONValue.toJSONString(jobj));
+    }
 
     @Override
     public FieldSituation provideFieldSituation() {
@@ -376,5 +391,6 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
     @Override
     public void passEventAboutUnit(Unit u, TriggeringCondition e) {
         System.err.println("On serverGame should not triggered ProviderGameInterface methods");
-    }	
+    }
+	
 }

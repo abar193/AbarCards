@@ -49,7 +49,7 @@ public class MainMenu extends JFrame implements ActionListener {
     /** Configs for screen animations. See slidinglayout descriptions. */
     private SLConfig configMain, configBuildDeck, configChooseDeck, configGame, configWaiting;
     
-    private JButton button1, button2, button3;
+    private JButton button1, button2, button3, buttonCancel;
     private JPanel buildDecks, playDecks, waitingPanel;
     private JLayeredPane gamePanel;
     private MenuState state;
@@ -124,6 +124,9 @@ public class MainMenu extends JFrame implements ActionListener {
         waitingPanel = new JPanel();
         waitingPanel.setBackground(java.awt.Color.green);
         waitingPanel.add(new JLabel("Waiting for the start"));
+        buttonCancel = new JButton("Cancel search");
+        buttonCancel.addActionListener(this);
+        waitingPanel.add(buttonCancel);
         configWaiting = new SLConfig((SLPanel) this.getContentPane());
         configWaiting.row(1f).row(9f).col(1f).gap(10, 10)
             .place(0, 0, waitingPanel)
@@ -227,6 +230,14 @@ public class MainMenu extends JFrame implements ActionListener {
             String[] responses = {"Not implemented!", "Sorry", "No way", "Turn back, mortal!", 
                     "Check again later", "Special for TLMH", "Made by Abar", "Go and play!" };
             button3.setText(responses[new java.util.Random().nextInt(responses.length)]);
+        } else if(e.getSource().equals(buttonCancel)) {
+            System.out.println("Press");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    controller.requestSearchCancelation();
+                }
+            }).start();
         } else if(state == MenuState.PickingBuildDeck) {
             String s = e.getActionCommand();
             final DeckBuilder db = controller.provideDeckBuilder(s);
@@ -297,6 +308,17 @@ public class MainMenu extends JFrame implements ActionListener {
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Waiting;
                 waiting = true;
+            }}))
+        .play();
+    }
+    
+    public void cancelWaiting() {
+        ((SLPanel) getContentPane()).createTransition()
+        .push(new SLKeyframe(configChooseDeck, 1f)
+            .setEndSide(SLSide.TOP, waitingPanel)
+            .setCallback(new SLKeyframe.Callback() {@Override public void done() {
+                state = MenuState.PickingPlayDeck;
+                waiting = false;
             }}))
         .play();
     }

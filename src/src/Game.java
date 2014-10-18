@@ -34,7 +34,9 @@ public class Game implements GameInterface, ProviderGameInterface {
 	private Thread playerThread;
 	private int playerTurn;
 	private boolean playingCard = false;
+	private boolean gameRunning = true;
 	
+	public GameStatReceiver statReceiver;
 	/**
 	 * Initialises player-relevant variables, and randomly puts chooses Player1 and Player2 from 
 	 * 		p1 and p2. Order of p1 and p2 is irrelevant, the key thing is that d1 shall store 
@@ -94,7 +96,8 @@ public class Game implements GameInterface, ProviderGameInterface {
 		/* * * Game cycle * * */
 		field.refreshUnits();
 		int i = 0;
-		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
+		this.gameRunning = true;
+		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0 && gameRunning) {
 			/* * * Init * * */
 		    int player = i % 2;
 		    int opponent = (i + 1) % 2;
@@ -136,16 +139,9 @@ public class Game implements GameInterface, ProviderGameInterface {
 			for(Unit u : field.allUnitFromOneSide(i%2, false)) {
 				u.endTurn();
 			}
-			i++;	
+			i++;
 		}
 		
-		if(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0) {
-			informAll("Tie!");
-		} else if(playersData[0].getHealth() > 0) {
-			informAll("Player 2 won!");
-		} else {
-			informAll("Player 1 won!");
-		}
 	}
 	
 	/**
@@ -157,7 +153,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @return true if attack is valid
 	 */
 	public boolean attackIsValid(int attacker, int target, int playerA) {
-	    if(playerA != playerTurn) return false;
+	    if(playerA != playerTurn || !gameRunning) return false;
 	    
 		int playerT = (playerA + 1) % 2;
 		if(target == -1) {
@@ -177,7 +173,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	}
 	
 	public boolean attackIsValid(Unit attacker, Unit target) {
-		if(field.containsOnDifferentSides(attacker, target)) {
+		if(field.containsOnDifferentSides(attacker, target) && gameRunning) {
 			if(target.hasQuality(Quality.Taunt)
 					|| (field.tauntUnitsForPlayer(target.myPlayer) == 0)) 
 				if(attacker.canAttack())
@@ -209,18 +205,15 @@ public class Game implements GameInterface, ProviderGameInterface {
 			informAll(target.myCard.name + " is dead");
 			target.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
-			field.removeUnitOfPlayer(target, target.myPlayer);
-			if(playersData[target.myPlayer].auras.unitDies(target)) 
-				recalculateFieldModifiers();
+			field.removeUnitOfPlayer(target, target.myPlayer); 
 		}
 		if(attacker.isDead()) {
 			informAll(attacker.myCard.name + " is dead"); 
 			attacker.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
-			field.removeUnitOfPlayer(attacker, attacker.myPlayer);
-			if(playersData[attacker.myPlayer].auras.unitDies(attacker)) 
-				recalculateFieldModifiers();
+			field.removeUnitOfPlayer(attacker, attacker.myPlayer); 
 		}
+		recalculateFieldModifiers();
 		updateInfoForAll();
 	}
 	
@@ -237,6 +230,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 				playersData[pt].takeDamage(attacker.getCurrentDamage()); 
 				players.get(pt).reciveAction(String.format("You take %d damage!", attacker.getCurrentDamage()));
 				attacker.attackUnit(null);
+				recalculateFieldModifiers();
 				updateInfoForAll();
 				return;
 			}
@@ -269,7 +263,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @param player players number
 	 */
 	public boolean canPlayCard(BasicCard c, int player) {
-	    if(player != playerTurn || playingCard) return false;
+	    if(player != playerTurn || playingCard || !gameRunning) return false;
 	    
 		if(c.type == CardType.Unit)
 			return playersData[player].canPlayCard(c);
@@ -380,10 +374,10 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * Calculates cost- and health-modifiers based on players auras, and applies them to units.
 	 */
 	public synchronized void recalculateFieldModifiers() {
-		playersData[0].auras.calculateModifiers();
-		playersData[1].auras.calculateModifiers();
-		
 		for(int i = 0; i < 2; i++) {
+		    playersData[i].auras.calculateModifiers();
+		    if(playersData[i].getHealth() <= 0) endGame(i);
+		    
 			int[] modifiers = playersData[i].auras.getModifiers();
 			Iterator<Unit> j = field.provideIteratorForSide(i);
 			while(j.hasNext()) { // Iteration 1: calculate aura-modifiers, remove dead units
@@ -429,6 +423,21 @@ public class Game implements GameInterface, ProviderGameInterface {
 		field = newField;
 	}
 
+	private void endGame(int looser) {
+	    gameRunning = false;
+	    playerThread.interrupt();
+	    int winner;
+	    if(playersData[0].getHealth() <= 0 && playersData[1].getHealth() <= 0) {
+	        winner = -1;
+            informAll("Tie!");
+        } else {
+            winner = (looser + 1) % 2;
+            informAll(String.format("Player %d won!", winner));
+        }
+        if(statReceiver != null) {
+            statReceiver.gameEnded(this, winner);
+        }
+	}
 
 	@Override
 	public void endTurn(int player) {
@@ -436,4 +445,9 @@ public class Game implements GameInterface, ProviderGameInterface {
 			playerThread.interrupt();
 		}
 	}
+
+    @Override
+    public void playerQuits(int player) {
+        endGame(player);
+    }
 }

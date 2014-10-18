@@ -96,6 +96,12 @@ public class MenuController {
         parent.reciveVs(vs);
     }
     
+    public void requestSearchCancelation() {
+        System.out.println("Cancel");
+        if(ServerGame.instance().cancelSearchGame()) 
+            parent.cancelWaiting();
+    }
+    
     public void waitForGame() {
         //parent.reciveWaitSignal();
     }

@@ -32,4 +32,11 @@ public interface GameInterface {
 	
 	/** Make two unit attack each other by unit's numbers */
 	public void commitAttack(int a, int t, int pa);
+	
+	/**
+	 * Called when player leaves current game either by disconnecting, or by 
+	 * going to main menu.
+	 * @param player
+	 */
+	public void playerQuits(int player);
 }
