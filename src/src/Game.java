@@ -424,6 +424,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	}
 
 	private void endGame(int looser) {
+	    if(!gameRunning) return;
 	    gameRunning = false;
 	    playerThread.interrupt();
 	    int winner;
@@ -437,6 +438,10 @@ public class Game implements GameInterface, ProviderGameInterface {
         if(statReceiver != null) {
             statReceiver.gameEnded(this, winner);
         }
+	}
+	
+	public boolean gameStillRunning() {
+	    return gameRunning;
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class MainMenu extends JFrame implements ActionListener {
     private JLayeredPane gamePanel;
     private MenuState state;
     private final MenuController controller;
-    private MenuController.PossibleOpponents opponent = PossibleOpponents.SinglePassiveBot;
+    private MenuController.PossibleOpponents opponent = PossibleOpponents.SocketPlayer;
     private final RadioListener listener = new RadioListener();
     
     /** Constructor. */
@@ -366,7 +366,7 @@ public class MainMenu extends JFrame implements ActionListener {
         JRadioButton rb = new JRadioButton("Local passive bot");
         rb.setBackground(playDecks.getBackground());
         rb.setActionCommand("0");
-        rb.setSelected(true);
+        //rb.setSelected(true);
         rb.addActionListener(listener);
         playDecks.add(rb);
         group.add(rb);
@@ -389,6 +389,7 @@ public class MainMenu extends JFrame implements ActionListener {
         rb.setBackground(playDecks.getBackground());
         rb.setActionCommand("3");
         rb.addActionListener(listener);
+        rb.setSelected(true);
         playDecks.add(rb);
         group.add(rb);
         
