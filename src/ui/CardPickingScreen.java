@@ -69,6 +69,10 @@ public class CardPickingScreen extends JPanel {
 		String type;
 		if(card.type == CardType.Unit) {
 			UnitCard bc = (UnitCard)card;
+			if(bc.cardClass != null) {
+			    DrawingOperations.drawCenteredStringAt(g2, String.format("*%s*", bc.cardClass),
+			            startX, width, startY + height - 45);
+			}
 			type = String.format("|%2dd/%2dh%2d$|", bc.getDamage(),
 					bc.getHealth(), bc.cost);
 		} else {
@@ -82,7 +86,6 @@ public class CardPickingScreen extends JPanel {
 		        g2.drawString(splits[i], startX + 5, startY + 50 + i * 15);
 		    }
 		}
-        
 
 	}
 	

@@ -449,7 +449,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 		if(playerTurn == player) {
 			playerThread.interrupt();
 		}
-	}
+	}  
 
     @Override
     public void playerQuits(int player) {

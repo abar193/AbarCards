@@ -31,7 +31,7 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>
-	<Unit Name="Cleaner" Description="2/1/death" Damage="2" Health="2" Cost="2" Class="Machine">
+	<Unit Name="Cleaner" Description="2/1/death" Damage="1" Health="2" Cost="2" Class="Machine">
 		<Fulldesc txt="OnAllyDeath: Gains 2/1."/>
 		<Power condition="OnAllyDeath">
 			<Filter type="ClassEquals" v="Machine"/>
@@ -52,7 +52,7 @@
 			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
 		</Power>
 	</Unit>
-	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="2" Class="Machine">
+	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="4" Class="Machine">
 		<Fulldesc txt="Grants charge for all allied machines."/>
 		<Power condition="Always">
 			<TargedetSpell targeter="all" acept="0">
@@ -63,7 +63,7 @@
 			</TargedetSpell>
 		</Power>
 	</Unit>	
-	<Unit Name="Spambot" Description="" Damage="6" Health="4" Cost="6" Class="Machine">
+	<Unit Name="Spambot" Description="" Damage="6" Health="5" Cost="6" Class="Machine">
 		<Fulldesc txt="OnDeath: Summon 2x2/2 spammers."/>
 		<Power condition="OnDeath">
 			<CreateUnitSpell count="2" side="0">
@@ -89,6 +89,19 @@
 			<BuffSpell>
 				<Buff type="Hurt" v="2"/>
 			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Wrath" Description="+2+WF" Cost="1">
+		<Fulldesc txt="Adds +2 damage and provides windfury for unit"/>
+		<TargedetSpell targeter="player">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff type="AddDamage" v="2"/>
+				</BuffSpell>
+				<BuffSpell>
+					<Buff type="AddQuality" v="1"/>
+				</BuffSpell>
+			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Analysis" Description="h=1" Cost="0">
