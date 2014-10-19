@@ -27,14 +27,14 @@ import cards.UnitCard;
  * @author Abar
  *
  */
-public class CardPickingScreen extends JPanel {
+public class CardPickingPanel extends JPanel {
 
 	private static final long serialVersionUID = 3908875203258467002L;
 	public CardPickingFrame parent;
 	private ArrayList<BasicCard> cards;
 	int start;
 	
-	public CardPickingScreen() {
+	public CardPickingPanel() {
 		this.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 float x = evt.getPoint().x;

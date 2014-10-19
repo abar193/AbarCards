@@ -52,12 +52,17 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	boolean turnEnded;
 	public boolean targeting = false; 
 	
+	private final static int MIDDLE_AREA_HEIGHT = 350;
+	private final static int MESSAGES_WIDTH = 150;
+	private final static int RIGHT_PANEL_WIDTH = 85;
+	private final static int CARDS_DRAWER_HEIGHT = 100;
+	
 	public SwingVS(GameInterface g) {
 		parent = g;
 		
 		System.out.println("Constructed");
 		
-		setSize(800, 600);
+		setSize(790, 570);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -67,10 +72,14 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	}
 	
 	public void createAndShowGUI() {
+	    final int width = this.getWidth();
+	    final int height = this.getHeight();
+	    
 	    System.out.println("CaSG: started");
 		setLayout(new BorderLayout());
         enemyHand = new EnemySideDrawer();
-        enemyHand.setPreferredSize(new Dimension(800, 100));
+        enemyHand.setPreferredSize(new Dimension(width, height - MIDDLE_AREA_HEIGHT
+                - CARDS_DRAWER_HEIGHT));
         enemyHand.setVisible(true);
         if(opponent != null) {
 			enemyHand.setCards(opponent.handSize);
@@ -79,7 +88,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         
         outputMessages = new JTextArea();
         outputMessages.setEditable(false);
-        outputMessages.setPreferredSize(new Dimension(150, 350));
+        outputMessages.setPreferredSize(new Dimension(MESSAGES_WIDTH, MIDDLE_AREA_HEIGHT));
         outputMessages.setText(messages);
         add(outputMessages, BorderLayout.LINE_START);
         
@@ -90,7 +99,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         
         Panel right = new Panel();
         right.setLayout(new BoxLayout(right, BoxLayout.PAGE_AXIS));
-        right.setPreferredSize(new Dimension(85, 350));
+        right.setPreferredSize(new Dimension(RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT));
         enemyDeck = new JLabel();
         if(opponent != null)
         	enemyDeck.setText(Integer.toString(opponent.deckSize));
@@ -111,7 +120,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         
         cardsDrawer = new CardsDrawer();
         cardsDrawer.parent = this;
-        cardsDrawer.setPreferredSize(new Dimension(800, 100));
+        cardsDrawer.setPreferredSize(new Dimension(width, CARDS_DRAWER_HEIGHT));
         if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana(), me.getTotalMana());
         add(cardsDrawer, BorderLayout.PAGE_END);
         setVisible(true);

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
@@ -32,7 +33,7 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 6581966660599964423L;
     DeckBuilder parent;
-	CardPickingScreen picker;
+	CardPickingPanel picker;
 	ArrayList<BasicCard> cards;
 	JButton description;
 	Panel selectedCardsText;
@@ -42,9 +43,11 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 	private static final String SAVE_COMMAND = "Save deck";
 	private static final String CANCEL_COMMAND = "Go back";
 	
+	private static final int MENU_HEIGHT = 100;
+	
 	public CardPickingFrame(DeckBuilder db, final int slotNum) {
 		parent = db;
-		this.setSize(800, 600);
+		this.setSize(790, 570);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI(slotNum);
@@ -58,18 +61,20 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 		
 		pane = new JLayeredPane();
 		pane.setSize(this.getSize());
-		//setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
+	//setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 		add(pane);
 		pane.setVisible(true);
 		
 		bottomLayer = new Panel();
 		bottomLayer.setLayout(new BorderLayout());
 		bottomLayer.setVisible(true);
-		bottomLayer.setSize(800, 600);
+		bottomLayer.setSize(this.getWidth(), this.getHeight());
 		
 		Panel panel = new Panel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-		panel.setSize(800, 100);
+		GridLayout gr = new GridLayout();
+		
+		panel.setSize(this.getWidth(), 100);
 		JLabel lab = new JLabel();
 		lab.setText(String.format("Deck slot %d", slot));
 		panel.add(lab);
@@ -95,7 +100,7 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 		bottomLayer.add(cent, BorderLayout.CENTER);
 		cent.setLayout(new BoxLayout(cent, BoxLayout.LINE_AXIS));
 		
-		picker = new CardPickingScreen();
+		picker = new CardPickingPanel();
 		picker.parent = this;
 		picker.setMinimumSize(new Dimension(400, 400));
         picker.setBounds(0, 0, 500, 400);
@@ -118,14 +123,13 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 		right.setSize(100, 400);
 		right.addActionListener(this);
 		bottomLayer.add(right, BorderLayout.LINE_END);
-        
+		pane.add(bottomLayer, JLayeredPane.DEFAULT_LAYER);
+		
         description = new JButton();
         description.setSize(800, 100);
         description.setVisible(true);
         description.setText("LaLala");
         bottomLayer.add(description, BorderLayout.SOUTH);
-        
-        pane.add(bottomLayer, JLayeredPane.DEFAULT_LAYER);
         
         setVisible(true);
 	}

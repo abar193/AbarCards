@@ -40,8 +40,8 @@ public class MainMenu extends JFrame implements ActionListener {
         Main, PickingBuildDeck, Building, PickingPlayDeck, Playing, Waiting; 
     }
     
-    private final int SCREEN_WIDTH = 806; // TODO: fix
-    private final int SCREEN_HEIGHT = 626;
+    private final int SCREEN_WIDTH = 800; 
+    private final int SCREEN_HEIGHT = 600;
     private final int LEFT_BUTTONS_WIDTH = 150;
     
     public boolean waiting = false;
@@ -54,7 +54,7 @@ public class MainMenu extends JFrame implements ActionListener {
     private JLayeredPane gamePanel;
     private MenuState state;
     private final MenuController controller;
-    private MenuController.PossibleOpponents opponent = PossibleOpponents.SocketPlayer;
+    private MenuController.PossibleOpponents opponent = PossibleOpponents.SinglePassiveBot;
     private final RadioListener listener = new RadioListener();
     
     /** Constructor. */
@@ -366,7 +366,7 @@ public class MainMenu extends JFrame implements ActionListener {
         JRadioButton rb = new JRadioButton("Local passive bot");
         rb.setBackground(playDecks.getBackground());
         rb.setActionCommand("0");
-        //rb.setSelected(true);
+        rb.setSelected(true);
         rb.addActionListener(listener);
         playDecks.add(rb);
         group.add(rb);
@@ -389,7 +389,6 @@ public class MainMenu extends JFrame implements ActionListener {
         rb.setBackground(playDecks.getBackground());
         rb.setActionCommand("3");
         rb.addActionListener(listener);
-        rb.setSelected(true);
         playDecks.add(rb);
         group.add(rb);
         
