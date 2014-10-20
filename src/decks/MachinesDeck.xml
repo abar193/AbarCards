@@ -112,12 +112,18 @@
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Strike" Description="3/5 dmg" Cost="2">
-		<Fulldesc txt="Deals 3 damage to selected unit"/>
+	<Spell Name="Spark" Description="3/5 dmg" Cost="2">
+		<Fulldesc txt="Deals 3 damage to selected unit or 5 if you have at least 1 machine on field"/>
 		<TargedetSpell targeter="player">
-			<BuffSpell>
-				<Buff type="Hurt" v="3"/>
-			</BuffSpell>
+			<ConditionSpell>
+				<Condition type="AllyHasMoreThanXMachines" count="0"/>
+				<BuffSpell>
+					<Buff type="Hurt" v="5"/>
+				</BuffSpell>
+				<BuffSpell>
+					<Buff type="Hurt" v="3"/>
+				</BuffSpell>
+			</ConditionSpell>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="R-Hit" Description="2rt x 3dmg" Cost="2">

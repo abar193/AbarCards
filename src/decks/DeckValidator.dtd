@@ -40,7 +40,7 @@
  <!ATTLIST HelperUnit Class (Machine | Russian) #IMPLIED>
  
  <!ELEMENT TargedetSpell (Filter | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff)*>
+ 	| PlayerValueSpell |  Buff | ConditionSpell)*>
  <!ATTLIST TargedetSpell targeter CDATA #REQUIRED>
  <!ATTLIST TargedetSpell acept CDATA #IMPLIED>
  <!ATTLIST TargedetSpell excludeSelf CDATA #IMPLIED>
@@ -51,7 +51,14 @@
  <!ATTLIST TargedetSpell o CDATA #IMPLIED>
  
  <!ELEMENT SpellContainer (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff)+>
+ 	| PlayerValueSpell |  Buff | ConditionSpell)+>
+ 	
+ <!ELEMENT Condition EMPTY>
+ <!ATTLIST Condition type (AllyHasMoreThanXMachines | AllyHasLessThanXMachines) #REQUIRED>
+ <!ATTLIST Condition count CDATA #REQUIRED>	
+ 
+ <!ELEMENT ConditionSpell (Condition+, (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
+ 	| PlayerValueSpell |  Buff | ConditionSpell)+)>
  
  <!ELEMENT BuffSpell (Buff)>
  
@@ -67,7 +74,7 @@
  <!ATTLIST PlayerValueSpell acept CDATA #REQUIRED>
  
  <!ELEMENT Spell ((Fulldesc | Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff)*)>
+ 	| PlayerValueSpell |  Buff | ConditionSpell)*)>
  <!ATTLIST Spell Name CDATA #REQUIRED>
  <!ATTLIST Spell Description CDATA #REQUIRED>
  <!ATTLIST Spell Cost CDATA #REQUIRED>

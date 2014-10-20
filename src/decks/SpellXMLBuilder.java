@@ -63,6 +63,11 @@ public class SpellXMLBuilder {
 				stack.push(sc);
 				break;
 			}
+			case "ConditionSpell": {
+			    ConditionSpell cs = new ConditionSpell();
+			    stack.push(cs);
+			    break;
+			}
 			case "BuffSpell": {
 				BuffSpell bs = new BuffSpell(null);
 				stack.push(bs);
@@ -86,8 +91,25 @@ public class SpellXMLBuilder {
 				b = new Buff(type, att.getValue("v"));
 				break;
 			}
+			case "Condition": {
+			    String type = att.getValue("type");
+			    String count = att.getValue("count");
+			    Condition c = new Condition(type, count);
+			    try{
+                    AbstractSpell as = stack.peek();
+                    if(as instanceof ConditionSpell) {
+                        ((ConditionSpell)as).addCondition(c);
+                    } else throw new IllegalArgumentException();
+                } catch(EmptyStackException e) {
+                    System.err.println("Condition outside ConditionSpell.");
+                    return null;
+                } catch(IllegalArgumentException e) {
+                    System.err.println("Condition inside wrong Spell.");
+                }
+			    break;
+			}
 			default: {
-				System.out.println("Unknown tag " + tag);
+				System.out.println("Unknown spell-tag <" + tag + ">");
 			}
 		}
 		return null;
@@ -102,6 +124,7 @@ public class SpellXMLBuilder {
 			case "SpellContainer":
 			case "BuffSpell": 
 			case "PlayerValueSpell":
+			case "ConditionSpell":
 			{
 				AbstractSpell ls = stack.pop();
 				AbstractSpell ps;
@@ -119,6 +142,9 @@ public class SpellXMLBuilder {
 				} else if(ps instanceof SpellContainer) {
 					((SpellContainer) ps).add(ls);
 					return null;
+				} else if(ps instanceof ConditionSpell) {
+				    ((ConditionSpell) ps).addSpell(ls);
+				    return null;
 				}
 				break;
 			} 
@@ -154,8 +180,11 @@ public class SpellXMLBuilder {
 				}
 				break;
 			}
+			case "Condition": {
+			    return null;
+			}
 			default: { 
-				System.out.println("Unknown tag " + tag);
+				System.out.println("Unknown spell-tag: </" + tag + ">");
 			}
 		}
 		System.out.println("Parsing Error! Corrupt XML hierarchy at tag " + tag);

@@ -86,7 +86,9 @@ public class DeckPackReader extends DefaultHandler {
     		} else {
     			helper = tmp;
     		}
-    	} else if(localName.contains("Spell") || localName.contains("Buff")) {
+    	} else if(localName.contains("Spell") || localName.contains("Buff") 
+    	        || localName.contains("Condition")) 
+    	{
     		SpellCard sc = spellBuilder.reciveOpenTag(localName, atts);
     		if(sc != null) {
     			spell = sc;
@@ -126,7 +128,7 @@ public class DeckPackReader extends DefaultHandler {
     		AuraEffect aura = new AuraEffect(AuraType.fromInt(type), value, null);
     		unit.auraEffects[unit.auraEffects.length-1] = aura;
     	} else if(!localName.equals("Deck")) {
-    		System.out.println("Unknown tag " + localName);
+    		System.out.println("Unknown tag  <" + localName);
     	} else if(localName.equals("Deck")) {
     		if(atts.getValue("num") != null)
     			deckNumber = Integer.parseInt(atts.getValue("num"));	
@@ -146,7 +148,8 @@ public class DeckPackReader extends DefaultHandler {
     			((effects.CreateUnitSpell)s).myUnit = helper;
     			helper = null;
     		}
-    	} else if(localName.contains("Spell") || localName.contains("Buff")) {
+    	} else if(localName.contains("Spell") || localName.contains("Buff") || 
+    	        localName.contains("Condition")) {
     		AbstractSpell s = spellBuilder.reciveCloseTag(localName);
     		if(s != null) {
     			spell.spell = s;
@@ -196,7 +199,7 @@ public class DeckPackReader extends DefaultHandler {
 	public static void main(String[] args) throws Exception {
         
 		DeckPackReader dpr = new DeckPackReader();
-		ArrayList<BasicCard> bc = dpr.parseFile("BotImbaDeck.xml");
+		ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml");
 		for(BasicCard c : bc) {
 			System.out.format("%s %s %d %d\n", c.name, c.fullDescription, c.cost, c.deckNum);
 		}

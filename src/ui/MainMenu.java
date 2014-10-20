@@ -342,6 +342,7 @@ public class MainMenu extends JFrame implements ActionListener {
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Playing;
                 vs.repaint();
+                
             }}));
         
         if(state == MenuState.Waiting) frame.setEndSide(SLSide.TOP, waitingPanel);
