@@ -5,9 +5,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -18,15 +20,16 @@ import decks.DeckPackReader;
 public class DeckBuilder {
 	
 	private static final int CARDS_IN_A_ROW = 5;
-	private static final String DECK_NAME = "HeroDeck.Cards.";
-
+	
+	private static final String ext = ".deck";  
 	private static final String[] names = {"Machines"};
 	private static final String[] links = {"MachinesDeck.xml"};
 	
 	public ArrayList<BasicCard> selectedCards;
 	public ArrayList<BasicCard> fullDeck;
 	public String deckRace;
-
+	public String deckSaveName;
+	
 	private int playerChoose;
 	private int startPos = 0;
 	private CardPickingFrame frame;
@@ -90,7 +93,7 @@ public class DeckBuilder {
 		BufferedWriter writer = null;
 		try {
 		    writer = new BufferedWriter(new OutputStreamWriter(
-		          new FileOutputStream(DECK_NAME + playerChoose), "utf-8"));
+		          new FileOutputStream(deckSaveName + ext), "utf-8"));
 		    writer.write(String.format("%s\n", names[playerChoose]));
 		    
 		    for(BasicCard c : selectedCards) {
@@ -108,10 +111,29 @@ public class DeckBuilder {
 	    controller.goBack();
 	}
 	
-	/** Reads deck from file, and stores cards to selectedCards */
-	public void loadMyDeck(File file) {
+	public void deleteDeck() {
+	    deleteDeck(deckSaveName + ext);
+	    controller.goBack();
+	}
+	
+	public static void deleteDeck(String s) {
+	    try {
+	        Files.deleteIfExists(java.nio.file.Paths.get(s, ""));
+	    } catch(IOException e) {
+	        System.out.println("No file found");
+	    }
+	}
+	
+	/** 
+	 * Reads deck from file, and stores cards to selectedCards.
+	 * @param file - file to read
+	 * @param selectedCards - ArrayList to fill with player's selected cards
+	 * @param fullDeck - array to fill with all deck cards
+	 * @return returns integer value representing deck name's index in names array */
+	public static int loadDeck(File file, ArrayList<BasicCard> selectedCards, ArrayList<BasicCard> fullDeck) {
 		BufferedReader reader = null;
 		try {
+		    int choose = -1;
 		    reader = new BufferedReader(new InputStreamReader(
 		          new FileInputStream(file), "utf-8"));
 		    String s;
@@ -119,17 +141,26 @@ public class DeckBuilder {
 		    // Read race name
 		    for(int i = 0; i < names.length; i++) {
 		        if(s.startsWith(names[i])) {
-		            deckRace = names[i];
-		            ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
-		            playerChoose = i;
-	                fullDeck.addAll(0, classCards);
+		            choose = i;
+		            if(fullDeck != null) {
+    		            ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+    	                fullDeck.addAll(0, classCards);
+		            } else {
+		                fullDeck = new DeckPackReader().parseFile("NeutralsDeck.xml");
+		                ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+                        fullDeck.addAll(0, classCards);
+		            }
 	                break;
 		        }
 		    }
+		    
+		    if(selectedCards == null) return choose;
+		    
 		    // Load deck
-		    int count = 0;
+            int count = 0;
 		    while((s = reader.readLine()) != null) {
-		        if(++count > Deck.DECK_SIZE) break; 
+		        if(++count > Deck.DECK_SIZE) break;
+		        
 		    	String[] splits = new String[2];
 		    	int lastpost = s.lastIndexOf(" ");
 		    	splits[0] = s.substring(0, lastpost);
@@ -151,23 +182,29 @@ public class DeckBuilder {
 		    		System.err.println("Contaminated file, at line " + splits[0]);
 		    	}
 		    }
+		    return choose;
 		} catch (IOException ex) {
 			System.err.println("Could not read your deck, sorry man.");
 		} finally {
 		   try {reader.close();} 
 		   catch (Exception ex) {}
 		}
+		return -1;
 	}
 	
 	/* Loads all saved deck files and returns them in array list */
 	private static ArrayList<File> deckFiles() {
-		ArrayList<File> files = new ArrayList<File>();
-		for(int i = 0; i < names.length; i++) {
-			File f = new File(DECK_NAME + i);
-			if(f.exists() && !f.isDirectory()) {
-				files.add(f);
-			}
-		}
+
+		DeckFilesFilter filter = new DeckFilesFilter();
+		File dir = new File(".");
+		 
+        if(!dir.isDirectory()){
+            System.err.println("Directory does not exists here o_O");
+            return null;
+        }
+ 
+        File[] array = dir.listFiles(filter);
+        ArrayList<File>files = new ArrayList<File>(Arrays.asList(array));
 		return files;
 	}
 	
@@ -201,16 +238,25 @@ public class DeckBuilder {
 	    fullDeck = new DeckPackReader().parseFile("NeutralsDeck.xml");
 	    selectedCards = new ArrayList<BasicCard>(Deck.DECK_SIZE);
 	    boolean b = false;
+	    deckSaveName = raceName;
 	    
 	    for(int i = 0; i < names.length; i++) {
 	        if(raceName.equals(names[i])) {
 	            ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
                 fullDeck.addAll(0, classCards);
                 playerChoose = i;
+                b = true;
+                break;
 	        }
 	    }
 	    
-	    if(!b) loadMyDeck(new File(raceName));
+	    if(!b) {
+	        int pos = deckSaveName.lastIndexOf(ext);
+	        deckSaveName = deckSaveName.substring(0, pos);
+	        playerChoose = loadDeck(new File(raceName), selectedCards, fullDeck);
+	        deckRace = names[playerChoose];
+	    }
+	    
 	    frame = new CardPickingFrame(this, playerChoose);
 	    
 	    new Thread(new Runnable() {
@@ -225,59 +271,16 @@ public class DeckBuilder {
 	/** Gettter of frame. */
 	public CardPickingFrame frame() {
 	    return this.frame;
-	}
+	}	
 	
-	public static ArrayList<BasicCard> loadDeck(File file) {
-        BufferedReader reader = null;
-        ArrayList<BasicCard> selectedCards = new ArrayList<BasicCard>(15);
-        try {
-            reader = new BufferedReader(new InputStreamReader(
-                  new FileInputStream(file), "utf-8"));
-            String s;
-            s = reader.readLine();
-            DeckPackReader dpr = new DeckPackReader();
-            ArrayList<BasicCard> fullDeck = dpr.parseFile("NeutralsDeck.xml");
-            
-            for(int i = 0; i < names.length; i++) {
-                if(s.startsWith(names[i])) {
-                    ArrayList<BasicCard> classCards = dpr.parseFile(links[i]);
-                    fullDeck.addAll(0, classCards);
-                    break;
-                }
-            }
-            // Load deck
-            int count = 0;
-            while((s = reader.readLine()) != null) {
-                if(++count > Deck.DECK_SIZE) break; 
-                String[] splits = new String[2];
-                int lastpost = s.lastIndexOf(" ");
-                splits[0] = s.substring(0, lastpost);
-                splits[1] = s.substring(lastpost + 1);
-                try{ 
-                    int cost = Integer.parseInt(splits[1]);
-                    boolean found = false;
-                    for(BasicCard c : fullDeck) {
-                        if(c.name.equals(splits[0]) && c.cost == cost) { 
-                            selectedCards.add(c);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if(!found) {
-                        System.err.format("Not found %s card at %d cost\n", splits[0], cost);
-                    }
-                } catch (NumberFormatException e) {
-                    System.err.println("Contaminated file, at line " + splits[0]);
-                }
-            }
-        } catch (IOException ex) {
-            System.err.println("Could not read your deck, sorry man.");
-        } finally {
-           try {reader.close();} 
-           catch (Exception ex) {}
+	public static class DeckFilesFilter implements FilenameFilter {
+	    
+        public DeckFilesFilter() {
         }
-        
-        return selectedCards;
+ 
+        public boolean accept(File dir, String name) {
+            return (name.endsWith(".deck"));
+        }
     }
-	
+
 }

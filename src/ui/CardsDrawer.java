@@ -40,16 +40,17 @@ public class CardsDrawer extends Panel {
 	    Graphics2D g2 = (Graphics2D) g;
 	    int cardSize = this.getWidth() / 10;
 	    g2.setFont(new Font("SansSerif", Font.PLAIN, 12));
-	    for(int i = 0; i < cards.size(); i++) {
-	    	if(cards.get(i).cost <= mana && !parent.turnEnded) g2.setColor(Color.GREEN);
+	    ArrayList<BasicCard> copycards = new ArrayList<BasicCard>(cards);
+	    for(int i = 0; i < copycards.size(); i++) {
+	    	if(copycards.get(i).cost <= mana && !parent.turnEnded) g2.setColor(Color.GREEN);
 	    	else g2.setColor(Color.BLACK);
 	    	g2.drawRect(cardSize * i + 5, 5, cardSize - 10, this.getHeight() - 10);
 	    	g2.setColor(Color.BLACK);
 	    	
-	    	g2.drawString(cards.get(i).name, cardSize * i + 7, 20);
-	    	g2.drawString(cards.get(i).description, cardSize * i + 7, 40);
+	    	g2.drawString(copycards.get(i).name, cardSize * i + 7, 20);
+	    	g2.drawString(copycards.get(i).description, cardSize * i + 7, 40);
 	    	String dstr = "";
-	    	BasicCard bc = cards.get(i);
+	    	BasicCard bc = copycards.get(i);
 	    	if(bc.type == CardType.Unit) {
 				dstr = (String.format("%2dd/%2dh%2d$", ((UnitCard) bc).getDamage(),
 						((UnitCard) bc).getHealth(), bc.cost));
@@ -80,8 +81,6 @@ public class CardsDrawer extends Panel {
 		this.maxmana = maxmana;
 		repaint();
 	}
-
-	
 	
 	public CardsDrawer(LayoutManager arg0) {
 		super(arg0);

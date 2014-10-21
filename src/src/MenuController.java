@@ -40,7 +40,8 @@ public class MenuController {
     }
     
     public void launchGame(String filename, PossibleOpponents opp) {
-        ArrayList<BasicCard> cards = DeckBuilder.loadDeck(new File(filename));
+        ArrayList<BasicCard> cards = new ArrayList<BasicCard>(15);
+        DeckBuilder.loadDeck(new File(filename), cards, null);
         
         if(opp == PossibleOpponents.SinglePassiveBot || opp == PossibleOpponents.SingleEasyBot) {
             singleplayerGame(new Deck(cards), opp);

@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import cards.BasicCard;
@@ -32,21 +33,24 @@ import src.DeckBuilder;
 public class CardPickingFrame extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 6581966660599964423L;
-    DeckBuilder parent;
-	CardPickingPanel picker;
-	ArrayList<BasicCard> cards;
-	JButton description;
-	Panel selectedCardsText;
-	JLayeredPane pane;
-	Panel bottomLayer;
-	
+    private DeckBuilder parent;
+    private CardPickingPanel picker;
+    private ArrayList<BasicCard> cards;
+    private JButton description;
+    private Panel selectedCardsText;
+    private JLayeredPane pane;
+    private Panel bottomLayer;
+    private JTextField input;
+    
 	private static final String SAVE_COMMAND = "Save deck";
+	private static final String DELETE_COMMAND = "Delete deck";
 	private static final String CANCEL_COMMAND = "Go back";
 	
 	private static final int MENU_HEIGHT = 100;
 	
 	public CardPickingFrame(DeckBuilder db, final int slotNum) {
 		parent = db;
+
 		this.setSize(790, 570);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -75,15 +79,21 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 		GridLayout gr = new GridLayout();
 		
 		panel.setSize(this.getWidth(), 100);
-		JLabel lab = new JLabel();
-		lab.setText(String.format("Deck slot %d", slot));
-		panel.add(lab);
+		
 		JButton button = new JButton();
+		button.setText(CANCEL_COMMAND);
+		button.addActionListener(this);
+		panel.add(button);
+		input = new JTextField(parent.deckSaveName);
+		input.setSize(new Dimension(150, panel.getHeight()));
+		input.setMaximumSize(new Dimension(250, input.getHeight()));
+		panel.add(input);
+		button = new JButton();
 		button.setText(SAVE_COMMAND);
 		button.addActionListener(this);
 		panel.add(button);
 		button = new JButton();
-		button.setText(CANCEL_COMMAND);
+		button.setText(DELETE_COMMAND);
 		button.addActionListener(this);
 		panel.add(button);
 		
@@ -170,8 +180,9 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(final ActionEvent arg0) {
 		System.out.println(arg0.getActionCommand());
-		
-		if(arg0.getActionCommand().length() <= 3 && arg0.getActionCommand().charAt(0) == '_') {
+		if(arg0.getActionCommand().length() <= 3 
+		        && arg0.getActionCommand().charAt(0) == '_') 
+		{
 			int p = Integer.parseInt(arg0.getActionCommand().substring(1));
 			parent.removeSelecteCard(p);
 		} else if(arg0.getActionCommand().equals("<")) {
@@ -179,10 +190,13 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 		} else if(arg0.getActionCommand().equals(">")) {
 			parent.incPage();
 		} else if(arg0.getActionCommand().equals(SAVE_COMMAND)) {
+		    parent.deckSaveName = input.getText();
 		    parent.saveDeck();
 		} else if(arg0.getActionCommand().equals(CANCEL_COMMAND)) {
 		    parent.goBack();
+		} else if(arg0.getActionCommand().equals(DELETE_COMMAND)) {
+		    parent.deleteDeck();
 		}
-	}	
+ 	}	
 
 }
