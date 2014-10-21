@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE deck SYSTEM "DeckValidator.dtd">
+<Deck num="4">
+	<Spell Name="Reinforce" Description="+3Dmg" Cost="1">
+		<Fulldesc txt="Adds 3 damgae to choosen unit"/>
+		<TargedetSpell targeter="player" hero="0">
+			<BuffSpell>
+			 	<Buff v="3" type="AddDamage"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Killer laser" Description="3dmg+card" Cost="4">
+		<Fulldesc txt="Deals 3 damage and draws a card"/>
+		<TargedetSpell targeter="player" hero="1">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff v="3" type="Hurt"/>
+				</BuffSpell>
+				<PlayerValueSpell type="PullCard" value="1" acept="0"/>
+			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Psi-shield" Description="" Cost="1">
+		<Fulldesc txt="Covers unit with divine shiled"/>
+		<TargedetSpell targeter="player" hero="0">
+			<BuffSpell>
+				<Buff v="32" type="AddQuality"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Healing laser" Description="Heal 6" Cost="2">
+		<Fulldesc txt="Heals 6"/>
+		<TargedetSpell targeter="player" hero="1">
+			<BuffSpell>
+				<Buff v="6" type="Heal"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Supplies" Description="+4/4" Cost="4">
+		<Fulldesc txt="Adds 4/4 to targeted unit"/>
+		<TargedetSpell targeter="player" hero="1">
+			<SpellContainer>
+				<BuffSpell>
+					<Buff v="4" type="AddDamage"/>
+				</BuffSpell>
+				<BuffSpell>
+					<Buff v="4" type="AddHealth"/>
+				</BuffSpell>
+			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Orbital flame" Description="" Cost="4">
+		<Fulldesc txt="Hurts every enemy for 2 damage"/>
+		<TargedetSpell targeter="all" acept="1" hero="1">
+			<BuffSpell>
+				<Buff v="2" type="Hurt"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Rearm" Description="" Cost="1">
+		<Fulldesc txt="Sets unit damage to 1"/>
+		<TargedetSpell targeter="player" hero="0">
+			<BuffSpell>
+				<Buff v="1" type="DamageSetTo"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell> 
+	<Spell Name="Multiplication" Description="x2 Dmg" Cost="5">
+		<Fulldesc txt="Doubles selected unit damage"/>
+		<TargedetSpell targeter="player" hero="0">
+			<BuffSpell>
+				<Buff v="UnitHealth" type="AddDamage"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Radiation" Description="All to 1 H" Cost="2">
+		<Fulldesc txt="Sets all unit's health to 1"/>
+		<TargedetSpell targeter="all" acept="-1" hero="0">
+			<BuffSpell>
+				<Buff v="1" type="HealthSetTo"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="8 bombs" Description="" Cost="6">
+		<Fulldesc txt="Deals 8 damage to random units"/>
+		<TargedetSpell targeter="random" acept="1" hero="1" targets="8" repeats="1">
+			<BuffSpell>
+				<Buff v="1" type="Hurt"/>
+			</BuffSpell>
+		</TargedetSpell>
+	</Spell>
+	<Unit Name="Defender" Description="Gives shield" Damage="2" Health="2" Cost="2">
+		<Fulldesc txt="OnCreate gives selected unit divine shield"/>
+		<Power condition="OnCreate">
+			<TargedetSpell targeter="player" hero="0">
+				<BuffSpell>
+					<Buff v="32" type="AddQuality"/>
+				</BuffSpell>
+			</TargedetSpell>
+		</Power>
+	</Unit>
+	<Unit Name="Guardian" Description="Heals hero 6" Damage="5" Health="6" Cost="7">
+		<Fulldesc txt="OnCreate heals ally for 6 health"/>
+		<Power condition="OnCreate">
+			<PlayerValueSpell type="AddHealth" value="6" acept="0"/>
+		</Power>
+	</Unit>
+	<Unit Name="Carrier" Description="D+T+Summon 5/3" Damage="6" Health="6" Cost="8">
+		<Fulldesc txt="OnDeath summons 5/3"/>
+		<Qualities v="36"/>
+		<Power condition="OnDeath">
+			<CreateUnitSpell side="0" count="1">
+				<HelperUnit Name="Laser" Description="" Damage="5" Health="3" Cost="0">
+				</HelperUnit>
+			</CreateUnitSpell>
+		</Power>
+	</Unit>
+</Deck>

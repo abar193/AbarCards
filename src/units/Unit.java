@@ -36,7 +36,7 @@ import org.json.simple.JSONValue;
 public class Unit {
 	/** Enum for qualities unit may have. They are stored in int value  */
 	public enum Quality {
-		Windfury(1), Stealth(2), Taunt(4), Charge(8), NoAttack(16);
+		Windfury(1), Stealth(2), Taunt(4), Charge(8), NoAttack(16), Shield(32);
 		private final int value;
 
 	    private Quality(int value) {
@@ -248,11 +248,15 @@ public class Unit {
 	 * @param d
 	 */
 	public void damage(int d) {
-		currentHealth -= d;
-		if(currentGame != null)
-			currentGame.informAll(String.format("%s takes %d damage", 
-				myCard.name, d));
-		this.respondToEvent(TriggeringCondition.OnDamage, this);
+	    if(hasQuality(Quality.Shield)) {
+	        removeQuality(Quality.Shield);
+	    } else {
+    		currentHealth -= d;
+    		if(currentGame != null)
+    			currentGame.informAll(String.format("%s takes %d damage", 
+    				myCard.name, d));
+    		this.respondToEvent(TriggeringCondition.OnDamage, this);
+	    }
 	}
 	
 	/**

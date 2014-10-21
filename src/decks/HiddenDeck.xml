@@ -13,4 +13,6 @@
 	<Unit Name="Toster" Description="" Damage="1" Health="1" Cost="0" Class="Machine">
 		<Qualities  v="8"/>
 	</Unit>
+	<Unit Name="Laser" Description="" Damage="5" Health="3" Cost="0">
+	</Unit>
 </Deck>

@@ -75,7 +75,7 @@
 	<Unit Name="G-Car" Description="C" Damage="8" Health="8" Cost="9" Class="Machine">
 		<Qualities v="8"/>
 	</Unit>
-	<Spell Name="Tosters!!!" Description="1/1xEnUn" Cost="1">
+	<Spell Name="Tosters!!!" Description="1/1xEnUn" Cost="3">
 		<Fulldesc txt="Summons 1/1 machines with chardge for each enemy unit"/>
 		<CreateUnitSpell count="EnemyUnitsCount" side="0">
 			<HelperUnit Name="Toster" Description="" Damage="1" Health="1" Cost="0" Class="Machine">
@@ -83,7 +83,7 @@
 			</HelperUnit>
 		</CreateUnitSpell>
 	</Spell>
-	<Spell Name="Shock" Description="2 dmg" Cost="0">
+	<Spell Name="Shock" Description="2 dmg" Cost="1">
 		<Fulldesc txt="Deals 2 damage to selected unit"/>
 		<TargedetSpell targeter="player">
 			<BuffSpell>
@@ -91,7 +91,7 @@
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Wrath" Description="+2+WF" Cost="1">
+	<Spell Name="Overcharge" Description="+2+W" Cost="1">
 		<Fulldesc txt="Adds +2 damage and provides windfury for unit"/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
@@ -112,7 +112,7 @@
 			</BuffSpell>
 		</TargedetSpell>
 	</Spell>
-	<Spell Name="Spark" Description="3/5 dmg" Cost="2">
+	<Spell Name="Spark" Description="3/5 dmg" Cost="3">
 		<Fulldesc txt="Deals 3 damage to selected unit or 5 if you have at least 1 machine on field"/>
 		<TargedetSpell targeter="player">
 			<ConditionSpell>

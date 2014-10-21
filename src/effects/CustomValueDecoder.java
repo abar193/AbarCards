@@ -30,6 +30,8 @@ public class CustomValueDecoder {
 				case "AllyUnitsCount-1":
 				case "AllyUnitCount-1":
 					return fs.countUnitsForSide(player, false) - 1;
+				case "UnitHealth":
+				    return target.getCurrentDamage();
 				default:
 					System.out.println("!Unknown value " + value);
 					return 0;

@@ -22,8 +22,8 @@ public class DeckBuilder {
 	private static final int CARDS_IN_A_ROW = 5;
 	
 	private static final String ext = ".deck";  
-	private static final String[] names = {"Machines"};
-	private static final String[] links = {"MachinesDeck.xml"};
+	private static final String[] names = {"Machines", "Aliens"};
+	private static final String[] links = {"MachinesDeck.xml", "AliensDeck.xml"};
 	
 	public ArrayList<BasicCard> selectedCards;
 	public ArrayList<BasicCard> fullDeck;
