@@ -4,7 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Stores player's open data like his health, mana or card's number. Safe to show to an opponent.
+ * Stores player's open data like his health, mana or card's number. 
+ * Safe to show to an opponent, or the entire world. 
  * @author Abar
  */
 public class PlayerOpenData {

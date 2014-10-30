@@ -6,7 +6,7 @@ import ui.VisualSystemInterface;
 import units.Unit;
 
 /**
- * Just simple bot, doing nothing
+ * Just passive bot, who literally does nothing.
  * @author Abar
  */
 public class PassiveBot implements PlayerInterface {

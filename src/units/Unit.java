@@ -261,7 +261,7 @@ public class Unit {
 	
 	/**
 	 * Heals unit. Method calls OnDamage event.
-	 * @param d
+	 * @param v value of the heal
 	 */
 	public void heal(int v) {
 		currentHealth = Math.min(currentHealth + v, maxHealth);
@@ -348,6 +348,6 @@ public class Unit {
 	
 	@Override
 	public String toString() {
-		return String.format("U[%s, %d/%d]", myCard.name, getCurrentDamage(), getCurrentHealth());
+		return String.format("U[%s, D%d/%dH]", myCard.name, getCurrentDamage(), getCurrentHealth());
 	}
 }

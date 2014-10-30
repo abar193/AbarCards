@@ -38,13 +38,13 @@ public interface PlayerInterface extends Runnable {
 	/**
 	 * Called by game - asks player to provide unit target
 	 * 
-	 * @return
+	 * @return selected unit
 	 */
 	public Unit selectTarget();
 	
 	/**
 	 * Called by game: provide visual system to display some information, or error message
-	 * @return
+	 * @return players' VS.
 	 */
 	public ui.VisualSystemInterface visual();
 }

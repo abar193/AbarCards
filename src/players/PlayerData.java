@@ -18,7 +18,9 @@ import org.json.*;
 
 /**
  * Stores all the important information about player's state like his deck,
- * hand or health/mana state. Available for the player himself, his opponent should receive 
+ * hand or health/mana values.
+ * <p>
+ *  Available for the player himself, his opponent should receive 
  * 	PlayerOpenData built with createOpenData().
  * @author Abar
  */
@@ -155,7 +157,7 @@ public class PlayerData {
 	/**
 	 * Drains mana, and removes card from player's hand.
 	 * @throws IllegalArgumentException if the card does not match the canPlayCard criteria
-	 * @param card to be played
+	 * @param bc card to be played
 	 */
 	public void playCard(BasicCard bc) {
 		if(canPlayCard(bc)) {
@@ -290,5 +292,9 @@ public class PlayerData {
 		pod.handSize = this.getHandSize();
 		pod.playerNumber = this.playerNumber;
 	}
-
+	
+	public String toString() {
+        return String.format("Player #%d with %dH %d/%d mana and %d/%d cards", playerNumber,
+                this.getHealth(), availableMana, totalMana, myHand.size(), myDeck.getSize()); 
+    }
 }

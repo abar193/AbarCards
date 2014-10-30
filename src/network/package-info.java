@@ -1,7 +1,5 @@
 /**
- * Package contains all class necessary for the play over network
- */
-/**
+ * Package contains all class necessary for the network games.
  * @author Abar
  *
  */

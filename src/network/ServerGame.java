@@ -67,7 +67,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 		try {
 			initialising = true;
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-			String uri = "ws://localhost:8080/sock";
+			String uri = "ws://localhost:8080/GameServer/sock";
 			container.connectToServer(ServerGame.class, URI.create(uri));
 		} catch (Exception e) {
 			e.printStackTrace();

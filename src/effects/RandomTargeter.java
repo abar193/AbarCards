@@ -20,10 +20,10 @@ public class RandomTargeter implements Targeter {
 	boolean repeats, aceptHeroes;
 	/**
 	 * Initialises targeter, who selects random targets from field
-	 * @param player player-owner of the card
 	 * @param acceptablePlayers 0 for the player, 1 for his opponent or -1 for both players
 	 * @param maxCount at least 1 at most maxCount
 	 * @param repeatsAllowed true to allow repeating
+	 * @param aceptHeroes true, if heroes may be targeted as well
 	 */
 	public RandomTargeter(int acceptablePlayers, int maxCount, boolean repeatsAllowed, boolean aceptHeroes) {
 		aceptPlayers = acceptablePlayers;

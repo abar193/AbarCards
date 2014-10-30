@@ -30,4 +30,8 @@ public class SpellCard extends BasicCard {
 	public void exequte(int player, src.ProviderGameInterface cG) {
 		spell.exequte(player, cG);
 	}
+	
+	public String toString() {
+	    return "Spell \"" + name + "\""; 
+	}
 }

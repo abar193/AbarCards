@@ -35,13 +35,6 @@ public class DeckBuilder {
 	private CardPickingFrame frame;
 	private final MenuController controller;
 	
-	/** Prints title string, CARDS_IN_A_ROW cards from deck, and selected cards array.
-	 * 
-	 * @param deck source for drawing cards
-	 * @param start starting index, from where cards should be drawn 
-	 * @throws IndexOutOfBoundsException exception if start < 0, or 
-	 * start + CARDS_IN_A_ROW > deck.size 
-	 */
 	public void drawCards() {
 		frame.setDrawnCards(fullDeck, startPos, selectedCards);
 		frame.repaint();

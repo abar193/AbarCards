@@ -87,7 +87,7 @@ public class AuraStorage {
 	
 	/** 
 	 * Returns size of auras array
-	 * @return
+	 * @return integer value.
 	 */
 	public int aurasCount() {
 		return auras.size();

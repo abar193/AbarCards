@@ -38,4 +38,8 @@ public class UnitCard extends BasicCard {
 	public String debugDisplay() {
 		return name + " " + description;
 	}
+	
+	public String toString() {
+        return "Unit \"" + name + "\""; 
+    }
 }

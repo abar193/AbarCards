@@ -24,17 +24,17 @@ import players.*;
 public class Game implements GameInterface, ProviderGameInterface {
 	
 	/* Stores 2 players. */
-	private ArrayList<PlayerInterface> players;
+	protected ArrayList<PlayerInterface> players;
 	/* Stores playerData for both players */
-	private PlayerData[] playersData;
+	protected PlayerData[] playersData;
 	/* Field, where all units, building (and heroes?) are standing*/
-	private FieldSituation field;
+	protected FieldSituation field;
 	public UnitFactory factory;
 	
 	private Thread playerThread;
-	private int playerTurn;
-	private boolean playingCard = false;
-	private boolean gameRunning = true;
+	protected int playerTurn;
+	protected boolean playingCard = false;
+	protected boolean gameRunning = true;
 	
 	public GameStatReceiver statReceiver;
 	/**
@@ -149,7 +149,6 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @param attacker attacker's unit position field.playerUnits.get(playerA) 
 	 * @param target target's unit position field.playerUnits.get(playerT)
 	 * @param playerA attacker players number
-	 * @param playerT opponent players number
 	 * @return true if attack is valid
 	 */
 	public boolean attackIsValid(int attacker, int target, int playerA) {

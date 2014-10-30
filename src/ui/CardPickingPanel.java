@@ -109,13 +109,11 @@ public class CardPickingPanel extends JPanel {
 		}
 	}
 	
-	/** Splits lines in fullDescription word by word, cuts words longer than 10 chars
-     * into smaller ones, and groups small words if their sum length < 10.
-     * @param deck ArrayList of cards, from where fullDescription is being read
-     * @param start Starting index. Will be proceeded cards with 
-     *      indexes [start..start + CARDS_IN_A_ROW]
-     * @return String[][] array, where first index stands for corresponding card, 
-     *      and second index - for cut lines of fullDescription.    
+	/** Splits line in fullDescription word by word, cuts words longer than width into smaller ones.
+     * @param fullDescription String to cut
+     * @param fm font metrics for calculation
+     * @param width required width
+     * @return divided lines
      */
     public String[] splitLines(String fullDescription, FontMetrics fm, float width) {
         String[] splits;

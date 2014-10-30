@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.json.*;
-import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
-
 import decks.DeckPackReader;
 
 public class CardJSONOperations {
 
-	private static final String[] names = {"Hidden", "Neutrals", "Machines", "Terran", "Aliens"};
+	public static final String[] names = {"Hidden", "Neutrals", "Machines", "Terran", "Aliens"};
 	private static final String[] links = {"HiddenDeck.xml", "NeutralsDeck.xml", "MachinesDeck.xml", 
 	    "BotImbaDeck.xml", "AliensDeck.xml"};
 	
