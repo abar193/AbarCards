@@ -1,14 +1,27 @@
 Hearthstone-inspired card game I'm working on.
 
-Written in Java, right now I'm working on its engine, later I'm planning to implement some AI, visual interface and networking.
+Written in Java, this is my hobby-project. It's for learning purposes only, and should not be used for commercial purposes. If you are somehow 
+going to use/fork/distribute this project, please contact me, I'll be happy. (Who am I kidding? No one will use that ever.) 
+
+*** 
+News: 
+
+Implemented testing framework. Custom classes in tests.framework package are allowing fully authomated real-game test. In test cases 
+user may define order of cards in players decks, bot-player actions, and end-turn situations. If at some point exception will occur, or 
+situation at the end of the turn will not match the one described in TestingSituation test will be failed. Example of using that framework 
+may be seen in tests.TestMachinesDeck class. 
+
+BTW, that framewor may even be used for Tutorial-games, if I will implement them.
+*** 
+
+Older news: 
 
 New GUI has been added. 
 
 Now as you launch the game you will see deck picking screen. You may choose your race (so far only one) and build your deck with 15 cards. 
 
-You may play against simple or passive bot, or click "Socket: vs Bot" to play with simple bot over sockets. To click last button and not to 
-crash the entire game you will have to configure and launch server with https://github.com/abar193/CardsServer classses installed. Since it's only 
-early prototype of the game, I don't have my own server, nor I need one.
+You may play against simple or passive bot, or click "Socket: vs Bot/vs Player" to play with simple bot/some other player over sockets. To click last button and not to crash the entire game you will have to configure and launch server from https://github.com/abar193/CardsServer. Since it's only early prealpha of the game, I don't have my own server online, but I'm working towards it.
+*** 
 
 Things done so far: 
 
@@ -36,6 +49,6 @@ What I'm working on for now:
 	
 	2 User Interface 
 	
-	? I'd like to extend mechanics of the game, add new races and stuff
+	3 Extending game mechanics by adding new races and cards, and improving current ones.
 
     
