@@ -11,7 +11,7 @@ user may define order of cards in players decks, bot-player actions, and end-tur
 situation at the end of the turn will not match the one described in TestingSituation test will be failed. Example of using that framework 
 may be seen in tests.TestMachinesDeck class. 
 
-BTW, that framewor may even be used for Tutorial-games, if I will implement them.
+BTW, that framework may even be used for Tutorial-games, if I will implement them.
 *** 
 
 Older news: 
