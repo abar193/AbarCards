@@ -44,6 +44,14 @@ public class PlayerData {
 	private PlayerInterface myPlayer;
 	private src.ProviderGameInterface currentGame;
 	
+	private boolean devModeMana = false;
+	
+	public void devModeMana() {
+	    devModeMana = true;
+	    availableMana = 10;
+	    totalMana = 10;
+	}
+	
 	/**
 	 * Creates new PlayerData instance with default MAXHANDLIMIT value.
 	 */
@@ -84,8 +92,10 @@ public class PlayerData {
 	public void newTurn() {
 		if(myPlayer != null) 
 			myPlayer.reciveAction("Your turn");
-		totalMana = Math.min(10, totalMana + 1);
-		availableMana = totalMana;
+		if(!devModeMana) {
+    		totalMana = Math.min(10, totalMana + 1);
+    		availableMana = totalMana;
+		}
 	}
 	
 	/**
@@ -162,7 +172,9 @@ public class PlayerData {
 	public void playCard(BasicCard bc) {
 		if(canPlayCard(bc)) {
 			if(myHand.remove(bc)) {
-				availableMana -= bc.cost;
+			    if(!devModeMana) {
+			        availableMana -= bc.cost;
+			    }
 				return;
 			}
 		}

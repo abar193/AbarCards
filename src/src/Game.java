@@ -36,7 +36,15 @@ public class Game implements GameInterface, ProviderGameInterface {
 	protected boolean playingCard = false;
 	protected boolean gameRunning = true;
 	
+	protected boolean devMode = false;
+	protected boolean devModeMana = false;
+	
 	public GameStatReceiver statReceiver;
+	
+	public void setDevGame() {
+	    devMode = true;
+	}
+	
 	/**
 	 * Initialises player-relevant variables, and randomly puts chooses Player1 and Player2 from 
 	 * 		p1 and p2. Order of p1 and p2 is irrelevant, the key thing is that d1 shall store 
@@ -85,7 +93,6 @@ public class Game implements GameInterface, ProviderGameInterface {
 		
 		playersData[0].pullCard(2);
 		playersData[1].pullCard(3);
-		
 	}
 	
 	/** Launches the game */
@@ -269,6 +276,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 		else if(c.type == CardType.Spell) 
 			return playersData[player].canPlayCard(c) 
 			        & ((SpellCard)c).spell.validate(player, this);
+		else if(c.type == CardType.Developer && devMode) return true;
 		else return false;
 	}
 	
@@ -302,11 +310,12 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public void playCard(BasicCard c, int player) {
 	    synchronized(playersData[player]) {
     		if(canPlayCard(c, player)) {
+    		    
     		    playingCard = true;
     			// Drawing
     			players.get(player).reciveAction("Playing " + c.name);
     			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
-    
+    			
     			if(c.type == CardType.Unit) {
     			    Unit u = createUnit((UnitCard)c, player, false); 
     				if(u == null) 
@@ -321,6 +330,21 @@ public class Game implements GameInterface, ProviderGameInterface {
     					card.exequte(player, this);
     					playersData[player].playCard(c);
     				}
+    			} else if (c.type == CardType.Developer) {
+    			    switch(((DevCard)c).devType) {
+                        case Draw1Card:
+                            playersData[player].pullCard(1);
+                            break;
+                        case Draw5Cards:
+                            playersData[player].pullCard(5);
+                            break;
+                        case InfiniteMana:
+                            playersData[player].devModeMana();
+                            playersData[(player + 1) % 2].devModeMana();
+                            break;
+                        default:
+                            break;   
+    			    }
     			}
     			
     			recalculateFieldModifiers();

@@ -6,7 +6,7 @@ package cards;
  *
  */
 public enum CardType {
-	Spell, Unit, Basecard;
+	Spell, Unit, Basecard, Developer;
 	
 	public String stringValue() {
 		switch(this) {

@@ -145,7 +145,7 @@ public class TestingPlayer implements PlayerInterface {
                     break;
                 }
                 case TargetUnit: {
-                    fail("Nothing to target");
+                    fail("Nothing to target, order " + ta.sourceName);
                     break;
                 }
                 default: {
@@ -170,6 +170,8 @@ public class TestingPlayer implements PlayerInterface {
                 }
             }
         }
+        
+        System.err.format("No target %s at %d found, returning null!", ta.sourceName, actionsCounter + 1);
         return null;
     }
 

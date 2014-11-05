@@ -62,6 +62,9 @@ public class TestingGame extends Game {
      * @return corresponding card from CardJSONOperations.singleAllDeck().
      */
     public BasicCard cardFromName(String name, int race) {
+        if(name.startsWith("Dev:")) {
+            return new cards.DevCard(name, "");
+        }
         ArrayList<BasicCard> cards = CardJSONOperations.singleAllDeck().get(race);
         Iterator<BasicCard> i = cards.iterator();
         while(i.hasNext()) {
