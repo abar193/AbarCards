@@ -14,15 +14,9 @@
 	</Unit>
 	<Unit Name="Solid 3-3" Description="" Damage="3" Health="3" Cost="3">
 	</Unit>
-	<Unit Name="Solid 4-2" Description="" Damage="4" Health="2" Cost="3">
-	</Unit>
 	<Unit Name="Solid 2-4" Description="" Damage="2" Health="4" Cost="3">
 	</Unit>
-	<Unit Name="Solid 5-4" Description="" Damage="5" Health="4" Cost="4">
-	</Unit>
 	<Unit Name="Solid 4-5" Description="" Damage="4" Health="5" Cost="4">
-	</Unit>
-	<Unit Name="Solid 6-5" Description="" Damage="6" Health="5" Cost="5">
 	</Unit>
 	<Unit Name="Solid 5-6" Description="" Damage="5" Health="6" Cost="5">
 	</Unit>

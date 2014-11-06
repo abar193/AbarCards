@@ -164,6 +164,12 @@ public class PlayerData {
 		return (ar.size() == 0) ? null : ar;
 	}
 	
+	public void recieveCard(BasicCard c) {
+	    if(myHand.size() < MAXHANDLIMIT) {
+	        myHand.add(c);
+	    }
+	}
+	
 	/**
 	 * Drains mana, and removes card from player's hand.
 	 * @throws IllegalArgumentException if the card does not match the canPlayCard criteria

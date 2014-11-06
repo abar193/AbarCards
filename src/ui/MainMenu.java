@@ -159,6 +159,7 @@ public class MainMenu extends JFrame implements ActionListener {
     }
     
     // For that code below I should punish myself.
+    // TODO refractor it
     @Override
     public void actionPerformed(final ActionEvent e) {
         if(e.getSource().equals(button1)) {
@@ -342,7 +343,6 @@ public class MainMenu extends JFrame implements ActionListener {
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Playing;
                 vs.repaint();
-                
             }}));
         
         if(state == MenuState.Waiting) frame.setEndSide(SLSide.TOP, waitingPanel);
@@ -393,6 +393,13 @@ public class MainMenu extends JFrame implements ActionListener {
         playDecks.add(rb);
         group.add(rb);
         
+        rb = new JRadioButton("Developer game");
+        rb.setBackground(playDecks.getBackground());
+        rb.setActionCommand("4");
+        rb.addActionListener(listener);
+        playDecks.add(rb);
+        group.add(rb);
+        
         playDecks.add(new JLabel("Choose a deck to play with:"));
         names = DeckBuilder.availableFiles(true);
         for(String i : names) {
@@ -416,6 +423,8 @@ public class MainMenu extends JFrame implements ActionListener {
             case 3: 
                 opponent = PossibleOpponents.SocketPlayer;
                 break;
+            case 4:
+                opponent = PossibleOpponents.SocketDev;
             default:
         }
     }

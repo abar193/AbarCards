@@ -45,6 +45,17 @@ public class Game implements GameInterface, ProviderGameInterface {
 	    devMode = true;
 	}
 	
+	public void addDevCards() {
+	    if(players != null && players.size() >= 2) {
+	        for(int i = 0; i < 2; i++) {
+	            if(!(players.get(i) instanceof players.SimpleBot)) {
+	                playersData[i].recieveCard(new cards.DevCard("Dev:InfiniteMana", ""));
+	                playersData[i].recieveCard(new cards.DevCard("Dev:Draw5Cards", ""));
+	            }
+	        }
+	    }
+	}
+	
 	/**
 	 * Initialises player-relevant variables, and randomly puts chooses Player1 and Player2 from 
 	 * 		p1 and p2. Order of p1 and p2 is irrelevant, the key thing is that d1 shall store 

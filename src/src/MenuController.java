@@ -20,7 +20,7 @@ public class MenuController {
     }
     
     public enum PossibleOpponents {
-        SinglePassiveBot, SingleEasyBot, SocketEasyBot, SocketPlayer;
+        SinglePassiveBot, SingleEasyBot, SocketEasyBot, SocketPlayer, SocketDev;
     }
     
     private final MainMenu parent;
@@ -50,6 +50,7 @@ public class MenuController {
             String opponent = ""; 
             if(opp == PossibleOpponents.SocketEasyBot) opponent = "Terran";
             else if(opp == PossibleOpponents.SocketPlayer) opponent = "Player";
+            else if(opp == PossibleOpponents.SocketDev) opponent = "Dev:Player";
             ServerGame.instance().setMenuController(this);
             ServerGame.instance().validateDeck(cards, opponent);
         }
