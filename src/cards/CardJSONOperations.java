@@ -19,6 +19,11 @@ public class CardJSONOperations {
 			String name = m.get("Name");
 			int cost = Integer.parseInt(m.get("Cost"));
 			int deck = Integer.parseInt(m.get("Deck"));
+			
+			if(name.startsWith("Dev:")) {
+			    return new DevCard(name, "");
+			}
+			
 			ArrayList<BasicCard> myDeck = singleAllDeck().get(deck);
 			java.util.Iterator<BasicCard> i = myDeck.iterator();
 			if(name.equals("Hero")) {

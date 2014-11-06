@@ -49,6 +49,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	    if(players != null && players.size() >= 2) {
 	        for(int i = 0; i < 2; i++) {
 	            if(!(players.get(i) instanceof players.SimpleBot)) {
+	                System.out.println(">>> DEV MODE: Add cards");
 	                playersData[i].recieveCard(new cards.DevCard("Dev:InfiniteMana", ""));
 	                playersData[i].recieveCard(new cards.DevCard("Dev:Draw5Cards", ""));
 	            }
@@ -350,6 +351,7 @@ public class Game implements GameInterface, ProviderGameInterface {
                             playersData[player].pullCard(5);
                             break;
                         case InfiniteMana:
+                            playersData[player].playCard(c);
                             playersData[player].devModeMana();
                             playersData[(player + 1) % 2].devModeMana();
                             break;

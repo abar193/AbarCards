@@ -167,6 +167,8 @@ public class PlayerData {
 	public void recieveCard(BasicCard c) {
 	    if(myHand.size() < MAXHANDLIMIT) {
 	        myHand.add(c);
+	    } else {
+	        System.err.println("Hand is too full!");
 	    }
 	}
 	
