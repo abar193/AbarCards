@@ -21,9 +21,7 @@
 		<Fulldesc txt="At the end of a turn heals all allied units"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="all" acept="0">
-				<BuffSpell>
-					<Buff type="Heal" v="1"/>
-				</BuffSpell>
+				<BuffSpell type="Heal" v="1"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -31,9 +29,7 @@
 		<Fulldesc txt="At the end of a turn heals all allied units"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="all" acept="0">
-				<BuffSpell>
-					<Buff type="Heal" v="1"/>
-				</BuffSpell>
+				<BuffSpell type="Heal" v="1"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -50,9 +46,7 @@
 		<Fulldesc txt="Charge, deal 2 damage to random enemy unit, if some ally gets hurt"/>
 		<Power condition="OnAllyDamage">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
-				<BuffSpell>
-					<Buff type="Hurt" v="2"/>
-				</BuffSpell>
+				<BuffSpell type="Hurt" v="2"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -61,9 +55,7 @@
 		<Fulldesc txt="Charge, deal 2 damage to random enemy unit, if some ally gets hurt"/>
 		<Power condition="OnAllyDamage">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
-				<BuffSpell>
-					<Buff type="Hurt" v="2"/>
-				</BuffSpell>
+				<BuffSpell type="Hurt" v="2"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -72,18 +64,12 @@
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="0">
 				<SpellContainer>
-					<BuffSpell>
-						<Buff type="Hurt" v="3"/>
-					</BuffSpell>
+					<BuffSpell type="Hurt" v="3"/>
 					<TargedetSpell targeter="neighbor" o="-1">
-						<BuffSpell>
-							<Buff type="Hurt" v="1"/>
-						</BuffSpell>
+						<BuffSpell type="Hurt" v="1"/>
 					</TargedetSpell>
 					<TargedetSpell targeter="neighbor" o="1">
-						<BuffSpell>
-							<Buff type="Hurt" v="1"/>
-						</BuffSpell>
+						<BuffSpell type="Hurt" v="1"/>
 					</TargedetSpell>
 				</SpellContainer>
 			</TargedetSpell>
@@ -94,18 +80,12 @@
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="0">
 				<SpellContainer>
-					<BuffSpell>
-						<Buff type="Hurt" v="3"/>
-					</BuffSpell>
+					<BuffSpell type="Hurt" v="3"/>
 					<TargedetSpell targeter="neighbor" o="-1">
-						<BuffSpell>
-							<Buff type="Hurt" v="1"/>
-						</BuffSpell>
+						<BuffSpell type="Hurt" v="1"/>
 					</TargedetSpell>
 					<TargedetSpell targeter="neighbor" o="1">
-						<BuffSpell>
-							<Buff type="Hurt" v="1"/>
-						</BuffSpell>
+						<BuffSpell type="Hurt" v="1"/>
 					</TargedetSpell>
 				</SpellContainer>
 			</TargedetSpell>

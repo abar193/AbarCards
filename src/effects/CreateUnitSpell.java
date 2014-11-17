@@ -29,5 +29,9 @@ public class CreateUnitSpell extends AbstractSpell {
 		}
 		
 	}
+	
+	public String toString() {    
+        return "(CreateUnitSpell " + myUnit.toString() + ") "; 
+    }
 
 }

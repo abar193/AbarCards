@@ -44,5 +44,8 @@ public class PlayerTargeter implements Targeter {
 	public void setFilter(UnitFilter f) {
 		filter = f;
 	}
-
+	
+	public String toString() {    
+        return "PlayerTargeter"; 
+    }
 }

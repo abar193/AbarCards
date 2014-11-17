@@ -1,5 +1,6 @@
 package cards;
 
+import units.UnitFilter;
 import effects.AbstractSpell;
 import effects.Targeter;
 
@@ -11,6 +12,7 @@ import effects.Targeter;
 public class SpellCard extends BasicCard {
 
 	public AbstractSpell spell;
+	private UnitFilter filter; 
 	
 	public SpellCard(String name, String desc) {
 		super(name, desc);
@@ -31,7 +33,12 @@ public class SpellCard extends BasicCard {
 		spell.exequte(player, cG);
 	}
 	
-	public String toString() {
+	public void setFilter(UnitFilter f) {
+	    this.filter = f;
+	    System.err.println("Filter in spell " + this.name + " is not used!");
+	}
+	
+	public String toString() {	   
 	    return "Spell \"" + name + "\""; 
 	}
 }

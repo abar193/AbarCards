@@ -31,4 +31,7 @@ public class PlayerValueSpell extends AbstractSpell {
 		currentGame.applySpellToPlayer((playerNum + filter) % 2, this);
 	}
 
+	public String toString() {     
+        return "PlayerValueSpell (" + modifier.toString() + "," + value + ")"; 
+    }
 }

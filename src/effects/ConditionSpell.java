@@ -41,4 +41,12 @@ public class ConditionSpell extends AbstractSpell {
         }
     }
 
+    public String toString() {     
+        String s = "(ConditionSpell ?" + condition.toString() + ":";
+        for(AbstractSpell sp : spells) {
+            s += " " + sp.toString();
+        }
+        s += ")";
+        return s;
+    }
 }

@@ -70,9 +70,7 @@
 		<Qualities v="2"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
-				<BuffSpell>
-					<Buff type="Hurt" v="2"/>
-				</BuffSpell>
+				<BuffSpell type="Hurt" v="2"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -89,9 +87,7 @@
 		<Fulldesc txt="OnSpawn: Silences targedet unit."/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="player">
-				<BuffSpell>
-					<Buff type="Silence" v="0"/>
-				</BuffSpell>
+				<BuffSpell type="Silence" v="0"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -99,9 +95,7 @@
 		<Fulldesc txt="OnSpawn: Silences targedet unit"/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="player">
-				<BuffSpell>
-					<Buff type="Silence" v="0"/>
-				</BuffSpell>
+				<BuffSpell type="Silence" v="0"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -128,9 +122,7 @@
 		<Fulldesc txt="OnTurnEnd: Takes 1 dmg and creates 1-1 imp."/>
 		<Power condition="OnTurnEnd">
 			<SpellContainer>
-				<BuffSpell>
-					<Buff type="Hurt" v="1"/>
-				</BuffSpell>
+				<BuffSpell type="Hurt" v="1"/>
 				<CreateUnitSpell count="1" side="0">
 					<HelperUnit Name="Imp" Description="" Damage="1" Health="1" Cost="0">
 					</HelperUnit>
@@ -162,9 +154,7 @@
 		<Aura type="2" value="1"/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="all" acept="0">
-				<BuffSpell>
-					<Buff type="Heal" v="2"/>
-				</BuffSpell>
+				<BuffSpell type="Heal" v="2"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -173,9 +163,7 @@
 		<Fulldesc txt="OnSpawn: heals targedet unit."/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="player">
-				<BuffSpell>
-					<Buff type="Heal" v="2"/>
-				</BuffSpell>
+				<BuffSpell type="Heal" v="2"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -184,9 +172,7 @@
 		<Qualities v="2"/>
 		<Power condition="OnTurnEnd">
 			<TargedetSpell targeter="random" acept="0" targets="1" repeats="1">
-				<BuffSpell>
-					<Buff type="AddHealth" v="1"/>
-				</BuffSpell>
+				<BuffSpell type="AddHealth" v="1"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -195,9 +181,7 @@
 		<Qualities v="8"/>
 		<Power condition="OnCreate">
 			<TargedetSpell targeter="all" acept="0">
-				<BuffSpell>
-					<Buff type="Heal" v="2"/>
-				</BuffSpell>
+				<BuffSpell type="Heal" v="2"/>
 			</TargedetSpell>
 		</Power>
 	</Unit>
@@ -206,12 +190,8 @@
 		<Fulldesc txt="OnSpawn: Gain 1/1 for each ally on field"/>
 		<Power condition="BeforeCreate">
 			<SpellContainer>
-				<BuffSpell>
-					<Buff type="AddHealth" v="AllyUnitsCount"/>
-				</BuffSpell>
-				<BuffSpell>
-					<Buff type="AddDamage" v="AllyUnitsCount"/>
-				</BuffSpell>
+				<BuffSpell type="AddHealth" v="AllyUnitsCount"/>
+				<BuffSpell type="AddDamage" v="AllyUnitsCount"/>
 			</SpellContainer>
 		</Power>
 	</Unit>

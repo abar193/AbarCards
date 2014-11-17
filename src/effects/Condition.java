@@ -32,6 +32,10 @@ public class Condition {
     private String count;
     private ConditionType condition;
     
+    public String toString() {     
+        return " ?\"" + condition.toString() + " v" + count + "\""; 
+    }
+    
     public Condition(ConditionType condition, String count) {
         this.condition = condition;
         this.count = count;

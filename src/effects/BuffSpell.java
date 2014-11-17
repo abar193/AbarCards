@@ -19,5 +19,8 @@ public class BuffSpell extends AbstractSpell {
 		buff.value = CustomValueDecoder.decodeValue(buff.svalue, playerNum, target, currentGame);
 		target.applyBuff(buff);
 	}
-
+	
+	public String toString() {    
+        return "Buff " + buff.toString(); 
+    }
 }

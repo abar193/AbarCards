@@ -25,4 +25,8 @@ public class Buff {
 		type = BuffType.fromString(s);
 		svalue = v;
 	}
+	
+	public String toString() {    
+        return "(" + type.toString() + ", " + svalue + ")"; 
+    }
 }

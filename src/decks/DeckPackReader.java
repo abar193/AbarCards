@@ -22,7 +22,7 @@ import effects.AbstractSpell;
  * @author Abar
  *
  */
-public class DeckPackReader extends DefaultHandler {
+public class DeckPackReader extends DefaultHandler implements DeckXMLReaderInterface {
 
 	private ArrayList<BasicCard> resultingCard;
 	private UnitCard unit;

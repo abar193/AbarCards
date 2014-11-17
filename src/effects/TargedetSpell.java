@@ -38,5 +38,8 @@ public class TargedetSpell extends AbstractSpell {
 		targeter.setFilter(f);
 		super.setFilter(f);
 	}
-
+	
+	public String toString() {    
+        return "TargedetSpell > " + targeter.toString() + " : " + spell.toString(); 
+    }
 }

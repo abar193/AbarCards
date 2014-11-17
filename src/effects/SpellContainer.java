@@ -1,6 +1,7 @@
 package effects;
 
 import units.Unit;
+
 import java.util.ArrayList;
 
 public class SpellContainer extends AbstractSpell {
@@ -34,5 +35,13 @@ public class SpellContainer extends AbstractSpell {
 		}
 
 	}
-
+	
+	public String toString() {    
+        String s = "SpellContainer {";
+        for(AbstractSpell sp : spells) {
+            s += sp.toString() + ",";
+        }
+        s += "}";
+        return s;
+    }
 }

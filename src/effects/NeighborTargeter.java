@@ -36,5 +36,8 @@ public class NeighborTargeter implements Targeter {
 		System.out.println("Not implemented!");
 	}
 
+	public String toString() {    
+        return "NeighborTargeter"; 
+    }
 
 }

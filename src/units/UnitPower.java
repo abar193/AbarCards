@@ -30,5 +30,9 @@ public class UnitPower {
 		spell.target = u;
 		spell.exequte(player, cG);
 	}
+	
+	 public String toString() {
+	     return "Power " + tc.toString() + " " + spell.toString();
+	 }
 
 }

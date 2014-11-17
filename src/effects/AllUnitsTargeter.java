@@ -67,5 +67,9 @@ public class AllUnitsTargeter implements Targeter {
 	public void setFilter(UnitFilter f) {
 		filter = f;
 	}
+	
+	public String toString() {    
+        return "AllUnitsTargeter"; 
+    }
 
 }

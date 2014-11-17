@@ -23,7 +23,7 @@
  <!ATTLIST Qualities v CDATA #REQUIRED>
  
  <!ELEMENT Power (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff)*>
+ 	| PlayerValueSpell)*>
  <!ATTLIST Power condition (OnCreate | OnTurnStart | OnTurnEnd | OnDamage | 
  	OnAllySpawn | OnAllyDamage | OnDeath | OnAllyDeath | BeforeCreate | Always) #REQUIRED>
  	
@@ -40,7 +40,7 @@
  <!ATTLIST HelperUnit Class (Machine | Russian) #IMPLIED>
  
  <!ELEMENT TargedetSpell (Filter | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff | ConditionSpell)*>
+ 	| PlayerValueSpell |  ConditionSpell)*>
  <!ATTLIST TargedetSpell targeter CDATA #REQUIRED>
  <!ATTLIST TargedetSpell acept CDATA #IMPLIED>
  <!ATTLIST TargedetSpell excludeSelf CDATA #IMPLIED>
@@ -51,21 +51,20 @@
  <!ATTLIST TargedetSpell o CDATA #IMPLIED>
  
  <!ELEMENT SpellContainer (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff | ConditionSpell)+>
+ 	| PlayerValueSpell | ConditionSpell)+>
  	
  <!ELEMENT Condition EMPTY>
  <!ATTLIST Condition type (AllyHasMoreThanXMachines | AllyHasLessThanXMachines) #REQUIRED>
  <!ATTLIST Condition count CDATA #REQUIRED>	
  
  <!ELEMENT ConditionSpell (Condition+, (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff | ConditionSpell)+)>
+ 	| PlayerValueSpell | ConditionSpell)+)>
  
- <!ELEMENT BuffSpell (Buff)>
+ <!ELEMENT BuffSpell EMPTY>
  
- <!ELEMENT Buff EMPTY>
- <!ATTLIST Buff type (AddHealth | AddDamage | AddQuality | Silence | HealthSetTo |
+ <!ATTLIST BuffSpell type (AddHealth | AddDamage | AddQuality | Silence | HealthSetTo |
   DamageSetTo | Hurt | Heal | Kill | ModDmg | ModHealth | ModQuality) #REQUIRED>
- <!ATTLIST Buff v CDATA #REQUIRED> 
+ <!ATTLIST BuffSpell v CDATA #REQUIRED> 
  
  <!ELEMENT PlayerValueSpell EMPTY>
  <!ATTLIST PlayerValueSpell type (AddAvailMana | AddUnavailMana | AddHealth
@@ -74,7 +73,7 @@
  <!ATTLIST PlayerValueSpell acept CDATA #REQUIRED>
  
  <!ELEMENT Spell ((Fulldesc | Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  Buff | ConditionSpell)*)>
+ 	| PlayerValueSpell | ConditionSpell)*)>
  <!ATTLIST Spell Name CDATA #REQUIRED>
  <!ATTLIST Spell Description CDATA #REQUIRED>
  <!ATTLIST Spell Cost CDATA #REQUIRED>
