@@ -12,7 +12,7 @@ import src.FieldSituation;
 import src.Game;
 import units.TriggeringCondition;
 import units.Unit;
-import units.Unit.Quality;
+import units.Quality;
 import cards.SpellCard;
 
 /**

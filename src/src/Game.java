@@ -3,8 +3,9 @@ package src;
 import cards.*;
 import ui.ConsoleVS;
 import ui.SwingVS;
+import units.FieldObject;
 import units.Unit;
-import units.Unit.Quality;
+import units.Quality;
 import units.UnitFactory;
 import units.TriggeringCondition;
 import units.UnitPower;
@@ -449,8 +450,8 @@ public class Game implements GameInterface, ProviderGameInterface {
 	/**
 	 * Call's fieldSitation's method for convenience
 	 */
-	public void passEventAboutUnit(Unit u, TriggeringCondition e) {
-		field.passEventAboutUnit(u, e);
+	public void passEventAboutUnit(FieldObject u, TriggeringCondition e) {
+		field.passEventAboutUnit((Unit)u, e); //TODO 
 	}
 	
 	/** For tests only */

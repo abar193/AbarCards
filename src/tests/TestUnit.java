@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import units.Unit;
 import cards.UnitCard;
-import units.Unit.Quality;
+import units.Quality;
 
 public class TestUnit {
 
@@ -14,7 +14,7 @@ public class TestUnit {
 	public void testInit() {
 		UnitCard uc = new UnitCard(4, 4, 4, "", "");
 		assertNotNull(new Unit(uc, 0, null));
-		assertNotNull(new Unit(uc, units.Unit.Quality.Windfury.getValue(), null));
+		assertNotNull(new Unit(uc, units.Quality.Windfury.getValue(), null));
 	}
 
 	@Test

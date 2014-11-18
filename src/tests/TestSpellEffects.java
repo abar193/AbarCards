@@ -9,7 +9,7 @@ import effects.*;
 import units.Unit;
 import src.FieldSituation;
 import src.Game;
-import units.Unit.Quality;
+import units.Quality;
 
 public class TestSpellEffects {
 

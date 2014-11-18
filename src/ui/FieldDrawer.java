@@ -15,6 +15,7 @@ import cards.CardType;
 import cards.UnitCard;
 import src.FieldSituation;
 import units.Unit;
+import units.Quality;
 
 /**
  * Class for drawing on-field situation. Calls reciveUnitClick method on SwingVS parent - should be set manualy before use of class
@@ -76,7 +77,7 @@ public class FieldDrawer extends Panel {
 	    ArrayList<Integer> statuses = new ArrayList<Integer>(units.size());
 	    int taunts = fs.tauntUnitsForPlayer((playerNumber + 1) % 2);
 	    for(Unit u : units) {
-	    	if((taunts == 0 || u.hasQuality(Unit.Quality.Taunt)) && (!u.hasQuality(Unit.Quality.Stealth))) {
+	    	if((taunts == 0 || u.hasQuality(Quality.Taunt)) && (!u.hasQuality(Quality.Stealth))) {
 	    		statuses.add(-1);
 	    	} else {
 	    		statuses.add(0);

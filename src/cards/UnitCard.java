@@ -1,6 +1,5 @@
 package cards;
 
-import units.Unit.Quality;
 import effects.AuraEffect;
 
 /**

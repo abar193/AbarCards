@@ -4,6 +4,7 @@ import src.FieldSituation;
 import src.GameInterface;
 import ui.VisualSystemInterface;
 import units.Unit;
+import units.Quality;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,8 +40,8 @@ public class SimpleBot implements PlayerInterface {
 				false).size());
 		
 		for(Unit u : field.allUnitFromOneSide(opponent.playerNumber, false)) {
-			if((enemyTaunts == 0 || u.hasQuality(Unit.Quality.Taunt)) & 
-					!u.hasQuality(Unit.Quality.Stealth)) {
+			if((enemyTaunts == 0 || u.hasQuality(Quality.Taunt)) & 
+					!u.hasQuality(Quality.Stealth)) {
 				availableTargets.add(u);
 			}
 		}

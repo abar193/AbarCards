@@ -51,6 +51,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	
 	boolean turnEnded;
 	public boolean targeting = false; 
+	private boolean initialised = false;
 	
 	private final static int MIDDLE_AREA_HEIGHT = 350;
 	private final static int MESSAGES_WIDTH = 150;
@@ -125,6 +126,8 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         add(cardsDrawer, BorderLayout.PAGE_END);
         setVisible(true);
         System.out.println("CaSG: ended");
+        
+        initialised = true;
 	}
 
 	@Override
@@ -201,6 +204,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	@Override 
 	public void repaint() {
 	    try {
+	        if(!initialised) return;
 	        cardsDrawer.repaint();
 	        outputMessages.repaint();
 	        fieldDrawer.repaint(); 

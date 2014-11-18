@@ -370,27 +370,27 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 
     @Override
     public void applySpellToPlayer(int player, AbstractSpell spell) {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
     }
 
     @Override
     public void informAll(String m) {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
     }
 
     @Override
     public void addAuraForPlayer(int player, AuraEffect ae) {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
     }
 
     @Override
     public void informLostCards(ArrayList<BasicCard> cards, int player) {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
     }
 
     @Override
-    public void passEventAboutUnit(Unit u, TriggeringCondition e) {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
+    public void passEventAboutUnit(units.FieldObject u, TriggeringCondition e) {
+        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
     }
 	
 }

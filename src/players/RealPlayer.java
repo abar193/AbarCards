@@ -5,10 +5,6 @@ import src.GameInterface;
 import ui.VisualSystemInterface;
 import ui.InputInterface;
 import units.Unit;
-import units.Unit.Quality;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import cards.*;
 

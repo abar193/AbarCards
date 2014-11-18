@@ -3,6 +3,7 @@ package src;
 import java.util.ArrayList;
 
 import units.TriggeringCondition;
+import units.FieldObject;
 import units.Unit;
 import cards.BasicCard;
 import cards.UnitCard;
@@ -23,5 +24,5 @@ public interface ProviderGameInterface {
     public void informAll(String m);
     public void addAuraForPlayer(int player, AuraEffect ae);
     public void informLostCards(ArrayList<BasicCard> cards, int player);
-    public void passEventAboutUnit(Unit u, TriggeringCondition e);
+    public void passEventAboutUnit(FieldObject u, TriggeringCondition e);
 }
