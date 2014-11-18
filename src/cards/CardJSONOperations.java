@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import decks.DeckPackReader;
+import decks.DOMDeckReader;
 
 public class CardJSONOperations {
 
@@ -59,7 +59,7 @@ public class CardJSONOperations {
 	public static synchronized ArrayList<ArrayList<BasicCard>> singleAllDeck() {
 		if(allDecks == null) {
 			allDecks = new ArrayList<ArrayList<BasicCard>>(links.length);
-			DeckPackReader dpr = new DeckPackReader();
+			DOMDeckReader dpr = new DOMDeckReader();
 			for(String s : links) {
 				allDecks.add(dpr.parseFile(s));
 			}

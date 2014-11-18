@@ -8,7 +8,7 @@ import ui.MainMenu;
 import ui.SwingVS;
 import cards.BasicCard;
 import cards.Deck;
-import decks.DeckPackReader;
+import decks.DOMDeckReader;
 
 public class MenuController {
 
@@ -57,7 +57,7 @@ public class MenuController {
     }
     
     private void singleplayerGame(Deck d, PossibleOpponents opp) {
-        DeckPackReader dpr = new DeckPackReader();
+        DOMDeckReader dpr = new DOMDeckReader();
         d.shuffleCards();
         Game g = new Game();
         SwingVS vs = new SwingVS(g);

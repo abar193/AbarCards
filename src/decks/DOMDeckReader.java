@@ -210,7 +210,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     
     public SpellCard parseSpellCard(Element n) {
         int cost = Integer.parseInt(n.getAttribute("Cost"));
-        SpellCard sc = new SpellCard(n.getAttribute("Name"), n.getAttribute("Cost"), cost, null);
+        SpellCard sc = new SpellCard(n.getAttribute("Name"), n.getAttribute("Description"), cost, null);
         for(int i = 0; i < n.getChildNodes().getLength(); i++) {
             Node s = n.getChildNodes().item(i); 
             if(s.getNodeType() == Node.ELEMENT_NODE) {
@@ -276,7 +276,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
         ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml");
         if(bc == null) return;
         for(BasicCard c : bc) {
-            System.out.format("Card %s ", c);
+            System.out.format("Card %s %s %s", c, c.description, c.fullDescription);
             if(c instanceof SpellCard) {
                 System.out.println(((SpellCard)c).spell);
             } else if(c instanceof UnitCard) {

@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 import ui.CardPickingFrame;
 import cards.*;
-import decks.DeckPackReader;
+import decks.DOMDeckReader;
 
 public class DeckBuilder {
 	
@@ -136,11 +136,12 @@ public class DeckBuilder {
 		        if(s.startsWith(names[i])) {
 		            choose = i;
 		            if(fullDeck != null) {
-    		            ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+    		            ArrayList<BasicCard> classCards = new DOMDeckReader().parseFile(links[i]);
     	                fullDeck.addAll(0, classCards);
 		            } else {
-		                fullDeck = new DeckPackReader().parseFile("NeutralsDeck.xml");
-		                ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+		                DOMDeckReader dpr = new DOMDeckReader();
+		                fullDeck = dpr.parseFile("NeutralsDeck.xml");
+		                ArrayList<BasicCard> classCards = dpr.parseFile(links[i]);
                         fullDeck.addAll(0, classCards);
 		            }
 	                break;
@@ -228,14 +229,15 @@ public class DeckBuilder {
 	 */
 	public DeckBuilder(String raceName, MenuController controller) {
 	    this.controller = controller;
-	    fullDeck = new DeckPackReader().parseFile("NeutralsDeck.xml");
+	    DOMDeckReader dpr = new DOMDeckReader();
+	    fullDeck = dpr.parseFile("NeutralsDeck.xml");
 	    selectedCards = new ArrayList<BasicCard>(Deck.DECK_SIZE);
 	    boolean b = false;
 	    deckSaveName = raceName;
 	    
 	    for(int i = 0; i < names.length; i++) {
 	        if(raceName.equals(names[i])) {
-	            ArrayList<BasicCard> classCards = new DeckPackReader().parseFile(links[i]);
+	            ArrayList<BasicCard> classCards = dpr.parseFile(links[i]);
                 fullDeck.addAll(0, classCards);
                 playerChoose = i;
                 b = true;
