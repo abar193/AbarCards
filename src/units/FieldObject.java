@@ -1,6 +1,7 @@
 package units;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Stack;
 
 import cards.UnitCard;
@@ -10,7 +11,7 @@ import cards.UnitCard;
  * @author Abar
  *
  */
-public class FieldObject {
+public abstract class FieldObject {
 
     public UnitCard myCard;
     public int myPlayer;
@@ -28,16 +29,109 @@ public class FieldObject {
         
     }
 
+    public abstract void startTurn();
+    public abstract void endTurn();
+    public abstract Map<String, String> toMap();
+    
     public void appyQualities(int q) {
         qualities = q;
     }
     
+    /* * * Basics * * */
+    /** Returns current health with all modifications. */
     public int getCurrentHealth() {
         return currentHealth + modHealth;
     }
-    
+
+    /** Returns current damage with all modifications. */
     public int getCurrentDamage() {
         return currentDamage + modDmg;
+    }
+
+    /** Checks if the object should be removed from the field. */
+    public boolean isDead() {
+        return currentHealth <= 0;
+    }
+    
+    /* * * Qualities * * */
+    public void setQuality(Quality q) {
+        qualities |= q.getValue();
+    }
+    
+    public void setQuality(int i) {
+        qualities |= i;
+    }
+
+    public boolean hasQuality(Quality q) {
+        return ((qualities | modQualities) & q.getValue()) != 0;
+    }
+    
+    public void removeQuality(Quality q) {
+        qualities = (0xFFFF ^ q.getValue()) & qualities;
+    }
+
+    /* * * Powers * * */
+    public void addPower(UnitPower p) {
+        powers.add(p);
+    }
+    
+    public Stack<UnitPower> powersMatchingCondition(TriggeringCondition c) {
+        Stack<UnitPower> s = new Stack<UnitPower>();
+        for(UnitPower p : powers) {
+            if(p.matchesCondition(c)) 
+                s.push(p);
+        }
+        return s;
+    }
+
+    /* * * Input * * */
+    public void applyBuff(effects.Buff b) {
+        switch (b.type) {
+            case AddDamage:
+                currentDamage += b.value;
+                break;
+            case AddHealth:
+                currentHealth += b.value;
+                maxHealth += b.value;
+                break;
+            case AddQuality:
+                setQuality(b.value);
+                break;
+            case Silence:
+                currentHealth = Math.min(myCard.getHealth(), currentHealth);
+                maxHealth = myCard.getHealth();
+                currentDamage = myCard.getDamage();
+                powers = new ArrayList<UnitPower>();
+                qualities = 0;
+                break;
+            case DamageSetTo:
+                currentDamage = b.value;
+                break;
+            case HealthSetTo:
+                currentHealth = b.value;
+                break;
+            case Hurt: 
+                damage(b.value);
+                break;
+            case Heal:
+                heal(b.value);
+                break;
+            case Kill:
+                damage(getCurrentHealth());
+                break;
+            case ModDmg:
+                modDmg += b.value;
+                break;
+            case ModHealth:
+                modHealth += b.value;
+                break;
+            case ModQuality:
+                modQualities |= b.value;
+                break;
+            default:
+                System.out.println("Unit: Unknown buff " + b.type.toString());
+                break;
+        }
     }
     
     /**
@@ -46,23 +140,6 @@ public class FieldObject {
      */
     public void heal(int v) {
         currentHealth = Math.min(currentHealth + v, maxHealth);
-    }
-    
-    public void removeQuality(Quality q) {
-        qualities = (0xFFFF ^ q.getValue()) & qualities;
-    }
-    
-    /* Input */
-    public void setQuality(Quality q) {
-        qualities |= q.getValue();
-    }
-    
-    public void setQuality(int i) {
-        qualities |= i;
-    }
-    
-    public boolean hasQuality(Quality q) {
-        return ((qualities | modQualities) & q.getValue()) != 0;
     }
     
     /**
@@ -79,23 +156,6 @@ public class FieldObject {
                     "TODO", d));
             this.respondToEvent(TriggeringCondition.OnDamage, this);
         }
-    }
-    
-    public void addPower(UnitPower p) {
-        powers.add(p);
-    }
-    
-    public boolean isDead() {
-        return currentHealth <= 0;
-    }
-    
-    public Stack<UnitPower> powersMatchingCondition(TriggeringCondition c) {
-        Stack<UnitPower> s = new Stack<UnitPower>();
-        for(UnitPower p : powers) {
-            if(p.matchesCondition(c)) 
-                s.push(p);
-        }
-        return s;
     }
     
     public boolean matchesFilter(UnitFilter f) {

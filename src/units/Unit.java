@@ -39,6 +39,7 @@ public class Unit extends FieldObject {
 	private int attackedAlready;
 	private boolean canAttack;
 	
+	@Override
 	public Map<String, String> toMap() {
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		m.put("MyCard", JSONValue.toJSONString(cards.CardJSONOperations.instance.mapFromCard(myCard)));
@@ -108,15 +109,15 @@ public class Unit extends FieldObject {
 		myPlayer = player;
 	}
 	
-	
-	
 	/* Interaction */ 
+	@Override
 	public void startTurn() {
 		canAttack = true;
 		attackedAlready = 0;
 		this.respondToEvent(TriggeringCondition.OnTurnStart, this);
 	}
 	
+	@Override
 	public void endTurn() {
 		this.respondToEvent(TriggeringCondition.OnTurnEnd, this);
 	}
@@ -156,56 +157,6 @@ public class Unit extends FieldObject {
 		else s = "<" + s + ">";
 		return s;
 
-	}
-	
-	public void applyBuff(effects.Buff b) {
-		switch (b.type) {
-			case AddDamage:
-				currentDamage += b.value;
-				break;
-			case AddHealth:
-				currentHealth += b.value;
-				maxHealth += b.value;
-				break;
-			case AddQuality:
-				setQuality(b.value);
-				break;
-			case Silence:
-				currentHealth = Math.min(myCard.getHealth(), currentHealth);
-				maxHealth = myCard.getHealth();
-				currentDamage = myCard.getDamage();
-				powers = new ArrayList<UnitPower>();
-				qualities = 0;
-				break;
-			case DamageSetTo:
-				currentDamage = b.value;
-				break;
-			case HealthSetTo:
-				currentHealth = b.value;
-				break;
-			case Hurt: 
-				damage(b.value);
-				break;
-			case Heal:
-				heal(b.value);
-				break;
-			case Kill:
-				damage(getCurrentHealth());
-				break;
-			case ModDmg:
-				modDmg += b.value;
-				break;
-			case ModHealth:
-				modHealth += b.value;
-				break;
-			case ModQuality:
-				modQualities |= b.value;
-				break;
-			default:
-				System.out.println("Unit: Unknown buff " + b.type.toString());
-				break;
-			
-		}
 	}
 	
 	/* Events */
