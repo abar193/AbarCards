@@ -32,7 +32,7 @@ import units.TriggeringCondition;
 public class DOMDeckReader implements DeckXMLReaderInterface {
 
     public DOMDeckReader() {
-        
+
     }
     
     private AbstractSpell parseSpell(Element n) {

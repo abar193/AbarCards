@@ -198,6 +198,18 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		
 	}
 
+	@Override 
+	public void repaint() {
+	    try {
+	        cardsDrawer.repaint();
+	        outputMessages.repaint();
+	        fieldDrawer.repaint(); 
+	        enemyHand.repaint();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	@Override
 	public void setInputInterface(InputInterface i) {
 		input = i;	
