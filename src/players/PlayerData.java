@@ -210,13 +210,13 @@ public class PlayerData {
 		playerNumber = pn;
 		/*switch(pn) {
 			case 0:
-				myPlayer.reciveAction("You go first");
+				player.reciveAction("You go first");
 				break;
 			case 1: 
-				myPlayer.reciveAction("You go second");
+				player.reciveAction("You go second");
 				break;
 			default: 
-				myPlayer.reciveAction("You are #" + Integer.toString(pn-1)); // unreachable
+				player.reciveAction("You are #" + Integer.toString(pn-1)); // unreachable
 		}*/
 	}
 	

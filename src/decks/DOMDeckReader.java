@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.EmptyStackException;
 
 import cards.BasicCard;
+import cards.BuildingCard;
 import cards.SpecialUnitCard;
 import cards.SpellCard;
 import cards.UnitCard;
@@ -227,6 +228,50 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
         return sc;
     }
     
+    public BuildingCard parseBuilingCard(Element n) {
+        int cost = Integer.parseInt(n.getAttribute("Cost"));
+        int dmg = 0;
+        if(!n.getAttribute("Damage").equals("")) 
+            dmg = Integer.parseInt(n.getAttribute("Damage"));
+        int health = Integer.parseInt(n.getAttribute("Health"));
+        BuildingCard bc = new BuildingCard(dmg, health, cost, n.getAttribute("Name"), 
+                n.getAttribute("Description"));
+        bc.productionTime = Integer.parseInt(n.getAttribute("Production"));
+        bc.turnProgress = Integer.parseInt(n.getAttribute("Progress"));
+        
+        for(int i = 0; i < n.getChildNodes().getLength(); i++) {
+            Node s = n.getChildNodes().item(i); 
+            if(s.getNodeType() == Node.ELEMENT_NODE) {
+                Element e = (Element)s;
+                if(e.getNodeName().contains("Spell")) {
+                    bc.product = parseSpellCard(e);
+                } else if(e.getNodeName().contains("Unit")) {
+                    bc.product = parseUnit(e);
+                } else if(e.getNodeName().contains("Fulldesc")) {
+                    bc.fullDescription = e.getAttribute("txt");
+                } else if(e.getNodeName().contains("Qualities")) {
+                    bc.qualities = Integer.parseInt(e.getAttribute("v"));
+                } else if(e.getNodeName().contains("Aura")) {
+                    if(bc.auraEffects == null) {
+                        bc.auraEffects = new AuraEffect[1];
+                    } else {
+                        AuraEffect[] ae = new AuraEffect[bc.auraEffects.length + 1];
+                        System.arraycopy(bc.auraEffects, 0, ae, 0, bc.auraEffects.length);
+                    }
+                    int type = Integer.parseInt(e.getAttribute("type"));
+                    int value = Integer.parseInt(e.getAttribute("value"));
+                    AuraEffect aura = new AuraEffect(AuraType.fromInt(type), value, null);
+                    bc.auraEffects[bc.auraEffects.length-1] = aura;
+                } else {
+                    System.err.println("Unknown element " + e.getNodeName() 
+                            + " inside " + n.getNodeName());
+                } 
+            }
+        }
+        
+        return bc;
+    }
+    
     @Override
     public ArrayList<BasicCard> parseFile(String filename) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -238,25 +283,24 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
             
             ArrayList<BasicCard> cards = new ArrayList<BasicCard>(20);
             
-            NodeList nList = doc.getElementsByTagName("Spell");
+            NodeList nList = doc.getElementsByTagName("Deck").item(0).getChildNodes();
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
-                
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                if(nNode.getNodeType() == Node.ELEMENT_NODE) 
+                {
                     Element e = (Element) nNode;
-                    cards.add(parseSpellCard(e));
+                    if(e.getNodeName().equals("Spell")) {
+                        cards.add(parseSpellCard(e));
+                    } else if(e.getNodeName().equals("Unit")) { 
+                        cards.add(parseUnit(e));
+                    } else if(e.getNodeName().equals("Building")) { 
+                        cards.add(parseBuilingCard(e));
+                    } else {
+                        System.out.println(e.getNodeName());
+                    }
                 }   
             }
             
-            nList = doc.getElementsByTagName("Unit");
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node nNode = nList.item(temp);
-                
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e = (Element) nNode;
-                    cards.add(parseUnit(e));
-                }   
-            }
             Collections.sort(cards, new Comparator<BasicCard>() {
                 @Override
                 public int compare(BasicCard arg0, BasicCard arg1) {

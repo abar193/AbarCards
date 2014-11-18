@@ -58,10 +58,10 @@ public class FieldDrawer extends Panel {
 	    	else g2.setColor(Color.RED);
     		g2.drawOval(unitWidth * x, uOffset - unitWidth / 2, unitWidth, unitWidth);
     		Unit u = units.get(x);
-    		DrawingOperations.drawCenteredStringAt(g2, u.myCard.name, unitWidth * x, unitWidth, uOffset - 15);
+    		DrawingOperations.drawCenteredStringAt(g2, u.card.name, unitWidth * x, unitWidth, uOffset - 15);
     		DrawingOperations.drawCenteredStringAt(g2, u.descriptionString(), unitWidth * x, unitWidth, uOffset + 5);
     		DrawingOperations.drawCenteredStringAt(g2, String.format("%2dd/%2dh%2d$", u.getCurrentDamage(),
-    				u.getCurrentHealth(), u.myCard.cost), unitWidth * x, unitWidth, uOffset + 15);
+    				u.getCurrentHealth(), u.card.cost), unitWidth * x, unitWidth, uOffset + 15);
    
     	}
 	}

@@ -99,15 +99,15 @@ public class ConsoleVS implements VisualSystemInterface {
 					(!arr.get(i).hasQuality(Quality.Taunt) 
 					|| arr.get(i).hasQuality(Quality.Stealth)))) 
 			{
-				System.out.print(String.format("|%10s|", arr.get(i).myCard.name));
+				System.out.print(String.format("|%10s|", arr.get(i).card.name));
 			} else {
-				System.out.print(String.format("%d%10s|", i, arr.get(i).myCard.name));
+				System.out.print(String.format("%d%10s|", i, arr.get(i).card.name));
 			}
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
 			String s;
-			String d = arr.get(i).myCard.fullDescription;
+			String d = arr.get(i).card.fullDescription;
 			if(d != null && d != "") {
 				s = String.format("i%10s|", arr.get(i).descriptionString());
 			} else {
@@ -117,10 +117,10 @@ public class ConsoleVS implements VisualSystemInterface {
 		}
 		System.out.println();
 		for(int i = 0; i < arr.size(); i++) {
-			BasicCard bc = arr.get(i).myCard;  
+			BasicCard bc = arr.get(i).card;  
 			if(bc.type == CardType.Unit) {
 				System.out.print(String.format("|%2dd/%2dh%2d$|", arr.get(i).getCurrentDamage(),
-						arr.get(i).getCurrentHealth(), arr.get(i).myCard.cost));
+						arr.get(i).getCurrentHealth(), arr.get(i).card.cost));
 			}
 		}
 		System.out.println();
@@ -163,13 +163,13 @@ public class ConsoleVS implements VisualSystemInterface {
 	
 	@Override
 	public void displayAttack(Unit u1, Unit u2, boolean died1, boolean died2) {
-		System.out.format("%s%s VS %s%s\n", (died1)? "X":"", u1.myCard.name, 
-				(died2)? "X":"", u1.myCard.name);
+		System.out.format("%s%s VS %s%s\n", (died1)? "X":"", u1.card.name, 
+				(died2)? "X":"", u1.card.name);
 	}
 
 	@Override
 	public void displayPower(Unit u, TriggeringCondition e) {
-		System.out.format("%s used his power!\n", u.myCard.name);
+		System.out.format("%s used his power!\n", u.card.name);
 
 	}
 
@@ -180,7 +180,7 @@ public class ConsoleVS implements VisualSystemInterface {
 
 	@Override
 	public void displayUnitDamage(Unit u, int damage) {
-		System.out.format("Unit %s takes %d damage.\n", u.myCard.name, damage);
+		System.out.format("Unit %s takes %d damage.\n", u.card.name, damage);
 	}
 
 	@Override
@@ -293,8 +293,8 @@ public class ConsoleVS implements VisualSystemInterface {
 	private void exploreUnits() {
 		for(int i = 0; i < 2; i++) {
 			for(Unit u: latestSituation.allUnitFromOneSide((opponent.playerNumber + i) % 2, false)) {
-				if(u.myCard.fullDescription != null && u.myCard.fullDescription != "") {
-					System.out.format("%s - %s \n", u.myCard.name, u.myCard.fullDescription);
+				if(u.card.fullDescription != null && u.card.fullDescription != "") {
+					System.out.format("%s - %s \n", u.card.name, u.card.fullDescription);
 				}
 			}
 		}

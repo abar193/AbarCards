@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 <Deck num="2">
+	<Building Name="Armory" Description="+1HtM" Damage="0" Health="5" Cost="1" Production="2" Progress="1">
+		<Fulldesc txt="Creates card which provides +1 health to chosen machine" />
+		<Spell Cost="1" Description="" Name=":+1H">
+			<TargedetSpell targeter="player">
+				<BuffSpell v="1" type="AddHealth"/>
+			</TargedetSpell>
+		</Spell>
+	</Building>
 	<Unit Name="Smart Lamp" Description="" Damage="1" Health="1" Cost="1" Class="Machine">
 		<Fulldesc txt="Aura +1 dmg for all units" />
 		<Power condition="Always">

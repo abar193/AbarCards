@@ -11,10 +11,6 @@ public class UnitAttackEqToDmg extends Unit {
 		silenced = false;
 	}
 
-	public UnitAttackEqToDmg(UnitCard card, int player, int qualities) {
-		super(card, player, qualities);
-	}
-
 	@Override
 	public int getCurrentDamage() {
 		if(!silenced) return getCurrentHealth();

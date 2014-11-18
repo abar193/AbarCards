@@ -98,7 +98,7 @@ public class TestingPlayer implements PlayerInterface {
                     Unit attacker = null;
                     Unit target = null;
                     for(Unit u : field.allUnitFromOneSide(myData.playerNumber, false)) {
-                        if(u.myCard.name.equals(ta.sourceName)) {
+                        if(u.card.name.equals(ta.sourceName)) {
                             if(++hitCount >= ta.sourceNumber) { 
                                 attacker = u;
                                 break;
@@ -107,7 +107,7 @@ public class TestingPlayer implements PlayerInterface {
                     }
                     hitCount = 0;
                     for(Unit u : field.allUnitFromOneSide((myData.playerNumber + 1) % 2, false)) {
-                        if(u.myCard.name.equals(ta.targetName)) {
+                        if(u.card.name.equals(ta.targetName)) {
                             if(++hitCount >= ta.targetNumber) { 
                                 target = u;
                                 break;
@@ -163,7 +163,7 @@ public class TestingPlayer implements PlayerInterface {
         
         int hitCount = 0;
         for(Unit u : field.allUnitFromOneSide((myData.playerNumber + ta.targetSide) % 2, true)) {
-            if(u.myCard.name.equals(ta.sourceName)) {
+            if(u.card.name.equals(ta.sourceName)) {
                 if(++hitCount >= ta.sourceNumber) {
                     actionsCounter++;
                     return u;

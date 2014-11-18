@@ -113,7 +113,7 @@ public class FieldSituation {
 	 */
 	public int unitPosition(Unit u) {
 		int i = 0;
-		for(Unit o : this.allUnitFromOneSide(u.myPlayer, true)) {
+		for(Unit o : this.allUnitFromOneSide(u.player, true)) {
 			if(o.equals(u)) return i;
 			else i++;
 		}
@@ -228,9 +228,9 @@ public class FieldSituation {
 	}
 	
 	public boolean containsOnDifferentSides(Unit u1, Unit u2) {
-		return playerUnits.get(u1.myPlayer).contains(u1) &&
-				playerUnits.get(u2.myPlayer).contains(u2) &&
-				u1.myPlayer != u2.myPlayer;
+		return playerUnits.get(u1.player).contains(u1) &&
+				playerUnits.get(u2.player).contains(u2) &&
+				u1.player != u2.player;
 	}
 	
 	/**

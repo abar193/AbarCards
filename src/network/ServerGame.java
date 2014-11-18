@@ -335,7 +335,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 				Unit u = pli.selectTarget();
 				JSONObject resObj = new JSONObject();
 				resObj.put("return", "selectTarget");
-				resObj.put("side", Integer.toString(u.myPlayer));
+				resObj.put("side", Integer.toString(u.player));
 				resObj.put("position", Integer.toString(latestSituation.unitPosition(u)));
 				sendMessage(JSONValue.toJSONString(resObj));
 			}

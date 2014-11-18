@@ -76,18 +76,18 @@ public class Game implements GameInterface, ProviderGameInterface {
 			playersData[0] = d1;
 			playersData[1] = d2;
 			field.heroes.add(d1.representingUnit);
-			d1.representingUnit.myPlayer = 0;
+			d1.representingUnit.player = 0;
 			field.heroes.add(d2.representingUnit);
-			d2.representingUnit.myPlayer = 1;
+			d2.representingUnit.player = 1;
 		} else {
 			players.add(p2);
 			players.add(p1);
 			playersData[0] = d2;
 			playersData[1] = d1;
 			field.heroes.add(d2.representingUnit);
-			d2.representingUnit.myPlayer = 0;
+			d2.representingUnit.player = 0;
 			field.heroes.add(d1.representingUnit);
-			d1.representingUnit.myPlayer = 1;
+			d1.representingUnit.player = 1;
 		}
 		playersData[0].setPlayerNumber(0);
 		playersData[1].setPlayerNumber(1);
@@ -193,7 +193,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public boolean attackIsValid(Unit attacker, Unit target) {
 		if(field.containsOnDifferentSides(attacker, target) && gameRunning) {
 			if(target.hasQuality(Quality.Taunt)
-					|| (field.tauntUnitsForPlayer(target.myPlayer) == 0)) 
+					|| (field.tauntUnitsForPlayer(target.player) == 0)) 
 				if(attacker.canAttack())
 					return true;
 		}
@@ -214,22 +214,22 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * Makes two units attack each other (attackIsValid(attacker, target) is called first)
 	 */
 	public void commitAttack(Unit attacker, Unit target) {
-		String s = attacker.myCard.name + 
-				" VS " + target.myCard.name;
+		String s = attacker.card.name + 
+				" VS " + target.card.name;
 		informAll(s);
 		
 		attacker.attackUnit(target);
 		if(target.isDead()) {
-			informAll(target.myCard.name + " is dead");
+			informAll(target.card.name + " is dead");
 			target.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
-			field.removeUnitOfPlayer(target, target.myPlayer); 
+			field.removeUnitOfPlayer(target, target.player); 
 		}
 		if(attacker.isDead()) {
-			informAll(attacker.myCard.name + " is dead"); 
+			informAll(attacker.card.name + " is dead"); 
 			attacker.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
-			field.removeUnitOfPlayer(attacker, attacker.myPlayer); 
+			field.removeUnitOfPlayer(attacker, attacker.player); 
 		}
 		recalculateFieldModifiers();
 		updateInfoForAll();
@@ -243,7 +243,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 			int pt = (pa + 1) % 2;
 			Unit attacker = field.unitForPlayer(a, pa);
 			if(t == -1) {
-				String s = attacker.myCard.name + " VS Hero";
+				String s = attacker.card.name + " VS Hero";
 				informAll(s);
 				playersData[pt].takeDamage(attacker.getCurrentDamage()); 
 				players.get(pt).reciveAction(String.format("You take %d damage!", attacker.getCurrentDamage()));
@@ -422,10 +422,10 @@ public class Game implements GameInterface, ProviderGameInterface {
 				u.modHealth = modifiers[2];
 				u.modQualities = 0;
 				if(u.isDead()) {
-					informAll(u.myCard.name + " is dead");
+					informAll(u.card.name + " is dead");
 					j.remove();
 					u.respondToEvent(TriggeringCondition.OnDeath, null);
-					field.passEventAboutRemovedUnitFromSide(u.myPlayer, u, 
+					field.passEventAboutRemovedUnitFromSide(u.player, u, 
 							TriggeringCondition.OnAllyDeath);
 					if(playersData[i].auras.unitDies(u)) { 
 						recalculateFieldModifiers();

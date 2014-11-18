@@ -84,21 +84,21 @@ public class TestingSituation {
             case PlayerIHasNoUnitS: {
                 ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
                 for(Unit u: units) {
-                    if(u.myCard.name.equals(condition.S)) return false;
+                    if(u.card.name.equals(condition.S)) return false;
                 }
                 return true;
             }
             case PlayerIHasUnitS: {
                 ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
                 for(Unit u: units) {
-                    if(u.myCard.name.equals(condition.S)) return true;
+                    if(u.card.name.equals(condition.S)) return true;
                 }
                 return false;
             }
             case UnitSOnSideIHasAtLeastXHealth: {
                 ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
                 for(Unit u: units) {
-                    if(u.myCard.name.equals(condition.S)) {
+                    if(u.card.name.equals(condition.S)) {
                         return (u.getCurrentHealth() >= condition.X); 
                     }
                 }
@@ -107,7 +107,7 @@ public class TestingSituation {
             case UnitSOnSideIHasAtMostXHealth: {
                 ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
                 for(Unit u: units) {
-                    if(u.myCard.name.equals(condition.S)) {
+                    if(u.card.name.equals(condition.S)) {
                         return (u.getCurrentHealth() <= condition.X); 
                     }
                 }
@@ -116,7 +116,7 @@ public class TestingSituation {
             case UnitSOnSideIHasExactXHealth: {
                 ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
                 for(Unit u: units) {
-                    if(u.myCard.name.equals(condition.S)) {
+                    if(u.card.name.equals(condition.S)) {
                         return (u.getCurrentHealth() == condition.X); 
                     }
                 }

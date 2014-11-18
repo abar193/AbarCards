@@ -13,8 +13,8 @@ import cards.UnitCard;
  */
 public abstract class FieldObject {
 
-    public UnitCard myCard;
-    public int myPlayer;
+    public UnitCard card;
+    public int player;
     
     protected int qualities = 0;
     public int modDmg, modHealth, modQualities;
@@ -98,9 +98,9 @@ public abstract class FieldObject {
                 setQuality(b.value);
                 break;
             case Silence:
-                currentHealth = Math.min(myCard.getHealth(), currentHealth);
-                maxHealth = myCard.getHealth();
-                currentDamage = myCard.getDamage();
+                currentHealth = Math.min(card.getHealth(), currentHealth);
+                maxHealth = card.getHealth();
+                currentDamage = card.getDamage();
                 powers = new ArrayList<UnitPower>();
                 qualities = 0;
                 break;
@@ -170,7 +170,7 @@ public abstract class FieldObject {
         
         switch(f.type) {
             case ClassEquals:
-                return f.value.equals(myCard.cardClass);
+                return f.value.equals(card.cardClass);
             case DamageLess:
                 return getCurrentDamage() < value;
             case DamageMore:
@@ -194,9 +194,24 @@ public abstract class FieldObject {
             if(p.filter == null || otherU.matchesFilter(p.filter)) {
                 if(e != TriggeringCondition.Always)
                     currentGame.informAll(String.format("%s invokes his power", 
-                            myCard.name));
-                p.exequte(this, myPlayer, currentGame);
+                            card.name));
+                p.exequte(this, player, currentGame);
             }
         }
     }
+    
+    public String descriptionString() {
+        String s = "";
+        for(Quality q : Quality.values()) {
+            if(hasQuality(q)) {
+                s += q.letter();
+            }
+        }
+        if(s.equals("")) 
+            s = card.description;
+        else s = "<" + s + ">";
+        return s;
+
+    }
+
 }

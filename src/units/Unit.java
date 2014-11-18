@@ -28,7 +28,7 @@ import org.json.simple.JSONValue;
  * Each unit may also poses some "powers". Power is a spell, triggered by event from enum {@link TriggeringCondition}.
  * If a certain event (like "AllySpawn") occurs, respondToEvent() method of each unit should be called. 
  * If that unit has corresponding power (usually unit may have only 1 power, but there's room for more)
- *   he will call power's execute method passing himself and myPlayer as parameters.
+ *   he will call power's execute method passing himself and player as parameters.
  *   
  * @author Abar
  *
@@ -42,11 +42,11 @@ public class Unit extends FieldObject {
 	@Override
 	public Map<String, String> toMap() {
 		Map<String, String> m = new LinkedHashMap<String, String>();
-		m.put("MyCard", JSONValue.toJSONString(cards.CardJSONOperations.instance.mapFromCard(myCard)));
+		m.put("MyCard", JSONValue.toJSONString(cards.CardJSONOperations.instance.mapFromCard(card)));
 		m.put("ModDmg", Integer.toString(modDmg));
 		m.put("ModHealth", Integer.toString(modHealth));
 		m.put("ModQualities", Integer.toString(modQualities));
-		m.put("MyPlayer", Integer.toString(myPlayer));
+		m.put("MyPlayer", Integer.toString(player));
 		m.put("CurrentHealth", Integer.toString(currentHealth));
 		m.put("MaxHealth", Integer.toString(maxHealth));
 		m.put("CurrentDamage", Integer.toString(currentDamage));
@@ -59,16 +59,16 @@ public class Unit extends FieldObject {
 	@SuppressWarnings("unchecked")
 	public Unit(Map m, src.ProviderGameInterface currentGame) {
 		try { 
-			myCard = (UnitCard) cards.CardJSONOperations.instance.cardFromMap((Map)m.get("MyCard"));
+			card = (UnitCard) cards.CardJSONOperations.instance.cardFromMap((Map)m.get("MyCard"));
 		} catch(ClassCastException e) {
-			myCard = (UnitCard) cards.CardJSONOperations.instance.
+			card = (UnitCard) cards.CardJSONOperations.instance.
 					cardFromMap((Map)JSONValue.parse((String)m.get("MyCard")));
 		}
 		
 		modDmg = Integer.parseInt((String) m.get("ModDmg"));
 		modHealth = Integer.parseInt((String) m.get("ModHealth"));
 		modQualities = Integer.parseInt((String) m.get("ModQualities"));
-		myPlayer = Integer.parseInt((String) m.get("MyPlayer"));
+		player = Integer.parseInt((String) m.get("MyPlayer"));
 		currentHealth = Integer.parseInt((String) m.get("CurrentHealth"));
 		maxHealth = Integer.parseInt((String) m.get("MaxHealth"));
 		currentDamage = Integer.parseInt((String) m.get("CurrentDamage"));
@@ -80,33 +80,19 @@ public class Unit extends FieldObject {
 		
 	/* Initialisation */
 	public Unit(UnitCard card, int player, src.ProviderGameInterface currentGame) {
+	    this.card = card;
+        this.player = player;
+        this.currentGame = currentGame;
+        
 		currentHealth = card.getHealth();
 		maxHealth = currentHealth;
 		currentDamage = card.getDamage();
-		myCard = card;
 		powers = new ArrayList<UnitPower>();
-		
+		modHealth = 0;
+        modDmg = 0;
+        
 		canAttack = false;
 		attackedAlready = 0;
-		modHealth = 0;
-		modDmg = 0;
-		myPlayer = player;
-		this.currentGame = currentGame;
-	}
-	
-	public Unit(UnitCard card, int player, int qualities) {
-		currentHealth = card.getHealth();
-		maxHealth = currentHealth;
-		currentDamage = card.getDamage();
-		myCard = card;
-		this.qualities = qualities;
-		powers = new ArrayList<UnitPower>();
-		
-		canAttack = ((this.qualities & Quality.Charge.value) == 1);
-		attackedAlready = 0;
-		modHealth = 0;
-		modDmg = 0;
-		myPlayer = player;
 	}
 	
 	/* Interaction */ 
@@ -122,7 +108,7 @@ public class Unit extends FieldObject {
 		this.respondToEvent(TriggeringCondition.OnTurnEnd, this);
 	}
 	
-	public void attackUnit(Unit u) {
+	public void attackUnit(FieldObject u) {
 		if(canAttack()) {
 			if(u != null) {
 				int td = u.getCurrentDamage();
@@ -145,24 +131,8 @@ public class Unit extends FieldObject {
 				(attackedAlready <= (qualities & 1));
 	}
 	
-	public String descriptionString() {
-		String s = "";
-		for(Quality q : Quality.values()) {
-			if(hasQuality(q)) {
-				s += q.letter();
-			}
-		}
-		if(s.equals("")) 
-			s = myCard.description;
-		else s = "<" + s + ">";
-		return s;
-
-	}
-	
-	/* Events */
-	
 	@Override
 	public String toString() {
-		return String.format("U[%s, D%d/%dH]", myCard.name, getCurrentDamage(), getCurrentHealth());
+		return String.format("U[%s, D%d/%dH]", card.name, getCurrentDamage(), getCurrentHealth());
 	}
 }
