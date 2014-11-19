@@ -24,7 +24,7 @@ public class TestSpellEffects {
 		units = new Unit[5];
 		for(int i = 0; i < 5; i++) {
 			 units[0] = new Unit(new cards.UnitCard(i + 2, i + 2, 0, "", ""), 0, null);
-			 fs.addUnit(units[0], 0);
+			 fs.addObject(units[0], 0);
 		}
 		
 		currentGame.applyFieldSituation(fs);
@@ -36,7 +36,7 @@ public class TestSpellEffects {
 		TargedetSpell ts = new TargedetSpell(new effects.AllUnitsTargeter(1, false), bs);
 		ts.exequte(1, currentGame);
 		for(int i = 0; i < 5; i++) {
-			assertEquals(i + 1, fs.allUnitFromOneSide(0, false).get(i).getCurrentHealth());
+			assertEquals(i + 1, fs.allObjectsFromOneSide(0, false).get(i).getCurrentHealth());
 		}
 	}
 	
@@ -49,8 +49,8 @@ public class TestSpellEffects {
 		TargedetSpell ts = new TargedetSpell(new effects.AllUnitsTargeter(0, false), sc);
 		ts.exequte(0, currentGame);
 		for(int i = 0; i < 5; i++) {
-			assertEquals(i + 3, fs.allUnitFromOneSide(0, false).get(i).getCurrentHealth());
-			assertEquals(true, fs.allUnitFromOneSide(0, false).get(i).hasQuality(Quality.Taunt));
+			assertEquals(i + 3, fs.allObjectsFromOneSide(0, false).get(i).getCurrentHealth());
+			assertEquals(true, fs.allObjectsFromOneSide(0, false).get(i).hasQuality(Quality.Taunt));
 		}
 	}
 

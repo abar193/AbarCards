@@ -12,6 +12,7 @@ import cards.CardJSONOperations;
 import cards.Deck;
 import src.FieldSituation;
 import src.Game;
+import units.FieldObject;
 import units.Unit;
 import units.UnitFactory;
 
@@ -153,14 +154,14 @@ public class TestingGame extends Game {
         factory = new UnitFactory();
         
         /* * * Game cycle * * */
-        field.refreshUnits();
+        field.refreshObjects();
         int i = 0;
         this.gameRunning = true;
         while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0 && gameRunning) {
             /* * * Init * * */
             int player = i % 2;
             int opponent = (i + 1) % 2;
-            for(Unit u : field.allUnitFromOneSide(player, false)) {
+            for(FieldObject u : field.allObjectsFromOneSide(player, false)) {
                 u.startTurn();
             }
             recalculateFieldModifiers();
@@ -182,7 +183,7 @@ public class TestingGame extends Game {
             
             playingCard = false;
             playersData[player].auras.removeOutdatedAuras();
-            for(Unit u : field.allUnitFromOneSide(i%2, false)) {
+            for(FieldObject u : field.allObjectsFromOneSide(i % 2, false)) {
                 u.endTurn();
             }
             

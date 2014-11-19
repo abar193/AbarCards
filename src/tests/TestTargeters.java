@@ -10,6 +10,7 @@ import src.Game;
 import src.FieldSituation;
 import effects.*;
 import cards.UnitCard;
+import units.FieldObject;
 import units.Unit;
 
 public class TestTargeters {
@@ -23,16 +24,16 @@ public class TestTargeters {
 		Unit u2 = new Unit(c2, 0, null);
 		UnitCard c3 = new UnitCard(1, 3, 0, "", "");
 		Unit u3 = new Unit(c3, 1, null);
-		fs.addUnit(u1, 0);
-		fs.addUnit(u2, 0);
-		fs.addUnit(u3, 1);
+		fs.addObject(u1, 0);
+		fs.addObject(u2, 0);
+		fs.addObject(u3, 1);
 		Game currentGame = new Game();
 		currentGame.applyFieldSituation(fs);
 		
 		{
 			RandomTargeter rt = new RandomTargeter(-1, 3, false, false);
 			assertEquals(true, rt.hasTargets(0, null, currentGame));
-			ArrayList<Unit> ual = rt.selectTargets(0, null, currentGame);
+			ArrayList<FieldObject> ual = rt.selectTargets(0, null, currentGame);
 			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(3, u.length);
 			assertNotEquals(u[0], u[1]);
@@ -43,7 +44,7 @@ public class TestTargeters {
 		{
 			RandomTargeter rt = new RandomTargeter(0, 3, false, false);
 			assertEquals(true, rt.hasTargets(0, null, currentGame));
-			ArrayList<Unit> ual = rt.selectTargets(0, null, currentGame);
+			ArrayList<FieldObject> ual = rt.selectTargets(0, null, currentGame);
 			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(2, u.length);
 			assertNotEquals(u[0], u[1]);
@@ -52,7 +53,7 @@ public class TestTargeters {
 		{
 			RandomTargeter rt = new RandomTargeter(0, 3, true, false);
 			assertEquals(true, rt.hasTargets(0, null, currentGame));
-			ArrayList<Unit> ual = rt.selectTargets(0, null, currentGame);
+			ArrayList<FieldObject> ual = rt.selectTargets(0, null, currentGame);
 			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(3, u.length);
 			assertEquals(true, u[0].equals(u[1]) | u[1].equals(u[2]) | u[0].equals(u[2]));
@@ -61,7 +62,7 @@ public class TestTargeters {
 		{
 			RandomTargeter rt = new RandomTargeter(1, 5, true, false);
 			assertEquals(true, rt.hasTargets(0, null, currentGame));
-			ArrayList<Unit> ual = rt.selectTargets(0, null, currentGame);
+			ArrayList<FieldObject> ual = rt.selectTargets(0, null, currentGame);
 			Unit[] u = ual.toArray(new Unit[ual.size()]);
 			assertEquals(5, u.length);
 			for(Unit un : u) {
@@ -79,9 +80,9 @@ public class TestTargeters {
 		Unit u2 = new Unit(c2, 0, null);
 		UnitCard c3 = new UnitCard(1, 3, 0, "", "");
 		Unit u3 = new Unit(c3, 1, null);
-		fs.addUnit(u1, 0);
-		fs.addUnit(u2, 0);
-		fs.addUnit(u3, 1);
+		fs.addObject(u1, 0);
+		fs.addObject(u2, 0);
+		fs.addObject(u3, 1);
 		
 		Game currentGame = new Game();
 		currentGame.applyFieldSituation(fs);
@@ -89,7 +90,7 @@ public class TestTargeters {
 		{
 			AllUnitsTargeter at = new AllUnitsTargeter(0, false);
 			assertEquals(true, at.hasTargets(0, null, currentGame));
-			ArrayList<Unit> u = at.selectTargets(0, null, currentGame);
+			ArrayList<FieldObject> u = at.selectTargets(0, null, currentGame);
 			assertEquals(2, u.size());
 			assertNotEquals(u.get(0), u.get(1));
 		}
@@ -97,14 +98,14 @@ public class TestTargeters {
 		{
 			AllUnitsTargeter at = new AllUnitsTargeter(1, false);
 			assertEquals(true, at.hasTargets(0, null, currentGame));
-			ArrayList<Unit> u = at.selectTargets(0, null, currentGame);
+			ArrayList<FieldObject> u = at.selectTargets(0, null, currentGame);
 			assertEquals(1, u.size());
 		}
 		
 		{
 			AllUnitsTargeter at = new AllUnitsTargeter(-1, false);
 			assertEquals(true, at.hasTargets(0, null, currentGame));
-			ArrayList<Unit> u = at.selectTargets(0, null, currentGame);
+			ArrayList<FieldObject> u = at.selectTargets(0, null, currentGame);
 			assertEquals(3, u.size());
 			assertNotEquals(u.get(0), u.get(1));
 			assertNotEquals(u.get(2), u.get(1));
@@ -132,9 +133,9 @@ public class TestTargeters {
 		UnitCard c3 = new UnitCard(1, 3, 0, "", "");
 		Unit u3 = new Unit(c3, 1, null);
 		
-		fs.addUnit(u1, 0);
-		fs.addUnit(u2, 0);
-		fs.addUnit(u3, 1);
+		fs.addObject(u1, 0);
+		fs.addObject(u2, 0);
+		fs.addObject(u3, 1);
 		/* u1 u2 
 		 * ----
 		 * u3
@@ -162,9 +163,9 @@ public class TestTargeters {
 		UnitCard c6 = new UnitCard(1, 6, 0, "", "");
 		Unit u6 = new Unit(c6, 1, null);
 		
-		fs.addUnit(u4, 1);
-		fs.addUnit(u5, 1);
-		fs.addUnit(u6, 1);
+		fs.addObject(u4, 1);
+		fs.addObject(u5, 1);
+		fs.addObject(u6, 1);
 		// u3 u4 u5 u6
 		
 		{

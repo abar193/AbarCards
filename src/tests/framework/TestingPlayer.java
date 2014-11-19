@@ -10,6 +10,7 @@ import players.PlayerOpenData;
 import src.FieldSituation;
 import src.GameInterface;
 import ui.VisualSystemInterface;
+import units.FieldObject;
 import units.Unit;
 
 /**
@@ -97,26 +98,26 @@ public class TestingPlayer implements PlayerInterface {
                     int hitCount = 0;
                     Unit attacker = null;
                     Unit target = null;
-                    for(Unit u : field.allUnitFromOneSide(myData.playerNumber, false)) {
+                    for(FieldObject u : field.allObjectsFromOneSide(myData.playerNumber, false)) {
                         if(u.card.name.equals(ta.sourceName)) {
                             if(++hitCount >= ta.sourceNumber) { 
-                                attacker = u;
+                                attacker = (Unit)u;
                                 break;
                             }
                         }
                     }
                     hitCount = 0;
-                    for(Unit u : field.allUnitFromOneSide((myData.playerNumber + 1) % 2, false)) {
+                    for(FieldObject u : field.allObjectsFromOneSide((myData.playerNumber + 1) % 2, false)) {
                         if(u.card.name.equals(ta.targetName)) {
                             if(++hitCount >= ta.targetNumber) { 
-                                target = u;
+                                target = (Unit)u;
                                 break;
                             }
                         }
                     }
                     assertNotNull(attacker);
                     if(target == null) {
-                        game.commitAttack(field.unitPosition(attacker), -1, myData.playerNumber);
+                        game.commitAttack(field.objectPosition(attacker), -1, myData.playerNumber);
                     } else {
                         game.commitAttack(attacker, target);
                     }
@@ -162,11 +163,11 @@ public class TestingPlayer implements PlayerInterface {
         assertEquals(TestingActionType.TargetUnit, ta.type);
         
         int hitCount = 0;
-        for(Unit u : field.allUnitFromOneSide((myData.playerNumber + ta.targetSide) % 2, true)) {
+        for(FieldObject u : field.allObjectsFromOneSide((myData.playerNumber + ta.targetSide) % 2, false)) {
             if(u.card.name.equals(ta.sourceName)) {
                 if(++hitCount >= ta.sourceNumber) {
                     actionsCounter++;
-                    return u;
+                    return (Unit)u;
                 }
             }
         }

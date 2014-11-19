@@ -14,6 +14,7 @@ import cards.BasicCard;
 import cards.CardType;
 import cards.UnitCard;
 import src.FieldSituation;
+import units.FieldObject;
 import units.Unit;
 import units.Quality;
 
@@ -48,7 +49,9 @@ public class FieldDrawer extends Panel {
 	}
 	
 	
-	private void drawUnitsLine(Graphics2D g2, ArrayList<Unit> units, ArrayList<Integer> marked, int centerHeight) {
+	private void drawUnitsLine(Graphics2D g2, ArrayList<FieldObject> units, 
+	        ArrayList<Integer> marked, int centerHeight) 
+	{
 		int unitWidth = this.getWidth() / fs.MAXFIELDUNITS;
 	    int uOffset = centerHeight - unitWidth / 2;
 	    for(int x = 0; x < units.size(); x++) {
@@ -57,7 +60,7 @@ public class FieldDrawer extends Panel {
 	    	else if(marked.get(x) == 2) g2.setColor(Color.BLUE); 
 	    	else g2.setColor(Color.RED);
     		g2.drawOval(unitWidth * x, uOffset - unitWidth / 2, unitWidth, unitWidth);
-    		Unit u = units.get(x);
+    		FieldObject u = units.get(x);
     		DrawingOperations.drawCenteredStringAt(g2, u.card.name, unitWidth * x, unitWidth, uOffset - 15);
     		DrawingOperations.drawCenteredStringAt(g2, u.descriptionString(), unitWidth * x, unitWidth, uOffset + 5);
     		DrawingOperations.drawCenteredStringAt(g2, String.format("%2dd/%2dh%2d$", u.getCurrentDamage(),
@@ -73,27 +76,29 @@ public class FieldDrawer extends Panel {
 	    int unitHeight = this.getHeight() / 2;
 	    g2.setFont(new Font("SansSerif", Font.BOLD, 12));
 	    
-	    ArrayList<Unit> units = fs.allUnitFromOneSide((playerNumber + 1) % 2, true);
+	    ArrayList<FieldObject> units = fs.allObjectsFromOneSide((playerNumber + 1) % 2, true);
 	    ArrayList<Integer> statuses = new ArrayList<Integer>(units.size());
-	    int taunts = fs.tauntUnitsForPlayer((playerNumber + 1) % 2);
-	    for(Unit u : units) {
+	    int taunts = fs.tauntObjectsForPlayerCount((playerNumber + 1) % 2);
+	    for(FieldObject u : units) {
 	    	if((taunts == 0 || u.hasQuality(Quality.Taunt)) && (!u.hasQuality(Quality.Stealth))) {
 	    		statuses.add(-1);
 	    	} else {
 	    		statuses.add(0);
 	    	}
 	    }
-	    drawUnitsLine(g2, fs.allUnitFromOneSide((playerNumber + 1) % 2, true), statuses, unitHeight * 2 / 3);
+	    drawUnitsLine(g2, fs.allObjectsFromOneSide((playerNumber + 1) % 2, true), statuses, unitHeight * 2 / 3);
 	    
-	    units = fs.allUnitFromOneSide(playerNumber, true);
+	    units = fs.allObjectsFromOneSide(playerNumber, true);
 	    statuses = new ArrayList<Integer>(units.size());
 	    
 	    for(int i = 0; i < units.size(); i++) {
 	        if(parent.turnEnded) statuses.add(0);
 	        else if(parent.targeting && parent.selectedUnit == i) statuses.add(2);
-	    	else statuses.add(units.get(i).canAttack() ? 1 : 0);
+	    	else if(units.get(i) instanceof Unit) {
+	    	    statuses.add(((Unit)units.get(i)).canAttack() ? 1 : 0);
+	    	} else statuses.add(0);
 	    }
-	    drawUnitsLine(g2, fs.allUnitFromOneSide(playerNumber, true), statuses, unitHeight * 5 / 3);
+	    drawUnitsLine(g2, fs.allObjectsFromOneSide(playerNumber, true), statuses, unitHeight * 5 / 3);
 	    
 	    
 	    g2.drawLine(0, unitHeight, this.getWidth(), unitHeight);

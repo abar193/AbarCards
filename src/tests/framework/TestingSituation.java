@@ -3,6 +3,7 @@ package tests.framework;
 import java.util.ArrayList;
 
 import tests.framework.TestingCondition.ConditionType;
+import units.FieldObject;
 import units.Unit;
 
 /** Describes end-turn game validation criteria. 
@@ -67,37 +68,37 @@ public class TestingSituation {
                 return g.pd[condition.I].getHand().size() >= condition.X;
                 
             case PlayerIHasAtLeastXUnits:
-                return g.provideFieldSituation().allUnitFromOneSide(condition.I, false).size()
+                return g.provideFieldSituation().allObjectsFromOneSide(condition.I, false).size()
                         >= condition.X;
                         
             case PlayerIHasAtMostXCards:
                 return g.pd[condition.I].getHand().size() <= condition.X;
                 
             case PlayerIHasAtMostXUnits:
-                return g.provideFieldSituation().allUnitFromOneSide(condition.I, false).size()
+                return g.provideFieldSituation().allObjectsFromOneSide(condition.I, false).size()
                         <= condition.X;
                 
             case PlayerIHasExactXUnits:
-                return g.provideFieldSituation().allUnitFromOneSide(condition.I, false).size()
+                return g.provideFieldSituation().allObjectsFromOneSide(condition.I, false).size()
                         == condition.X;
                 
             case PlayerIHasNoUnitS: {
-                ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
-                for(Unit u: units) {
+                ArrayList<FieldObject> units = g.provideFieldSituation().allObjectsFromOneSide(condition.I, true);
+                for(FieldObject u: units) {
                     if(u.card.name.equals(condition.S)) return false;
                 }
                 return true;
             }
             case PlayerIHasUnitS: {
-                ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
-                for(Unit u: units) {
+                ArrayList<FieldObject> units = g.provideFieldSituation().allObjectsFromOneSide(condition.I, true);
+                for(FieldObject u: units) {
                     if(u.card.name.equals(condition.S)) return true;
                 }
                 return false;
             }
             case UnitSOnSideIHasAtLeastXHealth: {
-                ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
-                for(Unit u: units) {
+                ArrayList<FieldObject> units = g.provideFieldSituation().allObjectsFromOneSide(condition.I, true);
+                for(FieldObject u: units) {
                     if(u.card.name.equals(condition.S)) {
                         return (u.getCurrentHealth() >= condition.X); 
                     }
@@ -105,8 +106,8 @@ public class TestingSituation {
                 return false;
             }
             case UnitSOnSideIHasAtMostXHealth: {
-                ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
-                for(Unit u: units) {
+                ArrayList<FieldObject> units = g.provideFieldSituation().allObjectsFromOneSide(condition.I, true);
+                for(FieldObject u: units) {
                     if(u.card.name.equals(condition.S)) {
                         return (u.getCurrentHealth() <= condition.X); 
                     }
@@ -114,8 +115,8 @@ public class TestingSituation {
                 return false;
             }
             case UnitSOnSideIHasExactXHealth: {
-                ArrayList<Unit> units = g.provideFieldSituation().allUnitFromOneSide(condition.I, true);
-                for(Unit u: units) {
+                ArrayList<FieldObject> units = g.provideFieldSituation().allObjectsFromOneSide(condition.I, true);
+                for(FieldObject u: units) {
                     if(u.card.name.equals(condition.S)) {
                         return (u.getCurrentHealth() == condition.X); 
                     }

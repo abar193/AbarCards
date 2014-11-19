@@ -1,7 +1,6 @@
 package src;
 
 import cards.*;
-import ui.ConsoleVS;
 import ui.SwingVS;
 import units.FieldObject;
 import units.Unit;
@@ -75,18 +74,18 @@ public class Game implements GameInterface, ProviderGameInterface {
 			players.add(p2);
 			playersData[0] = d1;
 			playersData[1] = d2;
-			field.heroes.add(d1.representingUnit);
+			field.addHeroForSide(0, d1.representingUnit);
 			d1.representingUnit.player = 0;
-			field.heroes.add(d2.representingUnit);
+			field.addHeroForSide(1, d2.representingUnit);
 			d2.representingUnit.player = 1;
 		} else {
 			players.add(p2);
 			players.add(p1);
 			playersData[0] = d2;
 			playersData[1] = d1;
-			field.heroes.add(d2.representingUnit);
+			field.addHeroForSide(0, d2.representingUnit);
 			d2.representingUnit.player = 0;
-			field.heroes.add(d1.representingUnit);
+			field.addHeroForSide(1, d1.representingUnit);
 			d1.representingUnit.player = 1;
 		}
 		playersData[0].setPlayerNumber(0);
@@ -113,14 +112,14 @@ public class Game implements GameInterface, ProviderGameInterface {
 		factory = new UnitFactory();
 		
 		/* * * Game cycle * * */
-		field.refreshUnits();
+		field.refreshObjects();
 		int i = 0;
 		this.gameRunning = true;
 		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0 && gameRunning) {
 			/* * * Init * * */
 		    int player = i % 2;
 		    int opponent = (i + 1) % 2;
-			for(Unit u : field.allUnitFromOneSide(player, false)) {
+			for(FieldObject u : field.allObjectsFromOneSide(player, false)) {
 				u.startTurn();
 			}
 			recalculateFieldModifiers();
@@ -155,7 +154,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 			
 			playingCard = false;
 			playersData[i%2].auras.removeOutdatedAuras();
-			for(Unit u : field.allUnitFromOneSide(i%2, false)) {
+			for(FieldObject u : field.allObjectsFromOneSide(i%2, false)) {
 				u.endTurn();
 			}
 			i++;
@@ -174,28 +173,20 @@ public class Game implements GameInterface, ProviderGameInterface {
 	    if(playerA != playerTurn || !gameRunning) return false;
 	    
 		int playerT = (playerA + 1) % 2;
-		if(target == -1) {
-			if(field.unitExist(attacker, playerA) && (field.tauntUnitsForPlayer(playerT) == 0)) {
-				return true;
-			} 
-			return false;
-		}
-		if(field.unitExist(attacker, playerA) & field.unitExist(target, playerT)) {
-			Unit u = field.unitForPlayer(target, playerT);
-			if((u.hasQuality(Quality.Taunt) || (field.tauntUnitsForPlayer(playerT) == 0)) && 
-					!u.hasQuality(Quality.Stealth)) 
-				if(field.unitForPlayer(attacker, playerA).canAttack())
-					return true;
-		}
+		if(attacker < 0) return false;
+		
+	    if(field.objectExist(attacker, playerA) && field.objectExist(target, playerT)) {
+	        FieldObject tarObj = field.objectForPlayer(target, playerT); 
+	        if(tarObj.canBeTargedet()) {
+	            return ((Unit)field.objectForPlayer(attacker, playerA)).canAttack();
+	        }
+	    }
 		return false;
 	}
 	
-	public boolean attackIsValid(Unit attacker, Unit target) {
+	public boolean attackIsValid(Unit attacker, FieldObject target) {
 		if(field.containsOnDifferentSides(attacker, target) && gameRunning) {
-			if(target.hasQuality(Quality.Taunt)
-					|| (field.tauntUnitsForPlayer(target.player) == 0)) 
-				if(attacker.canAttack())
-					return true;
+		    return target.canBeTargedet() && attacker.canAttack();
 		}
 		return false;
 	}
@@ -213,7 +204,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	/**
 	 * Makes two units attack each other (attackIsValid(attacker, target) is called first)
 	 */
-	public void commitAttack(Unit attacker, Unit target) {
+	public void commitAttack(Unit attacker, FieldObject target) {
 		String s = attacker.card.name + 
 				" VS " + target.card.name;
 		informAll(s);
@@ -223,13 +214,13 @@ public class Game implements GameInterface, ProviderGameInterface {
 			informAll(target.card.name + " is dead");
 			target.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
-			field.removeUnitOfPlayer(target, target.player); 
+			field.removeObjectOfPlayer(target, target.player); 
 		}
 		if(attacker.isDead()) {
 			informAll(attacker.card.name + " is dead"); 
 			attacker.respondToEvent(TriggeringCondition.OnDeath, null);
 			passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
-			field.removeUnitOfPlayer(attacker, attacker.player); 
+			field.removeObjectOfPlayer(attacker, attacker.player); 
 		}
 		recalculateFieldModifiers();
 		updateInfoForAll();
@@ -241,18 +232,8 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public void commitAttack(int a, int t, int pa) {
 		if(attackIsValid(a, t, pa)) {
 			int pt = (pa + 1) % 2;
-			Unit attacker = field.unitForPlayer(a, pa);
-			if(t == -1) {
-				String s = attacker.card.name + " VS Hero";
-				informAll(s);
-				playersData[pt].takeDamage(attacker.getCurrentDamage()); 
-				players.get(pt).reciveAction(String.format("You take %d damage!", attacker.getCurrentDamage()));
-				attacker.attackUnit(null);
-				recalculateFieldModifiers();
-				updateInfoForAll();
-				return;
-			}
-			Unit target = field.unitForPlayer(t, pt);
+			Unit attacker = (Unit)field.objectForPlayer(a, pa);
+			FieldObject target = field.objectForPlayer(t, pt);
 			commitAttack(attacker, target);
 		}
 	}
@@ -301,9 +282,9 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public Unit createUnit(UnitCard uc, int player, boolean fromSpell) {
 		Unit u = factory.createUnit(uc, player, this);
 		try {
-			if(field.canUnitBeAdded(u, player)) {
+			if(field.canObjectBeAdded(u, player)) {
 				u.respondToEvent(TriggeringCondition.BeforeCreate, null);
-				field.addUnit(u, player);
+				field.addObject(u, player);
 				if(fromSpell) 
 				    triggerCreatingEvents(u);
 			}
@@ -415,9 +396,9 @@ public class Game implements GameInterface, ProviderGameInterface {
 		    if(playersData[i].getHealth() <= 0) endGame(i);
 		    
 			int[] modifiers = playersData[i].auras.getModifiers();
-			Iterator<Unit> j = field.provideIteratorForSide(i);
+			Iterator<FieldObject> j = field.provideIteratorForSide(i, true);
 			while(j.hasNext()) { // Iteration 1: calculate aura-modifiers, remove dead units
-				Unit u = j.next();
+			    FieldObject u = j.next();
 				u.modDmg = modifiers[1];
 				u.modHealth = modifiers[2];
 				u.modQualities = 0;
@@ -425,18 +406,18 @@ public class Game implements GameInterface, ProviderGameInterface {
 					informAll(u.card.name + " is dead");
 					j.remove();
 					u.respondToEvent(TriggeringCondition.OnDeath, null);
-					field.passEventAboutRemovedUnitFromSide(u.player, u, 
+					field.passEventAboutRemovedObjectFromSide(u, 
 							TriggeringCondition.OnAllyDeath);
 					if(playersData[i].auras.unitDies(u)) { 
 						recalculateFieldModifiers();
 						return;
 					}
-					j = field.provideIteratorForSide(i); // to avoid deathrate-summonUnits-exception
+					j = field.provideIteratorForSide(i, true); // to avoid deathrate-summonUnits-exception
 				}
 			}
-			j = field.provideIteratorForSide(i);
+			j = field.provideIteratorForSide(i, true);
 			while(j.hasNext()) { // Iteration 2: trigger UnitPowers with condition "always"
-				Unit u = j.next();
+			    FieldObject u = j.next();
 				u.respondToEvent(TriggeringCondition.Always, null);
 			}
 		}
@@ -451,7 +432,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * Call's fieldSitation's method for convenience
 	 */
 	public void passEventAboutUnit(FieldObject u, TriggeringCondition e) {
-		field.passEventAboutUnit((Unit)u, e); //TODO 
+		field.passEventAboutObject(u, e);  
 	}
 	
 	/** For tests only */

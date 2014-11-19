@@ -1,6 +1,7 @@
 package src;
 
 import units.Unit;
+import units.FieldObject;
 import cards.BasicCard;
 
 public interface GameInterface {
@@ -22,7 +23,7 @@ public interface GameInterface {
 	 * @param attacker
 	 * @param target
 	 */
-	public void commitAttack(Unit attacker, Unit target);
+	public void commitAttack(Unit attacker, FieldObject target);
 	
 	/**
 	 * If it is players turn, ends it. 

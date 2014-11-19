@@ -2,6 +2,7 @@ package effects;
 
 import java.util.ArrayList;
 
+import units.FieldObject;
 import units.Unit;
 import units.UnitFilter;
 import src.Game;
@@ -15,20 +16,22 @@ public class NeighborTargeter implements Targeter {
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int player, Unit u, 
+	public ArrayList<FieldObject> selectTargets(int player, FieldObject u, 
 	        src.ProviderGameInterface currentGame) 
 	{
-		Unit n = currentGame.provideFieldSituation().neighborUnit(offset, u);
+	    if(!(u instanceof Unit)) return new ArrayList<FieldObject>(1);
+	    FieldObject n = currentGame.provideFieldSituation().neighborUnit(offset, (Unit)u);
 		if(n == null) 
 			return null;
-		ArrayList<Unit> arr = new ArrayList<>(1);
+		ArrayList<FieldObject> arr = new ArrayList<>(1);
 		arr.add(n);
 		return arr;
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
-		return currentGame.provideFieldSituation().neighborUnit(offset, u) != null;
+	public boolean hasTargets(int player, FieldObject u, src.ProviderGameInterface currentGame) {
+	    if(!(u instanceof Unit)) return false;
+		return currentGame.provideFieldSituation().neighborUnit(offset, (Unit)u) != null;
 	}
 	
 	@Override

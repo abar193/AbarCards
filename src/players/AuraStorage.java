@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import effects.AuraEffect;
 import effects.AuraType;
+import units.FieldObject;
 import units.Unit;
 
 /**
@@ -48,7 +49,7 @@ public class AuraStorage {
 	 * @param u
 	 * @return true, if values has been changed
 	 */
-	public boolean unitDies(Unit u) {
+	public boolean unitDies(FieldObject u) {
 		Iterator<AuraEffect> i = auras.iterator();
 		boolean b = false;
 		while(i.hasNext()) {

@@ -3,41 +3,41 @@ package effects;
 import java.util.ArrayList;
 
 import src.FieldSituation;
-import units.Unit;
+import units.FieldObject;
 import units.UnitFilter;
 
 public class PlayerTargeter implements Targeter {
 
-	boolean aceptHeroes;
+	boolean aceptBuildings;
 	UnitFilter filter;
 	
 	public PlayerTargeter(boolean aceptHeroes) {
-		this.aceptHeroes = aceptHeroes;
+		this.aceptBuildings = aceptHeroes;
 	}
 	
 	@Override
-	public ArrayList<Unit> selectTargets(int p, Unit t, src.ProviderGameInterface currentGame) {
-		Unit u = currentGame.askPlayerForTarget(p);
+	public ArrayList<FieldObject> selectTargets(int p, FieldObject t, src.ProviderGameInterface currentGame) {
+	    FieldObject u = currentGame.askPlayerForTarget(p);
 		if(u == null) return null;
 		if(!u.matchesFilter(filter)) {
 			while(!u.matchesFilter(filter)) {
 				u = currentGame.askPlayerForTarget(p);
 			}
 		}
-		ArrayList<Unit> arr = new ArrayList<Unit>(1);
-		if(u.matchesFilter(new UnitFilter(units.UnitFilterType.IsHero, "0")) && !aceptHeroes) 
+		ArrayList<FieldObject> arr = new ArrayList<FieldObject>(1);
+		if(u.matchesFilter(new UnitFilter(units.UnitFilterType.IsHero, "0")) && !aceptBuildings) 
             return null;
 		arr.add(u);
 		return arr;
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+	public boolean hasTargets(int player, FieldObject u, src.ProviderGameInterface currentGame) {
 		FieldSituation fs = currentGame.provideFieldSituation();
 		if(filter != null) {
-			return fs.countUnitsMatchingFilter(-1, filter, aceptHeroes) > 0;
+			return fs.countObjectsMatchingFilter(-1, filter, aceptBuildings) > 0;
 		}
-		return fs.allUnits(aceptHeroes).size() > 0;
+		return fs.allObjects(aceptBuildings).size() > 0;
 	}
 
 	@Override

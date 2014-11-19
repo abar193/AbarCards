@@ -4,6 +4,7 @@ import src.FieldSituation;
 import src.GameInterface;
 import ui.VisualSystemInterface;
 import units.Unit;
+import units.FieldObject;
 import units.Quality;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class SimpleBot implements PlayerInterface {
 	private int totalAvailableHealth;
 	private int totalAvailableUnits;
 	private int enemyTaunts;
-	private ArrayList<Unit> availableTargets;
+	private ArrayList<FieldObject> availableTargets;
 	
 	public SimpleBot() {
 		
@@ -35,21 +36,16 @@ public class SimpleBot implements PlayerInterface {
 		latestSituation = field;
 		opponent = enemyData;
 		
-		enemyTaunts = field.tauntUnitsForPlayer(enemyData.playerNumber);
-		availableTargets = new ArrayList<Unit>(field.allUnitFromOneSide(enemyData.playerNumber, 
-				false).size());
-		
-		for(Unit u : field.allUnitFromOneSide(opponent.playerNumber, false)) {
-			if((enemyTaunts == 0 || u.hasQuality(Quality.Taunt)) & 
-					!u.hasQuality(Quality.Stealth)) {
-				availableTargets.add(u);
-			}
-		}
+		enemyTaunts = field.tauntObjectsForPlayerCount(enemyData.playerNumber);
+		if(enemyTaunts != 0)
+		    availableTargets = field.tauntObjectsForPlayer(opponent.playerNumber);
+		else 
+		    availableTargets = field.allObjectsFromOneSide(opponent.playerNumber, true);
 		
 		totalAvailableDamage = 0;
 		totalAvailableHealth = totalAvailableUnits = 0;
-		for(Unit u : field.allUnitFromOneSide(me.playerNumber, false)) {
-			if(u.canAttack()) {
+		for(FieldObject u : field.allObjectsFromOneSide(me.playerNumber, false)) {
+			if(((Unit)u).canAttack()) {
 				totalAvailableDamage += u.getCurrentDamage();
 				totalAvailableUnits++;
 			}
@@ -71,8 +67,8 @@ public class SimpleBot implements PlayerInterface {
 
 	protected void attackWithAllUnits() {
 		
-		ArrayList<Unit> myDeck = latestSituation.allUnitFromOneSide(me.playerNumber, false);
-		ArrayList<Unit> hisDeck = latestSituation.allUnitFromOneSide(opponent.playerNumber, false);
+		ArrayList<FieldObject> myDeck = latestSituation.allObjectsFromOneSide(me.playerNumber, false);
+		ArrayList<FieldObject> hisDeck = latestSituation.allObjectsFromOneSide(opponent.playerNumber, false);
 		Random r = new Random();
 		
 		while(totalAvailableUnits > 0) {
@@ -80,20 +76,20 @@ public class SimpleBot implements PlayerInterface {
 		    
 			if(totalAvailableDamage >= opponent.health && enemyTaunts == 0) { // Finish him
 				for(int i = 0; i < myDeck.size(); i++) {
-					if(myDeck.get(i).canAttack()) {
+					if(((Unit)myDeck.get(i)).canAttack()) {
 						parent.commitAttack(i, -1, me.playerNumber);
-						myDeck = latestSituation.allUnitFromOneSide(me.playerNumber, false);
+						myDeck = latestSituation.allObjectsFromOneSide(me.playerNumber, false);
 					}
 				}
 			} else {
 				for(int i = 0; i < myDeck.size();) {
 				    if(Thread.interrupted()) return;
-					if(myDeck.get(i).canAttack()) {
+					if(((Unit)myDeck.get(i)).canAttack()) {
 						if(availableTargets.size() > 0) {
-							parent.commitAttack(myDeck.get(i), 
+							parent.commitAttack(((Unit)myDeck.get(i)), 
 									availableTargets.get(r.nextInt(availableTargets.size())));
-							myDeck = latestSituation.allUnitFromOneSide(me.playerNumber, false);
-							hisDeck = latestSituation.allUnitFromOneSide(opponent.playerNumber, 
+							myDeck = latestSituation.allObjectsFromOneSide(me.playerNumber, false);
+							hisDeck = latestSituation.allObjectsFromOneSide(opponent.playerNumber, 
 									false);
 							i = 0;
 						} else {

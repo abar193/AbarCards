@@ -2,7 +2,7 @@ package effects;
 
 import java.util.ArrayList;
 
-import units.Unit;
+import units.FieldObject;
 import units.UnitFilter;
 
 public class SelfTargeter implements Targeter {
@@ -11,16 +11,16 @@ public class SelfTargeter implements Targeter {
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int player, Unit u, src.ProviderGameInterface currentGame) 
+	public ArrayList<FieldObject> selectTargets(int player, FieldObject u, src.ProviderGameInterface currentGame) 
 	{
 		if(u == null) return null;
-		ArrayList<Unit> arr = new ArrayList<Unit>(1);
+		ArrayList<FieldObject> arr = new ArrayList<FieldObject>(1);
 		arr.add(u);
 		return arr;
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+	public boolean hasTargets(int player, FieldObject u, src.ProviderGameInterface currentGame) {
 		return u != null;
 	}
 

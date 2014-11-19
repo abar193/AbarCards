@@ -2,7 +2,7 @@ package effects;
 
 import java.util.ArrayList;
 
-import units.Unit;
+import units.FieldObject;
 import units.UnitFilter;
 
 /**
@@ -17,13 +17,13 @@ public interface Targeter {
 	/**
 	 * Selects target units and returns them as array. 
 	 * @param player player's number, who activated spell
-	 * @param u source unit 
+	 * @param u source object
 	 * @return array of targets
 	 */
-	public ArrayList<Unit> selectTargets(int player, Unit u, src.ProviderGameInterface currentGame);
+	public ArrayList<FieldObject> selectTargets(int player, FieldObject u, src.ProviderGameInterface currentGame);
 	/**
 	 * Checks if there are enough units, matching required criteria
 	 * @return true, if spell associated with targeter can be casted.
 	 */
-	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame);
+	public boolean hasTargets(int player, FieldObject u, src.ProviderGameInterface currentGame);
 }

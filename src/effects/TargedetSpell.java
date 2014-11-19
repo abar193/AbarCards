@@ -2,7 +2,7 @@ package effects;
 
 import java.util.ArrayList;
 
-import units.Unit;
+import units.FieldObject;
 import units.UnitFilter;
 
 public class TargedetSpell extends AbstractSpell {
@@ -24,9 +24,9 @@ public class TargedetSpell extends AbstractSpell {
 	@Override
 	public void exequte(int playerNum, src.ProviderGameInterface currentGame) {
 		this.playerNum = playerNum;
-		ArrayList<Unit> units = targeter.selectTargets(playerNum, target, currentGame);
+		ArrayList<FieldObject> units = targeter.selectTargets(playerNum, target, currentGame);
 		if(units != null) {
-			for(Unit u : units) {
+			for(FieldObject u : units) {
 				spell.target = u;
 				spell.exequte(playerNum, currentGame);
 			}

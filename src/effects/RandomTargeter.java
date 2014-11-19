@@ -2,7 +2,7 @@ package effects;
 
 import src.FieldSituation;
 import src.Game;
-import units.Unit;
+import units.FieldObject;
 import units.UnitFilter;
 
 import java.util.Random;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class RandomTargeter implements Targeter {
 
 	int aceptPlayers, maxCount, player;
-	boolean repeats, aceptHeroes;
+	boolean repeats, aceptBuildings;
 	/**
 	 * Initialises targeter, who selects random targets from field
 	 * @param acceptablePlayers 0 for the player, 1 for his opponent or -1 for both players
@@ -25,40 +25,44 @@ public class RandomTargeter implements Targeter {
 	 * @param repeatsAllowed true to allow repeating
 	 * @param aceptHeroes true, if heroes may be targeted as well
 	 */
-	public RandomTargeter(int acceptablePlayers, int maxCount, boolean repeatsAllowed, boolean aceptHeroes) {
+	public RandomTargeter(int acceptablePlayers, int maxCount, boolean repeatsAllowed, boolean aceptBuildings) {
 		aceptPlayers = acceptablePlayers;
 		this.maxCount = maxCount;
 		repeats = repeatsAllowed;
-		this.aceptHeroes = aceptHeroes;
+		this.aceptBuildings = aceptBuildings;
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int p, Unit targ, src.ProviderGameInterface currentGame) {
+	public ArrayList<FieldObject> selectTargets(int p, FieldObject targ, 
+	        src.ProviderGameInterface currentGame) 
+	{
 		FieldSituation fs = currentGame.provideFieldSituation(); 
 		player = p;
 		Random r = new Random();
-		ArrayList<Unit> retValue = new ArrayList<Unit>(maxCount);
+		ArrayList<FieldObject> retValue = new ArrayList<FieldObject>(maxCount);
 		
 		if(!repeats) {
 			if(aceptPlayers != -1) {
-				if(fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes).size() <= maxCount) {
-					return fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes);
+				if(fs.allObjectsFromOneSide((player + aceptPlayers) % 2, aceptBuildings).size()
+				        <= maxCount) 
+				{
+					return fs.allObjectsFromOneSide((player + aceptPlayers) % 2, aceptBuildings);
 				}
 			} else {
-				if(fs.allUnits(aceptHeroes).size() <= maxCount) {
-					return fs.allUnits(aceptHeroes);
+				if(fs.allObjects(aceptBuildings).size() <= maxCount) {
+					return fs.allObjects(aceptBuildings);
 				}
 			}
 		}
 		
-		ArrayList<Unit> arr;
-		if(aceptPlayers == -1) arr = fs.allUnits(aceptHeroes);
-		else arr = fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes);
+		ArrayList<FieldObject> arr;
+		if(aceptPlayers == -1) arr = fs.allObjects(aceptBuildings);
+		else arr = fs.allObjectsFromOneSide((player + aceptPlayers) % 2, aceptBuildings);
 		
 		if(arr.size() <= 0) return null;
 		
 		for(int i = 0; i < maxCount; ) {
-			Unit u = arr.get(r.nextInt(arr.size()));
+		    FieldObject u = arr.get(r.nextInt(arr.size()));
 			if(repeats) {
 				retValue.add(u);
 				i++;
@@ -74,13 +78,13 @@ public class RandomTargeter implements Targeter {
 	}
 
 	@Override
-	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+	public boolean hasTargets(int player, FieldObject u, src.ProviderGameInterface currentGame) {
 		FieldSituation fs = currentGame.provideFieldSituation();
 		
 		if(aceptPlayers == -1)
-			return fs.allUnits(aceptHeroes).size() > 0;
+			return fs.allObjects(aceptBuildings).size() > 0;
 		else 
-			return fs.allUnitFromOneSide((player + aceptPlayers) % 2, aceptHeroes).size() > 0;
+			return fs.allObjectsFromOneSide((player + aceptPlayers) % 2, aceptBuildings).size() > 0;
 	}
 
 	@Override

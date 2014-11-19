@@ -9,6 +9,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
 import cards.BasicCard;
+import units.Building;
+import units.FieldObject;
 import units.PlayerUnit;
 import units.TriggeringCondition;
 import units.Unit;
@@ -27,8 +29,8 @@ public class FieldSituation {
 	public static final int MAXFIELDUNITS = 8; 
 	
 	private ArrayList<ArrayList<Unit>> playerUnits;
-	private ArrayList<ArrayList<Unit>> playerBuildings;
-	public ArrayList<Unit> heroes;
+	private ArrayList<ArrayList<FieldObject>> playerBuildings;
+	private ArrayList<Unit> heroes;
 	
 	private src.ProviderGameInterface currentGame;
 	
@@ -38,17 +40,26 @@ public class FieldSituation {
 			add(new ArrayList<Unit>(MAXFIELDUNITS));
 		}};
 		
-		playerBuildings = new ArrayList<ArrayList<Unit>>(2){{
-			add(new ArrayList<Unit>(MAXFIELDUNITS));
-			add(new ArrayList<Unit>(MAXFIELDUNITS));
+		playerBuildings = new ArrayList<ArrayList<FieldObject>>(2){{
+			add(new ArrayList<FieldObject>(MAXFIELDUNITS));
+			add(new ArrayList<FieldObject>(MAXFIELDUNITS));
 		}};
 		
 		heroes = new ArrayList<Unit>(2);
 		currentGame = cG;
 	}
 	
+	public void addHeroForSide(int s, Unit u) {
+	    heroes.add(s, u);
+	    playerBuildings.get(s).add(u);
+	}
+	
+	public boolean heroDead(int s) {
+	    return heroes.get(s).isDead();
+	}
 
-	public Map toMap() {
+	@SuppressWarnings("unchecked")
+    public Map toMap() {
 		Map m = new LinkedHashMap();
 		for(int j = 0; j < 2; j++) {
 			JSONArray jarr = new JSONArray();
@@ -56,7 +67,7 @@ public class FieldSituation {
 			while(i.hasNext()) {
 				jarr.add(i.next().toMap());
 			}
-			
+			// TODO rework
 			m.put(Integer.toString(j), jarr);
 			m.put("Hero" + Integer.toString(j), (heroes.get(j).toMap()));
 		}
@@ -99,36 +110,58 @@ public class FieldSituation {
 	 * @param p player's number
 	 * @return true if unit can be added
 	 */
-	public boolean canUnitBeAdded(Unit u, int p) {
-		if(playerUnits.get(p).size() < MAXFIELDUNITS) 
-			return true;
-		else
-			return false;
+	public boolean canObjectBeAdded(FieldObject u, int p) {
+	    if(u instanceof Unit) {
+    		if(playerUnits.get(p).size() < MAXFIELDUNITS) 
+    			return true;
+    		else
+    			return false;
+	    } else if(u instanceof Building) {
+	        if(playerBuildings.get(p).size() < MAXFIELDUNITS) 
+                return true;
+            else
+                return false;
+	    }
+	    return false;
 	}
 	
 	/**
-	 * Returns unit's position on field
+	 * Returns unit's position on field. Used by netGame + testing framework.
 	 * @param u unit to be found
 	 * @return unit's position, or -1 if that unit does not belongs to u.myPlayer side 
 	 */
-	public int unitPosition(Unit u) {
+	public int objectPosition(FieldObject u) {
 		int i = 0;
-		for(Unit o : this.allUnitFromOneSide(u.player, true)) {
-			if(o.equals(u)) return i;
-			else i++;
+		if(u instanceof Building || u instanceof PlayerUnit) {
+		    i = -1;
+		    for(FieldObject o : this.allBuildingsFromOneSide(u.player)) {
+                if(o.equals(u)) return i;
+                else i--;
+            }
+		} else {
+    		for(FieldObject o : this.allObjectsFromOneSide(u.player, false)) {
+    			if(o.equals(u)) return i;
+    			else i++;
+    		}
 		}
-		return -1;
+		return -100;
 	}
 	
 	/**
 	 * Adds unit if it's allowed by canUnitBeAdded, throws IllegalArgumentException otherwise.
+	 * Does not work for PlayerUnits!
 	 * @param u unit to be added
 	 * @param p player's number
 	 */
-	public void addUnit(Unit u, int p) {
-		if(canUnitBeAdded(u, p)) {
-			playerUnits.get(p).add(u);
-			return;
+	public void addObject(FieldObject u, int p) {
+		if(canObjectBeAdded(u, p)) {
+		    if(u instanceof Unit) {
+    			playerUnits.get(p).add((Unit)u);
+    			return;
+		    } else if(u instanceof Building) {
+		        playerBuildings.get(p).add(u);
+                return;
+		    }
 		}
 		
 		throw new IllegalArgumentException();
@@ -137,39 +170,40 @@ public class FieldSituation {
 	/**
 	 * Checks if unit exists for player
 	 */
-	public boolean unitExist(int unit, int player) {
-		if(unit == -1) return true;
-		if((player == 0 || player == 1) && unit >= 0 && player >= 0)
-			return playerUnits.get(player).size() > unit;
-		else 
-			return false;
+	public boolean objectExist(int unit, int player) {
+		if(unit < 0) {
+		    return playerBuildings.get(player).size() > (Math.abs(unit) - 1); 
+		} else {
+		    return playerUnits.get(player).size() > unit;
+		}
 	}
 	
-	/** Returns playerUnits.get(player).iterator() */
-	public Iterator<Unit> provideIteratorForSide(int player) {
-		return playerUnits.get(player).iterator();
+	/** Returns iterator for side. */
+	public Iterator<FieldObject> provideIteratorForSide(int player, boolean includeBuildings) {
+		return allObjectsFromOneSide(player, includeBuildings).iterator();
 	}
 	
 	/**
 	 * Gets unit for player (if that exists).
-	 * @param u unit number, or -1 for hero
+	 * @param u positive value starting from 0 for unit, or negative for building. First building has 
+	 * number -1, second: -2, e.t.c.
 	 * @return unit or null, if that does not exists.
 	 */
-	public Unit unitForPlayer(int u, int p) {
-		if(u == -1) {
-			return heroes.get(p);
+	public FieldObject objectForPlayer(int u, int p) {
+		if(u < 0) {
+		    return playerBuildings.get(p).get(Math.abs(u) - 1);
+		} else {
+		    return playerUnits.get(p).get(u);
 		}
-		if(unitExist(u, p)) 
-			return playerUnits.get(p).get(u);
-		return null;
 	}
 	
 	/** Returns all unit for both players  */
-	public ArrayList<Unit> allUnits(boolean includeHeroes) {
-		ArrayList<Unit> al = new ArrayList<Unit>(playerUnits.get(0));
+	public ArrayList<FieldObject> allObjects(boolean includeBuildings) {
+		ArrayList<FieldObject> al = new ArrayList<FieldObject>(playerUnits.get(0));
 		al.addAll(playerUnits.get(1));
-		if(includeHeroes) {
-			al.addAll(heroes);
+		if(includeBuildings) {
+			al.addAll(playerBuildings.get(0));
+			al.addAll(playerBuildings.get(1));
 		}
 		return al;
 	}
@@ -181,13 +215,8 @@ public class FieldSituation {
 	 * @param includeHero should heroes be included?
 	 * @return count of matching units
 	 */
-	public int countUnitsMatchingFilter(int player, UnitFilter f, boolean includeHero) {
-		int matches = 0;
-		ArrayList<Unit> units = (player == -1) ? allUnits(includeHero) : allUnitFromOneSide(player, includeHero);
-		for(Unit u : units) {
-			if(u.matchesFilter(f)) matches++;
-		}
-		return matches;
+	public int countObjectsMatchingFilter(int player, UnitFilter f, boolean includeBuildings) {
+		return getObjectsMatchingFilter(player, f, includeBuildings).size();
 	}
 	
 	/**
@@ -197,64 +226,79 @@ public class FieldSituation {
 	 * @param includeHero should heroes be included?
 	 * @return list of units matching filter
 	 */
-	public ArrayList<Unit> getUnitsMatchingFilter(int player, UnitFilter f, boolean includeHero) {
-		ArrayList<Unit> units = (player == -1) ? 
-				allUnits(includeHero) : allUnitFromOneSide(player, includeHero);
-		Iterator<Unit> i = units.iterator();
+	public ArrayList<FieldObject> getObjectsMatchingFilter(int player, UnitFilter f, boolean includeBuildings) {
+		ArrayList<FieldObject> units = (player == -1) ? 
+				allObjects(includeBuildings) : allObjectsFromOneSide(player, includeBuildings);
+		Iterator<FieldObject> i = units.iterator();
 		while(i.hasNext()) {
-			Unit u = i.next();
-			if(!u.matchesFilter(f)) i.remove();
+			FieldObject o = i.next();
+			if(!o.matchesFilter(f)) i.remove();
 		}
 		return units;
 	}
 	
-	public int countUnitsForSide(int side, boolean includeHero) {
+	public int countObjectsForSide(int side, boolean includeBuildings) {
 		if(side == -1) {
-			return playerUnits.get(0).size() + playerUnits.get(1).size() 
-					+ ((includeHero) ? 2 : 0); 
+			return allObjects(includeBuildings).size();
 		} else {
-			return playerUnits.get(side).size() + ((includeHero) ? 1 : 0);
+			return allObjectsFromOneSide(side, includeBuildings).size();
 		}
 	}
 	
 	/**
 	 * Returns all units from one players side */
-	public ArrayList<Unit> allUnitFromOneSide(int player, boolean includeHero) {
-		ArrayList<Unit> al = new ArrayList<Unit>(playerUnits.get(player));
-		if(includeHero)
-			if(heroes.size() == 2)
-				al.add(heroes.get(player));
+	public ArrayList<FieldObject> allObjectsFromOneSide(int player, boolean includeBuildings) {
+		ArrayList<FieldObject> al = new ArrayList<FieldObject>(playerUnits.get(player));
+		if(includeBuildings)
+				al.addAll(playerBuildings.get(player));
 		return al;
 	}
 	
-	public boolean containsOnDifferentSides(Unit u1, Unit u2) {
+	public ArrayList<FieldObject> allBuildingsFromOneSide(int player) {
+	    return playerBuildings.get(player);
+	}
+	
+	public boolean containsOnDifferentSides(Unit u1, FieldObject o2) {
 		return playerUnits.get(u1.player).contains(u1) &&
-				playerUnits.get(u2.player).contains(u2) &&
-				u1.player != u2.player;
+				allObjectsFromOneSide(o2.player, true).contains(o2) &&
+				u1.player != o2.player;
 	}
 	
 	/**
-	 * Return amount of units with "taunt" quality for specific player
+	 * Return amount of units with "taunt" quality for specific player.
 	 * @param p player number (0-1)
 	 * @return count of those units
 	 */
-	public int tauntUnitsForPlayer(int p) {
+	public int tauntObjectsForPlayerCount(int p) {
 		int r = 0;
-		for(Unit u : playerUnits.get(p)) {
-			if((u.hasQuality(units.Quality.Taunt)) && (!u.hasQuality(units.Quality.Stealth))) 
+		for(FieldObject o : allObjectsFromOneSide(p, true)) {
+			if((o.hasQuality(units.Quality.Taunt)) && (!o.hasQuality(units.Quality.Stealth))) 
 				r++;
 		}
 		return r;
 	}
 	
 	/**
-	 * Calls endTurn() for all units on field
+     * Return taunt units for specific player.
+     * @param p player number (0-1)
+     * @return count of those units
+     */
+    public ArrayList<FieldObject> tauntObjectsForPlayer(int p) {
+        ArrayList<FieldObject> res = allObjectsFromOneSide(p, true);
+        Iterator<FieldObject> i = res.iterator();
+        while(i.hasNext()) {
+            FieldObject o = i.next();
+            if(!((o.hasQuality(units.Quality.Taunt)) && (!o.hasQuality(units.Quality.Stealth)))) 
+                i.remove();
+        }
+        return res;
+    }
+	
+	/**
+	 * Calls endTurn() for all objects on field.
 	 */
-	public void refreshUnits() {
-		for(Unit u : playerUnits.get(0)) {
-			u.endTurn();
-		}
-		for(Unit u : playerUnits.get(1)) {
+	public void refreshObjects() {
+		for(FieldObject u : allObjects(true)) {
 			u.endTurn();
 		}
 	}
@@ -285,27 +329,25 @@ public class FieldSituation {
 	/**
 	 * Passes event for all unit of u's side, except u himself.
 	 */
-	public void passEventAboutUnit(Unit u, TriggeringCondition e) {
-		ArrayList<Unit> side = null;
-		if(playerUnits.get(0).contains(u)) 
-			side = playerUnits.get(0);
-		else if(playerUnits.get(1).contains(u))
-			side = playerUnits.get(1);
+	public void passEventAboutObject(FieldObject u, TriggeringCondition e) {
+		ArrayList<FieldObject> side = allObjectsFromOneSide(u.player, true);
 		
 		if(side != null) {
-			for(Unit i : side) {
+			for(FieldObject i : side) {
 				if(!i.equals(u)) {
 					i.respondToEvent(e, u);
 				}
 			}
+		} else {
+		    System.err.println("No side found for unit: " + u.toString());
 		}
 	}
 	
-	public void passEventAboutRemovedUnitFromSide(int side, Unit u, TriggeringCondition e) {
-		ArrayList<Unit> army = playerUnits.get(side);
+	public void passEventAboutRemovedObjectFromSide(FieldObject u, TriggeringCondition e) {
+		ArrayList<FieldObject> army = allObjectsFromOneSide(u.player, true);
 		
 		if(army != null) {
-			for(Unit i : army) {
+			for(FieldObject i : army) {
 				i.respondToEvent(e, u);	
 			}
 		}
@@ -315,7 +357,14 @@ public class FieldSituation {
 	 * Removes unit u of player p.
 	 * @return true if unit has been found and removed
 	 */
-	public boolean removeUnitOfPlayer(Unit u, int p) {
-		return playerUnits.get(p).remove(u);
+	public boolean removeObjectOfPlayer(FieldObject u, int p) {
+	    if(u instanceof PlayerUnit) {
+	        playerBuildings.get(p).remove(u);
+	        return heroes.remove(u);
+	    } else if(u instanceof Building) {
+	        return playerBuildings.remove(u);
+	    } else {
+	        return playerUnits.get(p).remove(u);
+	    }
 	}
 }

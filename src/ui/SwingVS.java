@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import src.FieldSituation;
 import src.GameInterface;
+import units.FieldObject;
 import units.TriggeringCondition;
 import units.Unit;
 import cards.BasicCard;
@@ -239,12 +240,12 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		if(turnEnded) return;
 		
 		if(pickingUnit) {
-			if(latestSituation.allUnitFromOneSide((side + playerNumber) % 2, true).size() > unit && unit >= 0) {
-				pickedUnit = latestSituation.allUnitFromOneSide((side + playerNumber) % 2, true).get(unit);
+			if(latestSituation.allObjectsFromOneSide((side + playerNumber) % 2, true).size() > unit && unit >= 0) {
+				pickedUnit = (Unit)latestSituation.allObjectsFromOneSide((side + playerNumber) % 2, true).get(unit);
 			}
 		}
 		
-		if(unit >= latestSituation.countUnitsForSide((playerNumber + side) % 2, false)) {
+		if(unit >= latestSituation.countObjectsForSide((playerNumber + side) % 2, false)) {
 			unit = -1; // target hero
 		}
 		
@@ -260,10 +261,10 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 				}
 			}
 		} else if(side == 0) {
-			ArrayList<Unit>myArmy = latestSituation.allUnitFromOneSide(me.playerNumber, false);
+			ArrayList<FieldObject> myArmy = latestSituation.allObjectsFromOneSide(me.playerNumber, false);
 			
 			if(myArmy.size() > unit && unit >= 0) {
-				if(myArmy.get(unit).canAttack()) {
+				if(((Unit)myArmy.get(unit)).canAttack()) {
 					displayMessage("Select target: ");
 					targeting = true;
 					selectedUnit = unit;

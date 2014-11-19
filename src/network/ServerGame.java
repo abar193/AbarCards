@@ -14,6 +14,7 @@ import cards.UnitCard;
 import src.GameInterface;
 import src.MenuController;
 import src.ProviderGameInterface;
+import units.FieldObject;
 import units.TriggeringCondition;
 import units.Unit;
 
@@ -244,7 +245,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 	}
 
 	@Override
-	public void commitAttack(Unit attacker, Unit target) {
+	public void commitAttack(Unit attacker, FieldObject target) {
 		System.err.println("CommitAttack(Unit, Unit) for ServerGame not implemented!");
 	}
 	
@@ -336,7 +337,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 				JSONObject resObj = new JSONObject();
 				resObj.put("return", "selectTarget");
 				resObj.put("side", Integer.toString(u.player));
-				resObj.put("position", Integer.toString(latestSituation.unitPosition(u)));
+				resObj.put("position", Integer.toString(latestSituation.objectPosition(u)));
 				sendMessage(JSONValue.toJSONString(resObj));
 			}
 		}

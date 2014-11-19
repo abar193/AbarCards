@@ -54,6 +54,15 @@ public abstract class FieldObject {
     }
     
     /* * * Qualities * * */
+    public boolean canBeTargedetBySpell() {
+        return !this.hasQuality(Quality.Stealth);
+    }
+    
+    public boolean canBeTargedet() {
+        int c = this.currentGame.provideFieldSituation().tauntObjectsForPlayerCount(player);
+        return ((c == 0) || (this.hasQuality(Quality.Taunt))) & !this.hasQuality(Quality.Stealth);
+    }
+    
     public void setQuality(Quality q) {
         qualities |= q.getValue();
     }

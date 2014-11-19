@@ -1,7 +1,7 @@
 package effects;
 
 import src.ProviderGameInterface;
-import units.Unit;
+import units.FieldObject;
 import units.UnitFilter;
 
 /**
@@ -14,7 +14,7 @@ import units.UnitFilter;
  */
 public abstract class AbstractSpell {
 
-	public Unit target;
+	public FieldObject target;
 	int playerNum;
 	private UnitFilter filter;
 	

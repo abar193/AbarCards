@@ -2,8 +2,7 @@ package effects;
 
 import src.Game;
 import src.FieldSituation;
-
-import units.Unit;
+import units.FieldObject;
 
 /**
  * Class for decoding custom values like "EnemyUnitsCount" to use in Buffs and 
@@ -12,7 +11,7 @@ import units.Unit;
  */
 public class CustomValueDecoder {
 
-	public static int decodeValue(String value, int player, Unit target, 
+	public static int decodeValue(String value, int player, FieldObject target, 
 	        src.ProviderGameInterface currentGame) 
 	{
 		try {
@@ -23,13 +22,17 @@ public class CustomValueDecoder {
 			switch(value) {
 				case "EnemyUnitsCount":
 				case "EnemyUnitCount":
-					return fs.countUnitsForSide((player + 1) % 2, false);
+					return fs.countObjectsForSide((player + 1) % 2, false);
+				case "EnemyObjectsCount":
+				    return fs.countObjectsForSide((player + 1) % 2, true);
 				case "AllyUnitsCount":
 				case "AllyUnitCount":
-					return fs.countUnitsForSide(player, false);
+					return fs.countObjectsForSide(player, false);
+				case "AllyBuildingsCount":
+				    return fs.countObjectsForSide(player, true);
 				case "AllyUnitsCount-1":
 				case "AllyUnitCount-1":
-					return fs.countUnitsForSide(player, false) - 1;
+					return fs.countObjectsForSide(player, false) - 1;
 				case "UnitHealth":
 				    return target.getCurrentDamage();
 				default:

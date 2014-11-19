@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import src.ProviderGameInterface;
-import units.Unit;
+import units.FieldObject;
 import units.UnitFilter;
 
 /** 
@@ -46,11 +46,11 @@ public class Condition {
         this.count = count;
     }
     
-    private ArrayList<Unit> unitsMatchingFilter(ArrayList<Unit> units, UnitFilter f) {
-        ArrayList<Unit> resp = new ArrayList<Unit>();
-        Iterator<Unit> i = units.iterator();
+    private ArrayList<FieldObject> unitsMatchingFilter(ArrayList<FieldObject> units, UnitFilter f) {
+        ArrayList<FieldObject> resp = new ArrayList<FieldObject>();
+        Iterator<FieldObject> i = units.iterator();
         while(i.hasNext()) {
-            Unit u = i.next();
+            FieldObject u = i.next();
             if(u.matchesFilter(f)) {
                 resp.add(u);
             }
@@ -62,15 +62,15 @@ public class Condition {
         switch(condition) {
             case AllyHasLessThanXMachines: {
                 return unitsMatchingFilter(
-                        game.provideFieldSituation().allUnitFromOneSide(player, true),
-                        new UnitFilter(units.UnitFilterType.ClassEquals, "Machine")
+                            game.provideFieldSituation().allObjectsFromOneSide(player, true),
+                            new UnitFilter(units.UnitFilterType.ClassEquals, "Machine")
                         ).size() < CustomValueDecoder.decodeValue(count, player, null, game);
             }
             
             case AllyHasMoreThanXMachines: {
                 return unitsMatchingFilter(
-                        game.provideFieldSituation().allUnitFromOneSide(player, true),
-                        new UnitFilter(units.UnitFilterType.ClassEquals, "Machine")
+                            game.provideFieldSituation().allObjectsFromOneSide(player, true),
+                            new UnitFilter(units.UnitFilterType.ClassEquals, "Machine")
                         ).size() > CustomValueDecoder.decodeValue(count, player, null, game); 
             }
             

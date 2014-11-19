@@ -1,6 +1,7 @@
 package effects;
 
 import src.FieldSituation;
+import units.FieldObject;
 import units.Unit;
 import units.UnitFilter;
 
@@ -24,41 +25,48 @@ public class AllUnitsTargeter implements Targeter {
 	}
 
 	@Override
-	public ArrayList<Unit> selectTargets(int p, Unit u, src.ProviderGameInterface currentGame) {
+	public ArrayList<FieldObject> selectTargets(int p, FieldObject u, src.ProviderGameInterface currentGame) {
 		FieldSituation fs = currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
-			ArrayList<Unit> tmp = (filter == null) ? fs.allUnitFromOneSide((acceptablePlayers + p)
-					% 2, aceptHeroes) :
-				fs.getUnitsMatchingFilter((acceptablePlayers + p) % 2, filter, aceptHeroes);
+		    ArrayList<FieldObject> tmp;
+		    if(filter == null) {
+		        tmp = fs.allObjectsFromOneSide((acceptablePlayers + p) % 2, aceptHeroes);
+		    } else {
+		        tmp = fs.getObjectsMatchingFilter((acceptablePlayers + p) % 2, filter, aceptHeroes); 
+		    }
+				
 			if(excludeSelf) tmp.remove(u);
 			return tmp;
 		} else {
-			ArrayList<Unit> tmp = (filter == null) ? fs.allUnits(aceptHeroes) :
-				fs.getUnitsMatchingFilter(-1, filter, aceptHeroes);
+			ArrayList<FieldObject> tmp;
+			if(filter == null) {
+                tmp = fs.allObjects(aceptHeroes);
+            } else {
+                tmp = fs.getObjectsMatchingFilter(-1, filter, aceptHeroes); 
+            }
 			
 			if(excludeSelf) tmp.remove(u);
-			
 			return tmp;
 		}
 	}
 	
 	@Override
-	public boolean hasTargets(int player, Unit u, src.ProviderGameInterface currentGame) {
+	public boolean hasTargets(int player, FieldObject u, src.ProviderGameInterface currentGame) {
 		FieldSituation fs = currentGame.provideFieldSituation();
 		if(acceptablePlayers >= 0) {
 			if(filter == null) {
-				return fs.allUnitFromOneSide((acceptablePlayers + player) % 2, aceptHeroes).size() 
+				return fs.allObjectsFromOneSide((acceptablePlayers + player) % 2, aceptHeroes).size() 
 						> 0;
 			} else {
-				return fs.countUnitsMatchingFilter((acceptablePlayers + player) % 2,
+				return fs.countObjectsMatchingFilter((acceptablePlayers + player) % 2,
 						filter, aceptHeroes) > 0;
 			}
 				
 		} else {
 			if(filter == null) {
-				return fs.allUnits(aceptHeroes).size() > 0; 
+				return fs.allObjects(aceptHeroes).size() > 0; 
 			} else {
-				return fs.countUnitsMatchingFilter(-1, filter, aceptHeroes) > 0;
+				return fs.countObjectsMatchingFilter(-1, filter, aceptHeroes) > 0;
 			}
 		}
 	}
