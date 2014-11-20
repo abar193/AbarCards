@@ -315,7 +315,7 @@ public class Game implements GameInterface, ProviderGameInterface {
         if(field.allBuildingsFromOneSide(player).size() > building) {
             if(field.allBuildingsFromOneSide(player).get(building) instanceof Building) {
                 Building b = (Building)field.allBuildingsFromOneSide(player).get(building);
-                return b.productAvailable();
+                return b.productAvailable() && b.productCost() <= playersData[player].getAvailableMana();
             }
         }
         return false;

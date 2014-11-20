@@ -60,6 +60,10 @@ public class Building extends FieldObject {
         return product != null;
     }
     
+    public int productCost() {
+        return buildingRef.product.cost;
+    }
+    
     public BasicCard takeProduct() {
         BasicCard res = product;
         product = null;

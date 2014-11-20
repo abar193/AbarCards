@@ -9,6 +9,7 @@ import java.awt.Panel;
 import java.util.ArrayList;
 
 import cards.BasicCard;
+import cards.BuildingCard;
 import cards.CardType;
 import cards.UnitCard;
 
@@ -56,8 +57,13 @@ public class CardsDrawer extends Panel {
 						((UnitCard) bc).getHealth(), bc.cost));
 			} else if(bc.type == CardType.Spell) {
 				dstr =  String.format("Spell  %2d$", bc.cost);
+			} else if(bc.type == CardType.Building) {
+			    dstr = (String.format("Product: %2d$", ((BuildingCard) bc).product.cost));
+			    g2.drawString(dstr, cardSize * i + 7, this.getHeight() - 25);
+			    dstr = (String.format("%2dd/%2dh%2d$", ((BuildingCard) bc).getDamage(),
+                        ((BuildingCard) bc).getHealth(), bc.cost));
 			}
-	    	g2.drawString(dstr, cardSize * i + 7, 60);
+	    	g2.drawString(dstr, cardSize * i + 7, this.getHeight() - 15);
 	    }
 	    
 	    g2.drawString(String.format("%d/%d", mana, maxmana), this.getWidth() * 2 / 3, 15);

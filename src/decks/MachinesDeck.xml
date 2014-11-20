@@ -9,6 +9,15 @@
 			</TargedetSpell>
 		</Spell>
 	</Building>
+	<Building Name="Barracks" Description="1-1 unit" Damage="1" Health="7" Cost="2" Production="1" Progress="1">
+		<Fulldesc txt="Creates 1-1 unit"/>
+		<Spell Name=":1-1U" Description="" Cost="2">
+			<CreateUnitSpell count="1" side="0">
+				<HelperUnit Name="Recrut" Description="" Damage="1" Health="1" Cost="1">
+				</HelperUnit>
+			</CreateUnitSpell>
+		</Spell>
+	</Building>
 	<Unit Name="Smart Lamp" Description="" Damage="1" Health="1" Cost="1" Class="Machine">
 		<Fulldesc txt="Aura +1 dmg for all units" />
 		<Power condition="Always">

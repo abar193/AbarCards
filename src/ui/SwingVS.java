@@ -263,6 +263,8 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
                         public void run() {
                             parent.useBuildingCard(selectedUnit, me.playerNumber);
                         }}).start();
+		        } else {
+		            displayError("Can't play building's card");
 		        }
 		    } else if(side == 0) {
 				targeting = false;
@@ -292,9 +294,13 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 					selectedUnit = unit;
 				} else if(unit < 0 && (myArmy.get(selection) instanceof Building)) {
 				    if(((Building)myArmy.get(selection)).productAvailable()) {
-    				    displayMessage("Double click to confirm");
-    				    targeting = true;
-                        selectedUnit = unit;
+				        if(((Building)myArmy.get(selection)).productCost() > me.getAvailableMana()) {
+				            displayError("Too expnsive!");
+				        } else {
+        				    displayMessage("Double click to confirm");
+        				    targeting = true;
+                            selectedUnit = unit;
+				        }
 				    } else {
 				        displayMessage("Building not ready");
 				    }
