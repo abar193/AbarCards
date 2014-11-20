@@ -63,7 +63,16 @@ public class FieldDrawer extends Panel {
 	    	else if(marked.get(x) == 1) g2.setColor(Color.GREEN);
 	    	else if(marked.get(x) == 2) g2.setColor(Color.BLUE); 
 	    	else g2.setColor(Color.RED);
-    		g2.drawOval(ballSize * x, center - ballSize / 2, ballSize, ballSize);
+	    	if(units.get(x) instanceof Unit) {
+	    	    g2.drawOval(ballSize * x + 4, center - ballSize / 2 + 4, ballSize - 8, ballSize-8);
+    		    g2.drawArc(ballSize * x + 5, center - ballSize / 2 + 5, ballSize - 8, ballSize - 8,
+    		            45, -140);
+	    	} else if(units.get(x) instanceof Building) {
+	    	    g2.drawRoundRect(ballSize * x + 4, center - ballSize / 2 + 4, ballSize - 8,
+	    	            ballSize - 8, 45, 45);
+	    	    g2.drawRoundRect(ballSize * x + 4, center - ballSize / 2 + 4, ballSize - 7,
+                        ballSize - 7, 45, 45);
+		    }
     		FieldObject u = units.get(x);
     		DrawingOperations.drawCenteredStringAt(g2, u.card.name, ballSize * x, ballSize, center - 15);
     		DrawingOperations.drawCenteredStringAt(g2, u.descriptionString(), ballSize * x, ballSize, center + 5);
