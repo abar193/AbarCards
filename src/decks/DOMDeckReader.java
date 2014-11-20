@@ -36,6 +36,9 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
 
     }
     
+    private int deckNum = 0;
+    public ArrayList<BasicCard> lastParseHiddenCards = null;
+    
     private AbstractSpell parseSpell(Element n) {
         switch(n.getNodeName()) {
             case "TargedetSpell": {
@@ -120,6 +123,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                         Element e = (Element)s;
                         if(e.getNodeName().contains("HelperUnit")) {
                             cus.myUnit = parseUnit(e);
+                            lastParseHiddenCards.add(cus.myUnit);
                         } else {
                             System.err.println("Unknown element " + e.getNodeName() 
                                     + " inside " + n.getNodeName());
@@ -158,6 +162,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
         }
         
         tmp.cardClass = n.getAttribute("Class");
+        tmp.deckNum = deckNum;
         
         for(int i = 0; i < n.getChildNodes().getLength(); i++) {
             Node s = n.getChildNodes().item(i); 
@@ -212,6 +217,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     public SpellCard parseSpellCard(Element n) {
         int cost = Integer.parseInt(n.getAttribute("Cost"));
         SpellCard sc = new SpellCard(n.getAttribute("Name"), n.getAttribute("Description"), cost, null);
+        sc.deckNum = deckNum;
         for(int i = 0; i < n.getChildNodes().getLength(); i++) {
             Node s = n.getChildNodes().item(i); 
             if(s.getNodeType() == Node.ELEMENT_NODE) {
@@ -234,8 +240,10 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
         if(!n.getAttribute("Damage").equals("")) 
             dmg = Integer.parseInt(n.getAttribute("Damage"));
         int health = Integer.parseInt(n.getAttribute("Health"));
+        
         BuildingCard bc = new BuildingCard(dmg, health, cost, n.getAttribute("Name"), 
                 n.getAttribute("Description"));
+        bc.deckNum = deckNum;
         bc.productionTime = Integer.parseInt(n.getAttribute("Production"));
         bc.turnProgress = Integer.parseInt(n.getAttribute("Progress"));
         
@@ -245,8 +253,10 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                 Element e = (Element)s;
                 if(e.getNodeName().contains("Spell")) {
                     bc.product = parseSpellCard(e);
+                    lastParseHiddenCards.add(bc.product);
                 } else if(e.getNodeName().contains("Unit")) {
                     bc.product = parseUnit(e);
+                    lastParseHiddenCards.add(bc.product);
                 } else if(e.getNodeName().contains("Fulldesc")) {
                     bc.fullDescription = e.getAttribute("txt");
                 } else if(e.getNodeName().contains("Qualities")) {
@@ -276,13 +286,16 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     public ArrayList<BasicCard> parseFile(String filename) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
+        this.lastParseHiddenCards = new ArrayList<BasicCard>(5);
         try {
             builder = factory.newDocumentBuilder();
             Document doc = builder.parse(getClass().getResource(filename).toURI().toString());
             doc.getDocumentElement().normalize();
             
             ArrayList<BasicCard> cards = new ArrayList<BasicCard>(20);
-            
+            deckNum = Integer.parseInt(
+                    ((Element)doc.getElementsByTagName("Deck").item(0)).getAttribute("num")
+                    );
             NodeList nList = doc.getElementsByTagName("Deck").item(0).getChildNodes();
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);

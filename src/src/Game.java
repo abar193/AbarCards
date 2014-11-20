@@ -389,12 +389,12 @@ public class Game implements GameInterface, ProviderGameInterface {
                             break;   
     			    }
     			}
-    			
-    			recalculateFieldModifiers();
-    			updateInfoForAll();
-    			playingCard = false;
-    		}
+    		}		
 	    }
+		recalculateFieldModifiers();
+		updateInfoForAll();
+		playingCard = false;	
+	    
 	}
 	
 	/**
@@ -445,15 +445,15 @@ public class Game implements GameInterface, ProviderGameInterface {
 		    if(playersData[i].getHealth() <= 0) endGame(i);
 		    
 			int[] modifiers = playersData[i].auras.getModifiers();
-			Iterator<FieldObject> j = field.provideIteratorForSide(i, true);
-			while(j.hasNext()) { // Iteration 1: calculate aura-modifiers, remove dead units
-			    FieldObject u = j.next();
+			ArrayList<FieldObject> objects = field.allObjectsFromOneSide(i, true);
+			for(int j = 0; j < objects.size(); j++) {
+			    FieldObject u = objects.get(j);
 				u.modDmg = modifiers[1];
 				u.modHealth = modifiers[2];
 				u.modQualities = 0;
 				if(u.isDead()) {
 					informAll(u.card.name + " is dead");
-					j.remove();
+					field.removeObjectOfPlayer(u, i);
 					u.respondToEvent(TriggeringCondition.OnDeath, null);
 					field.passEventAboutRemovedObjectFromSide(u, 
 							TriggeringCondition.OnAllyDeath);
@@ -461,12 +461,13 @@ public class Game implements GameInterface, ProviderGameInterface {
 						recalculateFieldModifiers();
 						return;
 					}
-					j = field.provideIteratorForSide(i, true); // to avoid deathrate-summonUnits-exception
+					j = 0;
+					objects = field.allObjectsFromOneSide(i, true);
 				}
 			}
-			j = field.provideIteratorForSide(i, true);
-			while(j.hasNext()) { // Iteration 2: trigger UnitPowers with condition "always"
-			    FieldObject u = j.next();
+			objects = field.allObjectsFromOneSide(i, true);
+            for(int j = 0; j < objects.size(); j++) { // Iteration 2: trigger UnitPowers with condition "always"
+			    FieldObject u = objects.get(j);
 				u.respondToEvent(TriggeringCondition.Always, null);
 			}
 		}

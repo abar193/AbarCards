@@ -61,7 +61,9 @@ public class CardJSONOperations {
 			allDecks = new ArrayList<ArrayList<BasicCard>>(links.length);
 			DOMDeckReader dpr = new DOMDeckReader();
 			for(String s : links) {
-				allDecks.add(dpr.parseFile(s));
+			    ArrayList<BasicCard> cards = dpr.parseFile(s);
+			    cards.addAll(dpr.lastParseHiddenCards);
+				allDecks.add(cards);
 			}
 		}
 		
