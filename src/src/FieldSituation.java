@@ -67,9 +67,13 @@ public class FieldSituation {
 			while(i.hasNext()) {
 				jarr.add(i.next().toMap());
 			}
-			// TODO rework
-			m.put(Integer.toString(j), jarr);
-			m.put("Hero" + Integer.toString(j), (heroes.get(j).toMap()));
+			m.put("Units" + j, jarr);
+			jarr = new JSONArray();
+			Iterator<FieldObject> b = playerBuildings.get(j).iterator();
+            while(b.hasNext()) {
+                jarr.add(b.next().toMap());
+            }
+            m.put("Buildings" + j, jarr);
 		}
 		return m;
 	}
@@ -78,13 +82,14 @@ public class FieldSituation {
 	public FieldSituation(Map m, ProviderGameInterface cG) {
 		
 		playerUnits = new ArrayList<ArrayList<Unit>>(2);
+		playerBuildings = new ArrayList<ArrayList<FieldObject>>(2);
 		heroes = new ArrayList<Unit>(2);
 		for(int j = 0; j < 2; j++) {
 			JSONArray jarr;
 			try { 
-				jarr = (JSONArray) m.get(Integer.toString(j));
+				jarr = (JSONArray) m.get("Units" + j);
 			} catch(ClassCastException e) {
-				jarr = (JSONArray) JSONValue.parse((String) m.get(Integer.toString(j)));
+				jarr = (JSONArray) JSONValue.parse((String) m.get("Units" + j));
 			}
 			
 			ArrayList<Unit> arr = new ArrayList<Unit>(jarr.size());
@@ -93,14 +98,25 @@ public class FieldSituation {
 			while(i.hasNext()) {
 				arr.add(new Unit(i.next(), cG));
 			}
-			Unit h;
-			try { 
-				h = new Unit((Map)m.get("Hero" + Integer.toString(j)), cG);
-			} catch(ClassCastException e) {
-				h = new Unit((Map)JSONValue.parse((String) m.get("Hero" + Integer.toString(j))), cG);
-			}
 			
-			heroes.add(h);
+			try { 
+			    jarr = (JSONArray) m.get("Buildings" + j);
+			} catch(ClassCastException e) {
+			    jarr = (JSONArray) JSONValue.parse((String) m.get("Units" + j));
+			}
+			ArrayList<FieldObject> objs = new ArrayList<FieldObject>(jarr.size());
+            playerBuildings.add(objs);
+            i = jarr.iterator();
+            while(i.hasNext()) {
+                Map<String, String> fo = i.next();
+                if(fo.toString().contains("\"Name\":\"Hero\"")) {
+                    Unit u = new Unit(fo, cG);
+                    objs.add(u);
+                    heroes.add(u);
+                } else {
+                    objs.add(new Building(fo, cG));
+                }
+            }
 		}	
 	}
 	

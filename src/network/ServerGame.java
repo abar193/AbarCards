@@ -222,7 +222,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
         jobj.put("player", Integer.toString(player));
         String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "useBuildingCard");
         if(!resp.equals(ServerResponses.ResponseOk)) {
-            System.err.println("Not ok in playCard, response: " + resp);
+            System.err.println("Not ok in useBuildingCard, response: " + resp);
         }
     }
 	

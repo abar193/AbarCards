@@ -2,17 +2,15 @@
 <!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 <!-- Contains helper units -->
 <Deck num="0">
-	<Unit Name="Cat" Description="" Damage="1" Health="1" Cost="0">
-	</Unit>	
-	<Unit Name="Small bear" Description="" Damage="2" Health="2" Cost="0">
+	<Unit Name="TestU" Description="" Health="1" Damage="1" Cost="1">
 	</Unit>
-	<Unit Name="Imp" Description="" Damage="1" Health="1" Cost="0">
+	
+	<Unit Name="TestP" Description="" Health="1" Damage="1" Cost="1">
 	</Unit>
-	<Unit Name="Spammer" Description="" Damage="2" Health="2" Cost="0" Class="Machine">
-	</Unit>
-	<Unit Name="Toster" Description="" Damage="1" Health="1" Cost="0" Class="Machine">
-		<Qualities  v="8"/>
-	</Unit>
-	<Unit Name="Laser" Description="" Damage="5" Health="3" Cost="0">
-	</Unit>
+	
+	<Building Name="TestB" Description="" Damage="0" Health="5" Cost="1" Production="100" Progress="0">
+	</Building>
+	
+	<Building Name="TestC" Description="" Damage="0" Health="5" Cost="1" Production="100" Progress="0">
+	</Building>
 </Deck>
