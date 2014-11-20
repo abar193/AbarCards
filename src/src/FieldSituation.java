@@ -102,19 +102,24 @@ public class FieldSituation {
 			try { 
 			    jarr = (JSONArray) m.get("Buildings" + j);
 			} catch(ClassCastException e) {
-			    jarr = (JSONArray) JSONValue.parse((String) m.get("Units" + j));
+			    jarr = (JSONArray) JSONValue.parse((String) m.get("Buildings" + j));
 			}
 			ArrayList<FieldObject> objs = new ArrayList<FieldObject>(jarr.size());
             playerBuildings.add(objs);
             i = jarr.iterator();
             while(i.hasNext()) {
                 Map<String, String> fo = i.next();
-                if(fo.toString().contains("\"Name\":\"Hero\"")) {
+                if(fo.toString().contains("\\\"Name\\\":\\\"Hero\\\"")) {
                     Unit u = new Unit(fo, cG);
                     objs.add(u);
                     heroes.add(u);
                 } else {
-                    objs.add(new Building(fo, cG));
+                    try {
+                        objs.add(new Building(fo, cG));
+                    } catch (Exception e) {
+                        System.err.println(fo);
+                        e.printStackTrace();
+                    }
                 }
             }
 		}	
@@ -389,7 +394,7 @@ public class FieldSituation {
 	        playerBuildings.get(p).remove(u);
 	        return heroes.remove(u);
 	    } else if(u instanceof Building) {
-	        return playerBuildings.remove(u);
+	        return playerBuildings.get(p).remove(u);
 	    } else {
 	        return playerUnits.get(p).remove(u);
 	    }

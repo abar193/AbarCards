@@ -68,7 +68,7 @@ public class Building extends FieldObject {
             card = (BuildingCard) cards.CardJSONOperations.instance.
                     cardFromMap((Map)JSONValue.parse((String)m.get("MyCard")));
         }
-
+        buildingRef = (BuildingCard) card;
         modDmg = Integer.parseInt((String) m.get("ModDmg"));
         modHealth = Integer.parseInt((String) m.get("ModHealth"));
         modQualities = Integer.parseInt((String) m.get("ModQualities"));
@@ -78,6 +78,8 @@ public class Building extends FieldObject {
         currentDamage = Integer.parseInt((String) m.get("CurrentDamage"));
         qualities = Integer.parseInt((String) m.get("Qualities"));
         progress = Integer.parseInt((String) m.get("Progress"));
+        if(progress >= buildingRef.productionTime) 
+            product = buildingRef.product;
         this.currentGame = currentGame;
     }
     
