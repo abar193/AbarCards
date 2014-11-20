@@ -64,7 +64,7 @@ public class MainMenu extends JFrame implements ActionListener {
         controller = new MenuController(this);
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+        setTitle("Cards Game");
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();

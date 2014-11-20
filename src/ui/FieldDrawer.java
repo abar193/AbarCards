@@ -8,13 +8,14 @@ import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 import cards.BasicCard;
 import cards.CardType;
 import cards.UnitCard;
 import src.FieldSituation;
+import units.Building;
 import units.FieldObject;
+import units.PlayerUnit;
 import units.Unit;
 import units.Quality;
 
@@ -50,59 +51,69 @@ public class FieldDrawer extends Panel {
 	
 	
 	private void drawUnitsLine(Graphics2D g2, ArrayList<FieldObject> units, 
-	        ArrayList<Integer> marked, int centerHeight) 
+	        ArrayList<Integer> marked, int center) 
 	{
-		int unitWidth = this.getWidth() / fs.MAXFIELDUNITS;
-	    int uOffset = centerHeight - unitWidth / 2;
-	    for(int x = 0; x < units.size(); x++) {
+		int ballSize = Math.min(this.getWidth() / FieldSituation.MAXFIELDUNITS, this.getHeight() / 4);
+	    int x = 0;
+	    
+	    if(units == null || units.size() == 0 || marked.size() == 0) return;
+	    
+	    for(x = 0; x < units.size(); x++) {
 	    	if(marked.get(x) == 0) g2.setColor(Color.BLACK);
 	    	else if(marked.get(x) == 1) g2.setColor(Color.GREEN);
 	    	else if(marked.get(x) == 2) g2.setColor(Color.BLUE); 
 	    	else g2.setColor(Color.RED);
-    		g2.drawOval(unitWidth * x, uOffset - unitWidth / 2, unitWidth, unitWidth);
+    		g2.drawOval(ballSize * x, center - ballSize / 2, ballSize, ballSize);
     		FieldObject u = units.get(x);
-    		DrawingOperations.drawCenteredStringAt(g2, u.card.name, unitWidth * x, unitWidth, uOffset - 15);
-    		DrawingOperations.drawCenteredStringAt(g2, u.descriptionString(), unitWidth * x, unitWidth, uOffset + 5);
+    		DrawingOperations.drawCenteredStringAt(g2, u.card.name, ballSize * x, ballSize, center - 15);
+    		DrawingOperations.drawCenteredStringAt(g2, u.descriptionString(), ballSize * x, ballSize, center + 5);
     		DrawingOperations.drawCenteredStringAt(g2, String.format("%2dd/%2dh%2d$", u.getCurrentDamage(),
-    				u.getCurrentHealth(), u.card.cost), unitWidth * x, unitWidth, uOffset + 15);
-   
+    				u.getCurrentHealth(), u.card.cost), ballSize * x, ballSize, center + 15);
     	}
 	}
 	
-	public void paint (Graphics g) {
-	    Graphics2D g2 = (Graphics2D) g;
-	    
-	    int unitWidth = this.getWidth() / fs.MAXFIELDUNITS;
-	    int unitHeight = this.getHeight() / 2;
-	    g2.setFont(new Font("SansSerif", Font.BOLD, 12));
-	    
-	    ArrayList<FieldObject> units = fs.allObjectsFromOneSide((playerNumber + 1) % 2, true);
+	
+	private void calculateRow(Graphics2D g2, ArrayList<FieldObject> units, int height) {
 	    ArrayList<Integer> statuses = new ArrayList<Integer>(units.size());
-	    int taunts = fs.tauntObjectsForPlayerCount((playerNumber + 1) % 2);
-	    for(FieldObject u : units) {
-	    	if((taunts == 0 || u.hasQuality(Quality.Taunt)) && (!u.hasQuality(Quality.Stealth))) {
-	    		statuses.add(-1);
-	    	} else {
-	    		statuses.add(0);
-	    	}
-	    }
-	    drawUnitsLine(g2, fs.allObjectsFromOneSide((playerNumber + 1) % 2, true), statuses, unitHeight * 2 / 3);
+        int taunts = fs.tauntObjectsForPlayerCount((playerNumber + 1) % 2);
+        int i = 0;
+        for(FieldObject u : units) {
+            if(u.player != parent.playerNumber) {
+                if((taunts == 0 || u.hasQuality(Quality.Taunt)) && (!u.hasQuality(Quality.Stealth))) {
+                    statuses.add(-1);
+                } else {
+                    statuses.add(0);
+                }
+            } else {
+                if(parent.turnEnded) statuses.add(0);
+                else if(parent.targeting && parent.selectedUnit == i) statuses.add(2);
+                else if(u instanceof Unit) {
+                    statuses.add(((Unit)units.get(i)).canAttack() ? 1 : 0);
+                } else statuses.add(0);
+            }
+            i++;
+        }
+        drawUnitsLine(g2, units, statuses, height);
+	}
+	
+	public void paint(Graphics g) {
+	    Graphics2D g2 = (Graphics2D) g;
+	    float ballSize = this.getHeight() / 4;
 	    
-	    units = fs.allObjectsFromOneSide(playerNumber, true);
-	    statuses = new ArrayList<Integer>(units.size());
+	    g2.setFont(new Font("SansSerif", Font.BOLD, 12));
+	    int opponent = (playerNumber + 1) % 2;
 	    
-	    for(int i = 0; i < units.size(); i++) {
-	        if(parent.turnEnded) statuses.add(0);
-	        else if(parent.targeting && parent.selectedUnit == i) statuses.add(2);
-	    	else if(units.get(i) instanceof Unit) {
-	    	    statuses.add(((Unit)units.get(i)).canAttack() ? 1 : 0);
-	    	} else statuses.add(0);
-	    }
-	    drawUnitsLine(g2, fs.allObjectsFromOneSide(playerNumber, true), statuses, unitHeight * 5 / 3);
+	    ArrayList<FieldObject> units = fs.allBuildingsFromOneSide(opponent);
+	    calculateRow(g2, units, (int)(ballSize / 2));
+	    units = fs.allObjectsFromOneSide(opponent, false);
+	    calculateRow(g2, units, (int)(3 * ballSize / 2));
 	    
+	    g2.drawLine(0, (int)(ballSize * 2), this.getWidth(), (int)(ballSize * 2));
 	    
-	    g2.drawLine(0, unitHeight, this.getWidth(), unitHeight);
-	 
+	    units = fs.allObjectsFromOneSide(playerNumber, false);
+        calculateRow(g2, units, (int)(5 * ballSize / 2));
+        units = fs.allBuildingsFromOneSide(playerNumber);
+        calculateRow(g2, units, (int)(7 * ballSize / 2));
 	}
 	
 	public void setLastClick(int side, int unit) {
