@@ -16,14 +16,12 @@ public class BuildingCard extends UnitCard {
     public BasicCard product;
     
     public BuildingCard() {
-        
+        this.type = CardType.Building;
     }
 
-    public BuildingCard(int damage, int health, int cost, String name,
-            String desc) 
-    {
+    public BuildingCard(int damage, int health, int cost, String name, String desc) {
         super(damage, health, cost, name, desc);
-        
+        this.type = CardType.Building;
     }
     
     public String toString() {

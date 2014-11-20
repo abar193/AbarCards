@@ -358,7 +358,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
     }
 
     @Override
-    public Unit createUnit(UnitCard uc, int player, boolean fromSpell) {
+    public FieldObject createObject(BasicCard uc, int player, boolean fromSpell) {
         System.err.println("On serverGame should not triggered ProviderGameInterface methods");
         return null;
     }

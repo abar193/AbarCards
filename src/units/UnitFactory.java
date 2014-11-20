@@ -16,6 +16,23 @@ public class UnitFactory {
 		
 	}
 	
+	private void configureByCard(FieldObject o, UnitCard uc, src.ProviderGameInterface cG) {
+	    if(uc.qualities != 0) {
+            o.appyQualities(uc.qualities);
+        }
+        
+        if(uc.auraEffects != null) {
+            for(AuraEffect ae : uc.auraEffects) {
+                AuraEffect e = new AuraEffect(ae.type, ae.value, o);
+                cG.addAuraForPlayer(o.player, ae);
+            }
+        }
+        
+        if(uc.power != null) {
+            o.addPower(uc.power);
+        }
+	}
+	
 	/**
 	 * Creates and returns unit represented by the card.
 	 * @param card card - UnitCard or it's descendant
@@ -37,22 +54,24 @@ public class UnitFactory {
 			u = new Unit(card, player, cG);
 		}
 		
-		if(card.qualities != 0) {
-			u.appyQualities(card.qualities);
-		}
-		
-		if(card.auraEffects != null) {
-			for(AuraEffect ae : card.auraEffects) {
-				ae.unit = u;
-				cG.addAuraForPlayer(player, ae);
-			}
-		}
-		
-		if(card.power != null) {
-			u.addPower(card.power);
-		}
+		configureByCard(u, card, cG);
 		
 		return u;
 	}
+	
+	/**
+     * Creates and returns building represented by the card.
+     * @param card BuildingCard representing building
+     * @param player player's number
+     * @return unit created
+     */
+    public Building createBuilding(BuildingCard card, int player, src.ProviderGameInterface cG) {
+        Building b;
+        b = new Building(card, player, cG);
+        
+        configureByCard(b, card, cG);
+        
+        return b;
+    }
 
 }

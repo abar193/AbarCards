@@ -53,7 +53,7 @@ public class AuraStorage {
 		Iterator<AuraEffect> i = auras.iterator();
 		boolean b = false;
 		while(i.hasNext()) {
-			if(u.equals(i.next().unit)) {
+			if(u.equals(i.next().fobj)) {
 				i.remove();
 				b = true;
 			}

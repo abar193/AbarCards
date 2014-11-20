@@ -2,6 +2,7 @@ package src;
 
 import cards.*;
 import ui.SwingVS;
+import units.Building;
 import units.FieldObject;
 import units.Unit;
 import units.Quality;
@@ -264,8 +265,10 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public boolean canPlayCard(BasicCard c, int player) {
 	    if(player != playerTurn || playingCard || !gameRunning) return false;
 	    
-		if(c.type == CardType.Unit)
-			return playersData[player].canPlayCard(c);
+	    if(c.type == CardType.Building) {
+	        return playersData[player].canPlayCard(c) && field.isSpaceAvailable(player, true);
+	    } else if(c.type == CardType.Unit)
+			return playersData[player].canPlayCard(c) && field.isSpaceAvailable(player, false);
 		else if(c.type == CardType.Spell) 
 			return playersData[player].canPlayCard(c) 
 			        & ((SpellCard)c).spell.validate(player, this);
@@ -279,20 +282,28 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @param player player's number
 	 * @return null if nothing was placed, or created unit 
 	 */
-	public Unit createUnit(UnitCard uc, int player, boolean fromSpell) {
-		Unit u = factory.createUnit(uc, player, this);
+	public FieldObject createObject(BasicCard bc, int player, boolean fromSpell) {
+	    FieldObject o;
+		if(bc instanceof BuildingCard) { 
+		    o = factory.createBuilding((BuildingCard)bc, player, this);
+		} else if(bc instanceof UnitCard) {
+		    o = factory.createUnit((UnitCard)bc, player, this);
+		} else {
+		    System.err.println("Can't create unit: Card is neither Building nor Unit");
+		    return null;
+		}
 		try {
-			if(field.canObjectBeAdded(u, player)) {
-				u.respondToEvent(TriggeringCondition.BeforeCreate, null);
-				field.addObject(u, player);
+			if(field.canObjectBeAdded(o, player)) {
+				o.respondToEvent(TriggeringCondition.BeforeCreate, null);
+				field.addObject(o, player);
 				if(fromSpell) 
-				    triggerCreatingEvents(u);
+				    triggerCreatingEvents(o);
 			}
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
 		
-		return u;
+		return o;
 	}
 	
 	/**
@@ -309,8 +320,16 @@ public class Game implements GameInterface, ProviderGameInterface {
     			players.get(player).reciveAction("Playing " + c.name);
     			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
     			
-    			if(c.type == CardType.Unit) {
-    			    Unit u = createUnit((UnitCard)c, player, false); 
+    			if(c.type == CardType.Building) {
+    			    Building b = (Building)createObject((UnitCard)c, player, false); 
+                    if(b == null) 
+                        players.get(player).reciveAction("Can't add that");
+                    else {
+                        playersData[player].playCard(c);
+                        triggerCreatingEvents(b);
+                    }
+    			} else if(c.type == CardType.Unit) {
+    			    Unit u = (Unit)createObject((UnitCard)c, player, false); 
     				if(u == null) 
     					players.get(player).reciveAction("Can't add that");
     				else {
@@ -352,7 +371,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * Called for freshly created unit, to trigger "OnCreate" and "OnAllySpawn" events.
 	 * @param u new units
 	 */
-	private void triggerCreatingEvents(Unit u) {
+	private void triggerCreatingEvents(FieldObject u) {
 	    u.respondToEvent(TriggeringCondition.OnCreate, null);
         this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
 	}

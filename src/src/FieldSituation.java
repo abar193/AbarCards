@@ -126,6 +126,17 @@ public class FieldSituation {
 	}
 	
 	/**
+     * Checks if there is enough space to place new unit/building. 
+     * @param side side of a player
+     * @param building is it building?
+     * @return true if 
+     */
+	public boolean isSpaceAvailable(int side, boolean building) {
+	    if(building) return playerBuildings.get(side).size() < MAXFIELDUNITS;
+	    else return playerUnits.get(side).size() < MAXFIELDUNITS;
+	}
+	
+	/**
 	 * Returns unit's position on field. Used by netGame + testing framework.
 	 * @param u unit to be found
 	 * @return unit's position, or -1 if that unit does not belongs to u.myPlayer side 

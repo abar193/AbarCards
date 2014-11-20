@@ -1,6 +1,6 @@
 package effects;
 
-import units.Unit;
+import units.FieldObject;
 
 /**
  * Aura - special modifier, associated with unit, or lasting duration turns, which 
@@ -14,14 +14,14 @@ public class AuraEffect {
 	/** How much should this modification take */ 
 	public int value;
 	/** Associated unit - if null, then it's duration-based */
-	public Unit unit;
+	public FieldObject fobj;
 	/** How many turns should modifier last */
 	public int duration;
 	
 	/** Creates unit-based aura */
-	public AuraEffect(AuraType type, int value, Unit u) {
+	public AuraEffect(AuraType type, int value, FieldObject u) {
 		this.duration = -1;
-		this.unit = u;
+		this.fobj = u;
 		this.type = type;
 		this.value = value;
 	}
@@ -29,7 +29,7 @@ public class AuraEffect {
 	/** Creates duration-based aura */
 	public AuraEffect(AuraType type, int value, int duration) {
 		this.duration = duration;
-		this.unit = null;
+		this.fobj = null;
 		this.type = type;
 		this.value = value;
 	}
@@ -40,7 +40,7 @@ public class AuraEffect {
 	 * Has no effect, if used on unit-based aura.
 	 */
 	public boolean shouldBeRemovedIfTurnBased() {
-		if(unit == null) {
+		if(fobj == null) {
 			 if(--duration <= 0) return true;
 		}
 		return false;

@@ -6,17 +6,17 @@ package cards;
  *
  */
 public enum CardType {
-	Spell, Unit, Basecard, Developer;
+	Spell, Unit, Building, Developer;
 	
-	public String stringValue() {
+	public String toString() {
 		switch(this) {
 			case Spell: {
-				return "Sp";
+				return "Sc";
 			}
 			case Unit: {
-				return "Un";
+				return "Uc";
 			}
-			case Basecard: {
+			case Building: {
 				return "Bc";
 			}
 			default: return "";

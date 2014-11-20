@@ -18,7 +18,7 @@ import effects.AuraEffect;
 public interface ProviderGameInterface {
 
     public FieldSituation provideFieldSituation();
-    public Unit createUnit(UnitCard uc, int player, boolean fromSpell);
+    public FieldObject createObject(BasicCard uc, int player, boolean fromSpell);
     public Unit askPlayerForTarget(int player);
     public void applySpellToPlayer(int player, AbstractSpell spell);
     public void informAll(String m);

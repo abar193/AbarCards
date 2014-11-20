@@ -108,6 +108,7 @@ public class FieldDrawer extends Panel {
 	    units = fs.allObjectsFromOneSide(opponent, false);
 	    calculateRow(g2, units, (int)(3 * ballSize / 2));
 	    
+	    g2.setColor(Color.black);
 	    g2.drawLine(0, (int)(ballSize * 2), this.getWidth(), (int)(ballSize * 2));
 	    
 	    units = fs.allObjectsFromOneSide(playerNumber, false);
