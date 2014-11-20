@@ -11,7 +11,7 @@ import cards.UnitCard;
 public class Building extends FieldObject {
 
     private int progress = 0;
-    private BasicCard product = null; 
+    private BasicCard product = null;
     private BuildingCard buildingRef;
     
     public Building(BuildingCard c, int player, ProviderGameInterface currentGame) {
