@@ -392,7 +392,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 		playersData[player].auras.addAura(ae);
 	}
 	
-	public Unit askPlayerForTarget(int player) {
+	public FieldObject askPlayerForTarget(int player) {
 		return players.get(player).selectTarget();
 	}
 	

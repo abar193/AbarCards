@@ -4,8 +4,8 @@ import src.FieldSituation;
 import src.GameInterface;
 import ui.VisualSystemInterface;
 import ui.InputInterface;
+import units.FieldObject;
 import units.Unit;
-
 import cards.*;
 
 /**
@@ -59,7 +59,7 @@ public class RealPlayer implements PlayerInterface, InputInterface {
 	}
 
 	@Override
-	public Unit selectTarget() {
+	public FieldObject selectTarget() {
 		return visual.provideUnit();
 	}
 

@@ -24,6 +24,7 @@ public class Building extends FieldObject {
         maxHealth = currentHealth;
         currentDamage = card.getDamage();
         powers = new ArrayList<UnitPower>();
+        progress = 0;
         modHealth = 0;
         modDmg = 0;
     }

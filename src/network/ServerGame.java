@@ -333,7 +333,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 				break;
 			}
 			case "selectTarget": {
-				Unit u = pli.selectTarget();
+				FieldObject u = pli.selectTarget();
 				JSONObject resObj = new JSONObject();
 				resObj.put("return", "selectTarget");
 				resObj.put("side", Integer.toString(u.player));

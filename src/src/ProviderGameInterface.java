@@ -19,7 +19,7 @@ public interface ProviderGameInterface {
 
     public FieldSituation provideFieldSituation();
     public FieldObject createObject(BasicCard uc, int player, boolean fromSpell);
-    public Unit askPlayerForTarget(int player);
+    public FieldObject askPlayerForTarget(int player);
     public void applySpellToPlayer(int player, AbstractSpell spell);
     public void informAll(String m);
     public void addAuraForPlayer(int player, AuraEffect ae);

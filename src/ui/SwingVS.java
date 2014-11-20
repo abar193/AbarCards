@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import src.FieldSituation;
 import src.GameInterface;
+import units.Building;
 import units.FieldObject;
 import units.TriggeringCondition;
 import units.Unit;
@@ -233,26 +234,32 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	}
 	
 	public int selectedUnit = 0;
-	Unit pickedUnit;
+	FieldObject pickedUnit;
 	boolean pickingUnit = false;
 	
 	public void receiveUnitClick(int side, int unit) {
 		if(turnEnded) return;
 		
 		if(pickingUnit) {
-			if(latestSituation.allObjectsFromOneSide((side + playerNumber) % 2, true).size() > unit && unit >= 0) {
-				pickedUnit = (Unit)latestSituation.allObjectsFromOneSide((side + playerNumber) % 2, true).get(unit);
+			if(unit >= 0) {
+			    if(latestSituation.allObjectsFromOneSide(side, false).size() > unit) {
+			        latestSituation.allObjectsFromOneSide(side, false).get(unit);
+			    }
+			} else {
+			    int pick = Math.abs(unit) - 1;
+			    if(latestSituation.allBuildingsFromOneSide(side).size() > pick) {
+                    latestSituation.allBuildingsFromOneSide(side).get(pick);
+                }
 			}
 		}
 		
-		if(unit >= latestSituation.countObjectsForSide((playerNumber + side) % 2, false)) {
-			unit = -1; // target hero
-		}
-		
 		if(targeting) {
-			if(side == 0)
+		    if(side == 0 && unit == this.selectedUnit && unit < 0) { // double click on building
+		        System.out.println("Playing building card");
+		        targeting = false;
+		    } else if(side == 0) {
 				targeting = false;
-			else {
+		    } else {
 				if(parent.attackIsValid(selectedUnit, unit, me.playerNumber)) {
 					targeting = false;
 					input.makeUnitsAttack(selectedUnit, unit);
@@ -261,16 +268,26 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 				}
 			}
 		} else if(side == 0) {
-			ArrayList<FieldObject> myArmy = latestSituation.allObjectsFromOneSide(me.playerNumber, false);
+		    ArrayList<FieldObject> myArmy;
+		    int selection;
+		    if(unit >= 0) {
+		        myArmy = latestSituation.allObjectsFromOneSide(me.playerNumber, false);
+		        selection = unit;
+		    } else {
+		        myArmy = latestSituation.allBuildingsFromOneSide(me.playerNumber);
+                selection = Math.abs(unit) - 1;
+		    }
 			
-			if(myArmy.size() > unit && unit >= 0) {
-				if(((Unit)myArmy.get(unit)).canAttack()) {
-					displayMessage("Select target: ");
+			if(myArmy.size() > selection) {
+			    if(unit >= 0 && ((Unit)myArmy.get(selection)).canAttack()) {
+			        displayMessage("Select target: ");
 					targeting = true;
 					selectedUnit = unit;
+				} else if(unit < 0 && (myArmy.get(selection) instanceof Building)) {
+				    displayMessage("Double click to confirm:");
+				    targeting = true;
+                    selectedUnit = unit;
 				}
-			} else {
-				displayError("Invalid unit selected");
 			}
 		}
 	}
@@ -309,7 +326,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	}
 
 	@Override
-	public Unit provideUnit() {
+	public FieldObject provideUnit() {
 		pickedUnit = null;
 		pickingUnit = true;
 		displayMessage("Pick unit target");

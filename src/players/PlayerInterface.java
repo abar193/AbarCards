@@ -2,6 +2,7 @@ package players;
 
 import src.FieldSituation;
 import src.GameInterface;
+import units.FieldObject;
 import units.Unit;
 
 /**
@@ -40,7 +41,7 @@ public interface PlayerInterface extends Runnable {
 	 * 
 	 * @return selected unit
 	 */
-	public Unit selectTarget();
+	public FieldObject selectTarget();
 	
 	/**
 	 * Called by game: provide visual system to display some information, or error message

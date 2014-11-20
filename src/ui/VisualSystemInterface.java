@@ -3,6 +3,7 @@ package ui;
 import cards.SpellCard;
 import players.*;
 import src.FieldSituation;
+import units.FieldObject;
 import units.TriggeringCondition;
 import units.Unit;
 
@@ -19,6 +20,6 @@ public interface VisualSystemInterface {
 	public void displayUnitDamage(Unit u, int damage);
 	
 	public void setInputInterface(InputInterface i);
-	public Unit provideUnit();
+	public FieldObject provideUnit();
 	public void read();
 }
