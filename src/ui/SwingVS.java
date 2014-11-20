@@ -241,22 +241,29 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		if(turnEnded) return;
 		
 		if(pickingUnit) {
+		    side = (side == 0) ? me.playerNumber : opponent.playerNumber;
 			if(unit >= 0) {
 			    if(latestSituation.allObjectsFromOneSide(side, false).size() > unit) {
-			        latestSituation.allObjectsFromOneSide(side, false).get(unit);
+			        pickedUnit = latestSituation.allObjectsFromOneSide(side, false).get(unit);
 			    }
 			} else {
 			    int pick = Math.abs(unit) - 1;
 			    if(latestSituation.allBuildingsFromOneSide(side).size() > pick) {
-                    latestSituation.allBuildingsFromOneSide(side).get(pick);
+			        pickedUnit = latestSituation.allBuildingsFromOneSide(side).get(pick);
                 }
-			}
+			} return;
 		}
 		
 		if(targeting) {
 		    if(side == 0 && unit == this.selectedUnit && unit < 0) { // double click on building
-		        System.out.println("Playing building card");
 		        targeting = false;
+		        if(parent.canUseBuilding(selectedUnit, me.playerNumber)) {
+		            new Thread(new Runnable(){
+                        @Override
+                        public void run() {
+                            parent.useBuildingCard(selectedUnit, me.playerNumber);
+                        }}).start();
+		        }
 		    } else if(side == 0) {
 				targeting = false;
 		    } else {
@@ -284,9 +291,13 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 					targeting = true;
 					selectedUnit = unit;
 				} else if(unit < 0 && (myArmy.get(selection) instanceof Building)) {
-				    displayMessage("Double click to confirm:");
-				    targeting = true;
-                    selectedUnit = unit;
+				    if(((Building)myArmy.get(selection)).productAvailable()) {
+    				    displayMessage("Double click to confirm");
+    				    targeting = true;
+                        selectedUnit = unit;
+				    } else {
+				        displayMessage("Building not ready");
+				    }
 				}
 			}
 		}

@@ -40,4 +40,20 @@ public interface GameInterface {
 	 * @param player
 	 */
 	public void playerQuits(int player);
+	
+	/**
+	 * Confirmation and check if user is able to use buildings' card. 
+	 * 
+	 * For parameter explanation see useBuildingCard method. 
+	 */
+	public boolean canUseBuilding(int building, int player);
+	
+	/**
+	 * Called to play building's card. 
+	 * @param building buildings number in a building array. If this number is negative (player-chosen) 
+	 *   then it's being converted with Math.abs(building) - 1. If this number is positive, then no preparations
+	 *   are needed
+	 * @param player players number
+	 */
+	public void useBuildingCard(int building, int player);
 }

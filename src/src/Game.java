@@ -120,7 +120,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 			/* * * Init * * */
 		    int player = i % 2;
 		    int opponent = (i + 1) % 2;
-			for(FieldObject u : field.allObjectsFromOneSide(player, false)) {
+			for(FieldObject u : field.allObjectsFromOneSide(player, true)) {
 				u.startTurn();
 			}
 			recalculateFieldModifiers();
@@ -155,7 +155,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 			
 			playingCard = false;
 			playersData[i%2].auras.removeOutdatedAuras();
-			for(FieldObject u : field.allObjectsFromOneSide(i%2, false)) {
+			for(FieldObject u : field.allObjectsFromOneSide(i%2, true)) {
 				u.endTurn();
 			}
 			i++;
@@ -305,6 +305,36 @@ public class Game implements GameInterface, ProviderGameInterface {
 		
 		return o;
 	}
+	
+
+    @Override
+    public boolean canUseBuilding(int building, int player) {
+        if(player != playerTurn || playingCard || !gameRunning) return false;
+        if(building < 0) building = Math.abs(building) - 1;
+        
+        if(field.allBuildingsFromOneSide(player).size() > building) {
+            if(field.allBuildingsFromOneSide(player).get(building) instanceof Building) {
+                Building b = (Building)field.allBuildingsFromOneSide(player).get(building);
+                return b.productAvailable();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void useBuildingCard(int building, int player) {
+        if(building < 0) building = Math.abs(building) - 1;
+        if(!canUseBuilding(building, player)) return;
+        
+        if(field.allBuildingsFromOneSide(player).size() > building) {
+            if(field.allBuildingsFromOneSide(player).get(building) instanceof Building) {
+                Building b = (Building)field.allBuildingsFromOneSide(player).get(building);
+                BasicCard c = b.takeProduct();
+                playersData[player].forceReceive(c);
+                playCard(c, player);
+            }
+        }
+    }
 	
 	/**
 	 * Plays card of player. Summons unit, or casts spell, depending of card type.

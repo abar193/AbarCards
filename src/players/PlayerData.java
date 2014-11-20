@@ -172,6 +172,14 @@ public class PlayerData {
 	    }
 	}
 	
+	/** For playing buildings' card, or in any other situation, when card will be 
+	 * removed from hand before user gets a chance to see it. 
+	 * @param c card to insert.
+	 */
+	public void forceReceive(BasicCard c) {
+	    myHand.add(c);
+	}
+	
 	/**
 	 * Drains mana, and removes card from player's hand.
 	 * @throws IllegalArgumentException if the card does not match the canPlayCard criteria
