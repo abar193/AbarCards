@@ -199,6 +199,33 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 		return false;
 	}
 	
+	@Override
+    public boolean canUseBuilding(int building, int player) {
+	    JSONObject jobj = new JSONObject();
+        jobj.put("action", "canUseBuilding");
+        jobj.put("building", Integer.toString(building));
+        jobj.put("player", Integer.toString(player));
+        
+        String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "canUseBuilding");
+        System.out.println("Resp got" + resp);
+        if(resp.equals(ServerResponses.ResponseIllegal)) {
+            System.err.println("Illegal move in canUseBuilding with output msg = " + JSONValue.toJSONString(jobj));
+        }
+        return resp.equals(ServerResponses.ResponseTrue);
+    }
+
+    @Override
+    public void useBuildingCard(int building, int player) {
+        JSONObject jobj = new JSONObject();
+        jobj.put("action", "useBuildingCard");
+        jobj.put("building", Integer.toString(building));
+        jobj.put("player", Integer.toString(player));
+        String resp = sendMessageAndAwaitAnswer(JSONValue.toJSONString(jobj), "useBuildingCard");
+        if(!resp.equals(ServerResponses.ResponseOk)) {
+            System.err.println("Not ok in playCard, response: " + resp);
+        }
+    }
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean canPlayCard(BasicCard c, int player) {
@@ -350,7 +377,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
         jobj.put("player", Integer.toString(player));
         sendMessage(JSONValue.toJSONString(jobj));
     }
-
+	
     @Override
     public FieldSituation provideFieldSituation() {
         System.err.println("On serverGame should not triggered ProviderGameInterface methods");
@@ -392,18 +419,6 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
     @Override
     public void passEventAboutUnit(units.FieldObject u, TriggeringCondition e) {
         System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
-    }
-
-    @Override
-    public boolean canUseBuilding(int building, int player) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void useBuildingCard(int building, int player) {
-        // TODO Auto-generated method stub
-        
     }
 	
 }
