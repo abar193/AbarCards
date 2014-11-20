@@ -6,6 +6,11 @@ going to use/fork/distribute this project, please contact me, I'll be happy. (Wh
 *** 
 News: 
 
+New mechanics added: Buildings. Like units, buildings may be played from the hand, but they can't attack: instead they produce a card 
+once in X turns. Once building's card is used it will start creating new one. 
+
+***  
+
 Implemented testing framework. Custom classes in tests.framework package are allowing fully authomated real-game test. In test cases 
 user may define order of cards in players decks, bot-player actions, and end-turn situations. If at some point exception will occur, or 
 situation at the end of the turn will not match the one described in TestingSituation test will be failed. Example of using that framework 
@@ -42,6 +47,8 @@ Things done so far:
 	* GUI, capable of doing a bit less than Console output, but looking prettier.
 	
 	* Websockets use, allowing me to separate Player and Game server. Not fully implemented
+
+    * Buildings
 
 What I'm working on for now: 
     
