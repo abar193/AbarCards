@@ -162,7 +162,7 @@ public abstract class FieldObject {
             currentHealth -= d;
             if(currentGame != null)
                 currentGame.informAll(String.format("%s takes %d damage", 
-                    "TODO", d));
+                    this.card.name, d));
             this.respondToEvent(TriggeringCondition.OnDamage, this);
         }
     }
