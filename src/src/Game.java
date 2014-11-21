@@ -442,7 +442,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public synchronized void recalculateFieldModifiers() {
 		for(int i = 0; i < 2; i++) {
 		    playersData[i].auras.calculateModifiers();
-		    if(playersData[i].getHealth() <= 0) endGame(i);
+		    if(field.playerLost(i)) endGame(i);
 		    
 			int[] modifiers = playersData[i].auras.getModifiers();
 			ArrayList<FieldObject> objects = field.allObjectsFromOneSide(i, true);

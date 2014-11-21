@@ -30,7 +30,7 @@ public class FieldSituation {
 	
 	private ArrayList<ArrayList<Unit>> playerUnits;
 	private ArrayList<ArrayList<FieldObject>> playerBuildings;
-	private ArrayList<Unit> heroes;
+	private Unit[] heroes = new Unit[2];
 	
 	private src.ProviderGameInterface currentGame;
 	
@@ -45,17 +45,20 @@ public class FieldSituation {
 			add(new ArrayList<FieldObject>(MAXFIELDUNITS));
 		}};
 		
-		heroes = new ArrayList<Unit>(2);
 		currentGame = cG;
 	}
 	
 	public void addHeroForSide(int s, Unit u) {
-	    heroes.add(s, u);
+	    heroes[s] = u;
 	    playerBuildings.get(s).add(u);
 	}
 	
+	public boolean playerLost(int p) {
+	    return playerBuildings.get(p).isEmpty();
+	}
+	
 	public boolean heroDead(int s) {
-	    return heroes.get(s).isDead();
+	    return heroes[s].isDead();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -83,7 +86,7 @@ public class FieldSituation {
 		
 		playerUnits = new ArrayList<ArrayList<Unit>>(2);
 		playerBuildings = new ArrayList<ArrayList<FieldObject>>(2);
-		heroes = new ArrayList<Unit>(2);
+		heroes = new Unit[2];
 		for(int j = 0; j < 2; j++) {
 			JSONArray jarr;
 			try { 
@@ -112,7 +115,7 @@ public class FieldSituation {
                 if(fo.toString().contains("\\\"Name\\\":\\\"Hero\\\"")) {
                     Unit u = new Unit(fo, cG);
                     objs.add(u);
-                    heroes.add(u);
+                    heroes[j] = u;
                 } else {
                     try {
                         objs.add(new Building(fo, cG));
@@ -391,8 +394,7 @@ public class FieldSituation {
 	 */
 	public boolean removeObjectOfPlayer(FieldObject u, int p) {
 	    if(u instanceof PlayerUnit) {
-	        playerBuildings.get(p).remove(u);
-	        return heroes.remove(u);
+	        return playerBuildings.get(p).remove(u); // do not remove hero from "heroes" to avoid crashes
 	    } else if(u instanceof Building) {
 	        return playerBuildings.get(p).remove(u);
 	    } else {
