@@ -44,7 +44,7 @@ public class MenuController {
         DeckBuilder.loadDeck(new File(filename), cards, null);
         
         if(opp == PossibleOpponents.SinglePassiveBot || opp == PossibleOpponents.SingleEasyBot) {
-            singleplayerGame(new Deck(cards), opp);
+            singleplayerGame(new Deck(cards, null), opp);
         } else {
             parent.reciveWaitSignal();
             String opponent = ""; 
@@ -62,7 +62,7 @@ public class MenuController {
         Game g = new Game();
         SwingVS vs = new SwingVS(g);
         players.RealPlayer r = new players.RealPlayer(vs);
-        Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"));
+        Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"), null);
         d2.shuffleCards();
         switch(opp) {
             case SingleEasyBot: 

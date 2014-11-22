@@ -8,7 +8,7 @@ public class TestCard extends BasicCard {
 	public int value;
 	
 	public TestCard(int v) {
-		super("T", "C");
+		super("T"+v, "C");
 		value = v;
 		this.cost = 5;
 		this.type = CardType.Spell;

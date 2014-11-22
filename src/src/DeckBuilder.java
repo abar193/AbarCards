@@ -48,7 +48,7 @@ public class DeckBuilder {
 	}
 	
 	public void selectCard(BasicCard c) {
-		if(selectedCards.size() < Deck.DECK_SIZE) { 
+		if(selectedCards.size() < Deck.UNIT_DECK_SIZE) { 
 			selectedCards.add(c);
 			drawCards();
 		}
@@ -69,7 +69,7 @@ public class DeckBuilder {
 	 * @return deck, or null if selected cards cannot build valid deck
 	 */
 	public Deck validDeck() {
-		Deck d = new Deck(selectedCards);
+		Deck d = new Deck(selectedCards, null);
 		if(d.validateCards()) {
 			return d;
 		}
@@ -153,7 +153,7 @@ public class DeckBuilder {
 		    // Load deck
             int count = 0;
 		    while((s = reader.readLine()) != null) {
-		        if(++count > Deck.DECK_SIZE) break;
+		        if(++count > Deck.UNIT_DECK_SIZE) break;
 		        
 		    	String[] splits = new String[2];
 		    	int lastpost = s.lastIndexOf(" ");
@@ -231,7 +231,7 @@ public class DeckBuilder {
 	    this.controller = controller;
 	    DOMDeckReader dpr = new DOMDeckReader();
 	    fullDeck = dpr.parseFile("NeutralsDeck.xml");
-	    selectedCards = new ArrayList<BasicCard>(Deck.DECK_SIZE);
+	    selectedCards = new ArrayList<BasicCard>(Deck.UNIT_DECK_SIZE);
 	    boolean b = false;
 	    deckSaveName = raceName;
 	    

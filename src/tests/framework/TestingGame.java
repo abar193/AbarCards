@@ -107,8 +107,8 @@ public class TestingGame extends Game {
             d2.add(cardFromName(i.next(), r2));
         }
         
-        this.deck1 = new Deck(d1);
-        this.deck2 = new Deck(d2);
+        this.deck1 = new Deck(d1, null);
+        this.deck2 = new Deck(d2, null);
     }
     
     /**

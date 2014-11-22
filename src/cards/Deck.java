@@ -12,96 +12,115 @@ import java.util.Random;
  *
  */
 public class Deck {
-	public static final int DECK_SIZE = 15;
+	public static final int UNIT_DECK_SIZE = 15;
+	public static final int BASE_DECK_SIZE = 10;
 	
-	private ArrayList<BasicCard> cards = null;
-	
+	private ArrayList<BasicCard> unitCards = null;
+	private ArrayList<BasicCard> baseCards = null;
 	@SuppressWarnings("unchecked")
 	/** 
 	 * Initialises deck with a list of cards and with default DECK_SIZE.
 	 * @param newcards cards to use
 	 */
-	public Deck(ArrayList<BasicCard> newcards) {
-		cards = (ArrayList<BasicCard>)newcards.clone();
+	public Deck(ArrayList<BasicCard> newUcards, ArrayList<BasicCard> newBcards) {
+		unitCards = (ArrayList<BasicCard>)newUcards.clone();
+		if(newBcards == null) return;
+		baseCards = (ArrayList<BasicCard>)newBcards.clone();
 	}
 	
 	/**
 	 * Initialises empty deck with default DECK_SIZE.
 	 */
 	public Deck() {
-		cards = new ArrayList<BasicCard>(DECK_SIZE);
+		unitCards = new ArrayList<BasicCard>(UNIT_DECK_SIZE);
+		unitCards = new ArrayList<BasicCard>(BASE_DECK_SIZE);
 	}
 	
 	/**
-	 * Adds card to card list used.
+	 * Adds card to unit cards list.
 	 * @param bc card to add
 	 */
-	public void addCard(BasicCard bc) {
-		cards.add(bc);
+	public void addUnitCard(BasicCard bc) {
+		unitCards.add(bc);
 	}
+	
+	/**
+     * Adds card to base cards list.
+     * @param bc card to add
+     */
+    public void addBaseCard(BasicCard bc) {
+        unitCards.add(bc);
+    }
 	
 	/** 
 	 * Puts card to random place to a random place of card's list.
 	 * @param bc card to add.
 	 */
-	public void addSomewhere(BasicCard bc) {
-		cards.add((new Random()).nextInt(cards.size()), bc);
+	public void addSomewhereUnitCard(BasicCard bc) {
+		unitCards.add((new Random()).nextInt(unitCards.size()), bc);
 	}
+	
+	/** 
+     * Puts card to random place to a random place of card's list.
+     * @param bc card to add.
+     */
+    public void addSomewhereBaseCard(BasicCard bc) {
+        baseCards.add((new Random()).nextInt(baseCards.size()), bc);
+    }
 	
 	/**
 	 * Checks if card list matches games rules.
 	 * @return true if it matches.
 	 */
 	public boolean validateCards() {
-		if(cards == null || cards.size() == 0 || cards.size() > DECK_SIZE) {
+		if(unitCards == null || unitCards.size() != UNIT_DECK_SIZE) {
 			return false;
 		}
-		return (cards.size() == DECK_SIZE);
+		if(baseCards == null || baseCards.size() != BASE_DECK_SIZE) {
+            return false;
+        }
+		return true;
 	}
 	
 	/**
 	 * Randomises order of cards in card list.
 	 */
 	public void shuffleCards() {
-		if(cards.size() <= 1) return;
-		
-		int shuffles = 500;
-		Random r = new Random();
-		shuffles += r.nextInt(500);
-		for(int i = 0; i < shuffles; i++) {
-			int a = r.nextInt(cards.size());
-			int b = r.nextInt(cards.size());
-			b = (a == b) ? (b + 1) % cards.size() : b;
-			
-			BasicCard c1 = cards.get(a);
-			BasicCard c2 = cards.get(b);
-			
-			cards.remove(a);
-			cards.remove(c2);
-			
-			cards.add(Math.min(a, cards.size()), c2);
-			cards.add(Math.min(b, cards.size()), c1);
-		}
+		java.util.Collections.shuffle(unitCards);
+		if(baseCards == null) return;
+		java.util.Collections.shuffle(baseCards);
 	}
 	
 	/**
 	 * Pulls card from the top and removes it from the list.
 	 * @return card pulled from list
 	 */
-	public BasicCard removeCard() {
-		if(cards.size() > 0) {
-			return cards.remove(0);
+	public BasicCard removeUnitCard() {
+		if(unitCards.size() > 0) {
+			return unitCards.remove(0);
 		} else {
 			return null;
 		}
 	}
 	
 	/**
+     * Pulls card from the top and removes it from the list.
+     * @return card pulled from list
+     */
+    public BasicCard removeBaseCard() {
+        if(baseCards.size() > 0) {
+            return baseCards.remove(0);
+        } else {
+            return null;
+        }
+    }
+	
+	/**
 	 * Old debug method used for unittests.
 	 */
 	public String output() { 
 		String s = "";
-		for(BasicCard bc: cards) {
+		for(BasicCard bc: unitCards) {
 			s += bc.debugDisplay();
 		}
 		return s;
@@ -110,7 +129,39 @@ public class Deck {
 	/**
 	 * @return size of cards list.
 	 */
-	public int getSize() {
-		return cards.size();
+	public int getSize(boolean baseCard) {
+		return (baseCard) ? baseCards.size() : unitCards.size();
+	}
+	
+	/**
+	 * Returns probability of pulling some card.
+	 * @param baseCard
+	 * @return
+	 */
+	public ArrayList<String> probabilities(boolean baseCard) {
+	    ArrayList<String> outp = new ArrayList<String>();
+	    ArrayList<BasicCard> cards = (baseCard) ? baseCards : unitCards;
+	    String[] names = new String[cards.size()];
+	    int[] hits = new int[cards.size()];
+	    int s = 0;
+	    for(BasicCard c : cards) {
+	        boolean hit = false;
+	        for(int i = 0; i < s; i++) {
+	            if(names[i].equals(c.name)) {
+	                hits[i]++;
+	                hit = true;
+	                break;
+	            }
+	        }
+	        if(!hit) {
+	            names[s] = c.name;
+	            hits[s] = 1;
+	            s++;
+	        }
+	    }
+	    for(int i = 0; i < s; i++) {
+	        outp.add(String.format("%s: %.02f%%", names[i], (float)(hits[i]) / (float)(s)));
+	    }
+	    return outp;
 	}
 }

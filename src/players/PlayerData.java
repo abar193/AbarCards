@@ -146,7 +146,7 @@ public class PlayerData {
 		boolean cantPullInformed = false;
 		ArrayList<BasicCard> ar = new ArrayList<BasicCard>(n);
 		for(int i = 0; i < n; i++) {
-			BasicCard bc = myDeck.removeCard();
+			BasicCard bc = myDeck.removeUnitCard();
 			if(bc == null) {
 				this.representingUnit.damage(NOCARDPENALTY);
 				if(!cantPullInformed) {
@@ -242,7 +242,7 @@ public class PlayerData {
 	
 	public int getDeckSize() {
 		if(myDeck == null) return myDeckSize;
-		else return myDeck.getSize();
+		else return myDeck.getSize(false);
 	}
 	
 	public int getHandSize() {
@@ -323,6 +323,6 @@ public class PlayerData {
 	
 	public String toString() {
         return String.format("Player #%d with %dH %d/%d mana and %d/%d cards", playerNumber,
-                this.getHealth(), availableMana, totalMana, myHand.size(), myDeck.getSize()); 
+                this.getHealth(), availableMana, totalMana, myHand.size(), myDeck.getSize(false)); 
     }
 }
