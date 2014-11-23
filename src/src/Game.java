@@ -103,8 +103,8 @@ public class Game implements GameInterface, ProviderGameInterface {
 		PlayerData player2 = new PlayerData(d2, h2, p2, this);
 		initPlayers((PlayerInterface)p1, (PlayerInterface)p2, player1, player2);
 		
-		playersData[0].pullCard(2);
-		playersData[1].pullCard(3);
+		playersData[0].pullCard(2, false);
+		playersData[1].pullCard(3, false);
 	}
 	
 	/** Launches the game */
@@ -124,7 +124,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 				u.startTurn();
 			}
 			recalculateFieldModifiers();
-			ArrayList<BasicCard> cards = playersData[player].pullCard(1);
+			ArrayList<BasicCard> cards = playersData[player].pullCard(1, false);
 			if(cards != null) 
 				informLostCards(cards, player);
 			
@@ -375,10 +375,10 @@ public class Game implements GameInterface, ProviderGameInterface {
     			} else if (c.type == CardType.Developer) {
     			    switch(((DevCard)c).devType) {
                         case Draw1Card:
-                            playersData[player].pullCard(1);
+                            playersData[player].pullCard(1, false);
                             break;
                         case Draw5Cards:
-                            playersData[player].pullCard(5);
+                            playersData[player].pullCard(5, false);
                             break;
                         case InfiniteMana:
                             playersData[player].playCard(c);

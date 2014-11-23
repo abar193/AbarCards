@@ -123,7 +123,7 @@ public class PlayerData {
 					this.representingUnit.damage(ps.value);
 					break;
 				case PullCard: {
-					ArrayList<BasicCard> cards = this.pullCard(ps.value);
+					ArrayList<BasicCard> cards = this.pullCard(ps.value, false);
 					if(cards != null) 
 						currentGame.informLostCards(cards, this.playerNumber);
 					break;
@@ -140,13 +140,13 @@ public class PlayerData {
 	 * @param n how many cards should be pulled
 	 * @return null if card was added or there were no cards, card, if MAXHANDLIMIT is reached 
 	 */
-	public ArrayList<BasicCard> pullCard(int n) {
+	public ArrayList<BasicCard> pullCard(int n, boolean isBaseCard) {
 		if(myPlayer != null) 
 			myPlayer.reciveAction("You pull " + n + " card(s)");
 		boolean cantPullInformed = false;
 		ArrayList<BasicCard> ar = new ArrayList<BasicCard>(n);
 		for(int i = 0; i < n; i++) {
-			BasicCard bc = myDeck.removeUnitCard();
+			BasicCard bc = (isBaseCard) ? myDeck.removeBaseCard() : myDeck.removeUnitCard();
 			if(bc == null) {
 				this.representingUnit.damage(NOCARDPENALTY);
 				if(!cantPullInformed) {

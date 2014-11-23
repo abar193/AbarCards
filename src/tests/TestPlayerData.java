@@ -40,9 +40,9 @@ public class TestPlayerData {
 			d.addUnitCard(c2);
 			PlayerData p = new PlayerData(d, 30, null, null);
 			
-			assertNull(p.pullCard(3));
+			assertNull(p.pullCard(3, false));
 			assertEquals(30, p.getHealth());
-			p.pullCard(1);
+			p.pullCard(1, false);
 			assertEquals(29, p.getHealth());
 		}
 		
@@ -58,7 +58,7 @@ public class TestPlayerData {
 			c2.cost = 1; 
 			d.addUnitCard(c2);
 			PlayerData p = new PlayerData(d, 30, null, 2, null);
-			ArrayList<BasicCard> al = p.pullCard(3);
+			ArrayList<BasicCard> al = p.pullCard(3, false);
 			assertEquals(1, al.size());
 			assertEquals(c2, al.get(0));
 			assertEquals(30, p.getHealth());
@@ -78,7 +78,7 @@ public class TestPlayerData {
 		c2.cost = 2; 
 		d.addUnitCard(c2);
 		PlayerData p = new PlayerData(d, 30, null, null);
-		p.pullCard(3);
+		p.pullCard(3, false);
 		assertEquals(p.getAvailableMana(), 0);
 		assertEquals(p.getTotalMana(), 0);
 		assertEquals(true, p.canPlayCard(c0));

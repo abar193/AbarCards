@@ -130,8 +130,8 @@ public class TestingGame extends Game {
         playersData[1] = new PlayerData(deck2, h2, i2, this);
         playersData[0].playerNumber = 0;
         playersData[1].playerNumber = 1;
-        playersData[0].pullCard(2);
-        playersData[1].pullCard(3);
+        playersData[0].pullCard(2, false);
+        playersData[1].pullCard(3, false);
         pd = playersData;
         players = new ArrayList<players.PlayerInterface>(2);
         players.add(i1);
@@ -165,7 +165,7 @@ public class TestingGame extends Game {
                 u.startTurn();
             }
             recalculateFieldModifiers();
-            ArrayList<BasicCard> cards = playersData[player].pullCard(1);
+            ArrayList<BasicCard> cards = playersData[player].pullCard(1, false);
             if(cards != null) 
                 informLostCards(cards, player);
             
