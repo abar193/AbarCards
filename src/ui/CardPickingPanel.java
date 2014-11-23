@@ -33,6 +33,9 @@ public class CardPickingPanel extends JPanel {
 	public CardPickingFrame parent;
 	private ArrayList<BasicCard> cards;
 	int start;
+	private Font font1 = new Font("SansSerif", Font.BOLD, 12);
+	private Font font1a = new Font("SansSerif", Font.PLAIN, 12);
+	private Font font2 = new Font("SansSerif", Font.BOLD, 14);
 	
 	public CardPickingPanel() {
 		this.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -63,27 +66,39 @@ public class CardPickingPanel extends JPanel {
 	public void printCardAt(Graphics2D g2, BasicCard card, int startX, int startY, int width, 
 	        int height) 
 	{
-		g2.drawRect(startX, startY, width, height);
-		DrawingOperations.drawCenteredStringAt(g2, card.name, startX, width, startY + 15);
-		DrawingOperations.drawCenteredStringAt(g2, card.description, startX, width, startY + 30);
+		g2.drawRoundRect(startX, startY, width, height, 45, 45);
+		g2.setColor(java.awt.Color.gray);
+		g2.drawLine(startX, startY+45, startX+width, startY + 45);
+		g2.drawLine(startX+25, startY + 46, startX+width, startY + 46);
+		g2.drawLine(startX+1, startY+45, startX+1, startY+height-65);
+		g2.drawLine(startX+width-1, startY+45, startX+width-1, startY+height-65);
+		g2.setColor(java.awt.Color.black);
+		g2.setFont(font1);
+		g2.drawString(card.name, startX + 10, startY + 20);
+		g2.setFont(font1a);
+		DrawingOperations.drawCenteredStringAt(g2, card.description, startX, width, startY + 35);
 		String type;
 		if(card.type == CardType.Unit) {
 			UnitCard bc = (UnitCard)card;
-			if(bc.cardClass != null) {
+			if(bc.cardClass != null && bc.cardClass != "") {
 			    DrawingOperations.drawCenteredStringAt(g2, String.format("*%s*", bc.cardClass),
-			            startX, width, startY + height - 45);
+			            startX, width, startY + height - 50);
 			}
-			type = String.format("|%2dd/%2dh%2d$|", bc.getDamage(),
-					bc.getHealth(), bc.cost);
+			type = String.format("%2dD / %2dH", bc.getDamage(), bc.getHealth());
 		} else {
-			type = String.format("|%6s%3d$|", "Spell", card.cost);
+			type = "SPELL";
 		}
+		g2.setFont(font2);
 		DrawingOperations.drawCenteredStringAt(g2, type, startX, width, startY + height - 30); 
-		
+		g2.drawString(card.cost + "$", startX + width - 25, startY + height - 15); 
+		g2.setColor(java.awt.Color.gray);
+        g2.drawLine(startX, startY+height-65, startX+width, startY+height-65);
+        g2.setColor(java.awt.Color.black);
+		g2.setFont(font1a);
 		if(card.fullDescription != null) {
 		    String[] splits = splitLines(card.fullDescription, g2.getFontMetrics(), width);
 		    for(int i = 0; i < splits.length; i++) {
-		        g2.drawString(splits[i], startX + 5, startY + 50 + i * 15);
+		        g2.drawString(splits[i], startX + 5, startY + 65 + i * 15);
 		    }
 		}
 
@@ -95,7 +110,7 @@ public class CardPickingPanel extends JPanel {
 	
 	public void paint (Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setFont(new Font("SansSerif", Font.BOLD, 12));
+		g2.setFont(font1);
 		g2.setColor(java.awt.Color.white);
 		
 		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
