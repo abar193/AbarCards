@@ -36,13 +36,14 @@ public class DeckBuilder {
 	private final MenuController controller;
 	
 	public void drawCards() {
-		frame.setDrawnCards(fullDeck, startPos, selectedCards);
+		frame.setDrawnCards(fullDeck, startPos);
 		frame.repaint();
 	}
 	
 	public void removeSelecteCard(int i) {
 		if(i < selectedCards.size()) {
 			selectedCards.remove(i);
+			frame.removeSelectedCard(i);
 			drawCards();
 		}
 	}
@@ -50,6 +51,7 @@ public class DeckBuilder {
 	public void selectCard(BasicCard c) {
 		if(selectedCards.size() < Deck.UNIT_DECK_SIZE) { 
 			selectedCards.add(c);
+			frame.addSelectedCard(c);
 			drawCards();
 		}
 	}
@@ -252,7 +254,8 @@ public class DeckBuilder {
 	        deckRace = names[playerChoose];
 	    }
 	    
-	    frame = new CardPickingFrame(this, playerChoose);
+	    frame = new CardPickingFrame(this);
+	    frame.setSelectedCards(selectedCards);
 	    
 	    new Thread(new Runnable() {
             @Override

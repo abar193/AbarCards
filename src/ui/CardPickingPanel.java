@@ -30,7 +30,7 @@ import cards.UnitCard;
 public class CardPickingPanel extends JPanel {
 
 	private static final long serialVersionUID = 3908875203258467002L;
-	public CardPickingFrame parent;
+	public CardPickingFrame frameparent;
 	private ArrayList<BasicCard> cards;
 	int start;
 	private Font font1 = new Font("SansSerif", Font.BOLD, 12);
@@ -68,9 +68,10 @@ public class CardPickingPanel extends JPanel {
 	{
 		g2.drawRoundRect(startX, startY, width, height, 45, 45);
 		g2.setColor(java.awt.Color.gray);
+		g2.drawRoundRect(startX+1, startY+1, width-1, height-1, 45, 45);
 		g2.drawLine(startX, startY+45, startX+width, startY + 45);
-		g2.drawLine(startX+25, startY + 46, startX+width, startY + 46);
-		g2.drawLine(startX+1, startY+45, startX+1, startY+height-65);
+		g2.drawLine(startX, startY + 46, startX+width-25, startY + 46);
+		g2.drawLine(startX+2, startY+45, startX+2, startY+height-65);
 		g2.drawLine(startX+width-1, startY+45, startX+width-1, startY+height-65);
 		g2.setColor(java.awt.Color.black);
 		g2.setFont(font1);
@@ -105,7 +106,7 @@ public class CardPickingPanel extends JPanel {
 	}
 	
 	public void click(int c) {
-		parent.cardClicked(cards.get(c + start));
+		frameparent.cardClicked(cards.get(c + start));
 	}
 	
 	public void paint (Graphics g) {

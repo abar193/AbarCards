@@ -25,6 +25,8 @@ import aurelienribon.tweenengine.Tween;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 
 /** 
@@ -68,8 +70,20 @@ public class MainMenu extends JFrame implements ActionListener {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
-                
             }
+        });
+        
+        this.addComponentListener(new ComponentAdapter() 
+        {  
+                public void componentResized(ComponentEvent evt) {
+                    Component c = (Component)evt.getSource();
+                    System.out.println("Resized");
+                    if(state == MenuState.Playing || state == MenuState.Building) {
+                        System.out.println("Resized1");
+                        gamePanel.setBounds(getContentPane().getBounds());
+                        gamePanel.getComponent(0).setBounds(gamePanel.getBounds());
+                    }
+                }
         });
     }
 
@@ -78,6 +92,7 @@ public class MainMenu extends JFrame implements ActionListener {
         this.setContentPane(new SLPanel());
         this.setBackground(java.awt.Color.WHITE);
         state = MenuState.Main;
+        this.setMinimumSize(new java.awt.Dimension(800, 600));
         
         button1 = new JButton("New game");
         button1.addActionListener(this);

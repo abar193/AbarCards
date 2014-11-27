@@ -12,7 +12,7 @@ import java.util.Random;
  *
  */
 public class Deck {
-	public static final int UNIT_DECK_SIZE = 15;
+	public static final int UNIT_DECK_SIZE = 16;
 	public static final int BASE_DECK_SIZE = 10;
 	
 	private ArrayList<BasicCard> unitCards = null;

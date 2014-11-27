@@ -1,6 +1,5 @@
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
@@ -12,12 +11,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
 import javax.swing.SpringLayout;
 
 import cards.BasicCard;
@@ -36,11 +37,7 @@ public class CardPickingFrame extends JPanel implements ActionListener {
     private DeckBuilder parent;
     private CardPickingPanel picker;
     private ArrayList<BasicCard> cards;
-    private JButton description;
-    private Panel selectedCardsText;
-    private JLayeredPane pane;
-    private Panel bottomLayer;
-    private JTextField input;
+    
     
 	private static final String SAVE_COMMAND = "Save deck";
 	private static final String DELETE_COMMAND = "Delete deck";
@@ -48,129 +45,214 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 	
 	private static final int MENU_HEIGHT = 100;
 	
-	public CardPickingFrame(DeckBuilder db, final int slotNum) {
+	public CardPickingFrame(DeckBuilder db) {
 		parent = db;
 
 		this.setSize(790, 570);
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI(slotNum);
-            }
-        });
+		createAndShowGUI();
 	}
 	
-	public void createAndShowGUI(int slot) {
-		setLayout(new BorderLayout());
-		System.out.println("Rendered");
-		
-		pane = new JLayeredPane();
-		pane.setSize(this.getSize());
-	//setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
-		add(pane);
-		pane.setVisible(true);
-		
-		bottomLayer = new Panel();
-		bottomLayer.setLayout(new BorderLayout());
-		bottomLayer.setVisible(true);
-		bottomLayer.setSize(this.getWidth(), this.getHeight());
-		
-		Panel panel = new Panel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-		GridLayout gr = new GridLayout();
-		
-		panel.setSize(this.getWidth(), 100);
-		
-		JButton button = new JButton();
-		button.setText(CANCEL_COMMAND);
-		button.addActionListener(this);
-		panel.add(button);
-		input = new JTextField(parent.deckSaveName);
-		input.setSize(new Dimension(150, panel.getHeight()));
-		input.setMaximumSize(new Dimension(250, input.getHeight()));
-		panel.add(input);
-		button = new JButton();
-		button.setText(SAVE_COMMAND);
-		button.addActionListener(this);
-		panel.add(button);
-		button = new JButton();
-		button.setText(DELETE_COMMAND);
-		button.addActionListener(this);
-		panel.add(button);
-		
-		bottomLayer.add(panel, BorderLayout.PAGE_START);
+	public void createAndShowGUI() {
+	    backButton = new JButton();
+        input = new JTextField();
+        saveButton = new JButton();
+        deleteButton = new JButton();
+        picker = new CardPickingPanel();
+        leftButton = new JButton();
+        rightButton = new JButton();
+        deckPanel = new JPanel();
+        switcherButton = new JButton();
+        containerPanel = new JPanel();
         
-		JButton left = new JButton();
-		left.setSize(100, 400);
-		left.setText("<");
-		left.addActionListener(this);
-		bottomLayer.add(left, BorderLayout.LINE_START);
-        
-		Panel cent = new Panel();
-		cent.setSize(600, 400);
-		bottomLayer.add(cent, BorderLayout.CENTER);
-		cent.setLayout(new BoxLayout(cent, BoxLayout.LINE_AXIS));
-		
-		picker = new CardPickingPanel();
-		picker.parent = this;
-		picker.setMinimumSize(new Dimension(400, 400));
-        picker.setBounds(0, 0, 500, 400);
-        if(cards != null) picker.setDrawnCards(cards, 0); 
-        cent.add(picker);
-        
-        selectedCardsText = new Panel();
-        selectedCardsText.setLayout(new BoxLayout(selectedCardsText, BoxLayout.Y_AXIS));
-        selectedCardsText.setBackground(java.awt.Color.LIGHT_GRAY);
-        selectedCardsText.setSize(100, 450);
-        selectedCardsText.setMaximumSize(new Dimension(100, 450));
-        selectedCardsText.setMinimumSize(new Dimension(100, 450));
-        selectedCardsText.setPreferredSize(new Dimension(100, 450));
-        selectedCardsText.add(new JLabel("Selected cards:"));
+        setMaximumSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
-        cent.add(selectedCardsText);
+        backButton.setText("<Back");
+        backButton.setName("BackButton"); 
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+
+        input.setText("Deck Name");
+
+        saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonClicked(evt);
+            }
+        });
         
-        JButton right = new JButton();
-		right.setText(">");
-		right.setSize(100, 400);
-		right.addActionListener(this);
-		bottomLayer.add(right, BorderLayout.LINE_END);
-		pane.add(bottomLayer, JLayeredPane.DEFAULT_LAYER);
-		
-        description = new JButton();
-        description.setSize(800, 100);
-        description.setVisible(true);
-        description.setText("LaLala");
-        bottomLayer.add(description, BorderLayout.SOUTH);
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonClicked(evt);
+            }
+        });
+
+        picker.setBackground(new java.awt.Color(102, 255, 102));
+        picker.frameparent = this;
         
+        GroupLayout pickerLayout = new GroupLayout(picker);
+        picker.setLayout(pickerLayout);
+        pickerLayout.setHorizontalGroup(
+            pickerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGap(0, 570, Short.MAX_VALUE)
+        );
+        pickerLayout.setVerticalGroup(
+            pickerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        leftButton.setText("<");
+        leftButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leftButtonActionPerformed(evt);
+            }
+        });
+
+        rightButton.setText(">");
+        rightButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rightButtonActionPerformed(evt);
+            }
+        });
+
+        deckPanel.setBackground(new java.awt.Color(255, 0, 0));
+
+        switcherButton.setText("Base/Action");
+
+        containerPanel.setBackground(java.awt.Color.GRAY);
+        containerPanel.setMinimumSize(new Dimension(100, 26 * 16));
+        containerPanel.setPreferredSize(new Dimension(100, 26 * 16));
+        containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
+
+        GroupLayout deckPanelLayout = new GroupLayout(deckPanel);
+        deckPanel.setLayout(deckPanelLayout);
+        deckPanelLayout.setHorizontalGroup(
+            deckPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(deckPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(deckPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(switcherButton)
+                    .addComponent(containerPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        deckPanelLayout.setVerticalGroup(
+            deckPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(deckPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(switcherButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(containerPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        GroupLayout layout = new GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(2, 2, 2)
+                .addComponent(leftButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(picker, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rightButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deckPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(backButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(input, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(saveButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteButton)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(backButton)
+                    .addComponent(input, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveButton)
+                    .addComponent(deleteButton))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(rightButton, GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+                            .addComponent(leftButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deckPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addComponent(picker, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        
+        picker.setDrawnCards(cards, 0);
         setVisible(true);
 	}
 
-	
-	public void setDrawnCards(ArrayList<BasicCard> cards, int start, ArrayList<BasicCard> seletedCards) {
-		while(picker == null) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		picker.setDrawnCards(cards, start);
-		
-		for(Component c : selectedCardsText.getComponents()) {
-			if(!(c instanceof JLabel))
-				selectedCardsText.remove(c);
-		}
+	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	    parent.goBack();
+    }
 
-		int i = 0;
-		for(BasicCard c : seletedCards) {
-			JButton jb = new JButton();
-			jb.setText(c.name);
-			jb.setActionCommand("_" + Integer.toString(i++));
-			jb.addActionListener(this);
-			selectedCardsText.add(jb);
-		}
-		selectedCardsText.revalidate();
-		selectedCardsText.repaint();
+	private void saveButtonClicked(ActionEvent evt) {
+	    parent.deckSaveName = input.getText();
+        parent.saveDeck();
+	}
+	
+	private void deleteButtonClicked(ActionEvent evt) {
+	    parent.deleteDeck();
+    }
+	
+    private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        parent.decPage();
+    }
+
+    private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        parent.incPage();
+    }
+
+	
+	public void setDrawnCards(ArrayList<BasicCard> cards, int start) {
+		picker.setDrawnCards(cards, start);
+		containerPanel.repaint();
+	}
+	
+	public void addSelectedCard(BasicCard c) {
+	    JButton nb = new JButton();
+        nb.setActionCommand("_" + containerPanel.getComponentCount());
+        nb.setText(c.name);
+        nb.addActionListener(this);
+        buttons.add(nb);
+        containerPanel.add(nb);
+        containerPanel.revalidate();
+        containerPanel.repaint();
+	}
+	
+	public void setSelectedCards(ArrayList<BasicCard> cards) {
+	    containerPanel.removeAll();
+	    for(BasicCard c : cards) {
+    	    JButton nb = new JButton();
+            nb.setActionCommand("_" + containerPanel.getComponentCount());
+            nb.setText(c.name);
+            nb.addActionListener(this);
+            buttons.add(nb);
+            containerPanel.add(nb);
+	    }
+	    containerPanel.revalidate();
+        containerPanel.repaint();
+	}
+	
+	public void removeSelectedCard(int i) {
+	    containerPanel.remove(buttons.get(i));
+	    buttons.remove(i);
+	    containerPanel.revalidate();
+        containerPanel.repaint();
 	}
 	
 	public void cardClicked(BasicCard card) {
@@ -179,24 +261,23 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 	
 	@Override
 	public void actionPerformed(final ActionEvent arg0) {
-		System.out.println(arg0.getActionCommand());
 		if(arg0.getActionCommand().length() <= 3 
 		        && arg0.getActionCommand().charAt(0) == '_') 
 		{
 			int p = Integer.parseInt(arg0.getActionCommand().substring(1));
 			parent.removeSelecteCard(p);
-		} else if(arg0.getActionCommand().equals("<")) {
-			parent.decPage();
-		} else if(arg0.getActionCommand().equals(">")) {
-			parent.incPage();
-		} else if(arg0.getActionCommand().equals(SAVE_COMMAND)) {
-		    parent.deckSaveName = input.getText();
-		    parent.saveDeck();
-		} else if(arg0.getActionCommand().equals(CANCEL_COMMAND)) {
-		    parent.goBack();
-		} else if(arg0.getActionCommand().equals(DELETE_COMMAND)) {
-		    parent.deleteDeck();
-		}
- 	}	
+		} 
+	}	
+	
+	private ArrayList<JButton> buttons = new ArrayList<JButton>(16); //TODO
+	private JButton backButton;
+    private JPanel containerPanel;
+    private JPanel deckPanel;
+    private JButton deleteButton;
+    private JTextField input;
+    private JButton leftButton;
+    private JButton rightButton;
+    private JButton saveButton;
+    private JButton switcherButton;
 
 }
