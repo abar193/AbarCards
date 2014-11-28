@@ -31,7 +31,7 @@ import effects.*;
 import units.TriggeringCondition;
 
 public class DOMDeckReader implements DeckXMLReaderInterface {
-
+    
     public DOMDeckReader() {
 
     }
@@ -283,7 +283,9 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     }
     
     @Override
-    public ArrayList<BasicCard> parseFile(String filename) {
+    public DeckArrays parseFile(String filename) {
+        DeckArrays ret = new DeckArrays();
+        
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
         this.lastParseHiddenCards = new ArrayList<BasicCard>(5);
@@ -292,7 +294,8 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
             Document doc = builder.parse(getClass().getResource(filename).toURI().toString());
             doc.getDocumentElement().normalize();
             
-            ArrayList<BasicCard> cards = new ArrayList<BasicCard>(20);
+            ret.baseCards = new ArrayList<BasicCard>(10);
+            ret.actionCards = new ArrayList<BasicCard>(20);
             deckNum = Integer.parseInt(
                     ((Element)doc.getElementsByTagName("Deck").item(0)).getAttribute("num")
                     );
@@ -303,24 +306,25 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                 {
                     Element e = (Element) nNode;
                     if(e.getNodeName().equals("Spell")) {
-                        cards.add(parseSpellCard(e));
+                        ret.actionCards.add(parseSpellCard(e));
                     } else if(e.getNodeName().equals("Unit")) { 
-                        cards.add(parseUnit(e));
+                        ret.actionCards.add(parseUnit(e));
                     } else if(e.getNodeName().equals("Building")) { 
-                        cards.add(parseBuilingCard(e));
+                        ret.baseCards.add(parseBuilingCard(e));
                     } else {
                         System.out.println(e.getNodeName());
                     }
                 }   
             }
-            
-            Collections.sort(cards, new Comparator<BasicCard>() {
+            Comparator<BasicCard> compar = new Comparator<BasicCard>() {
                 @Override
                 public int compare(BasicCard arg0, BasicCard arg1) {
                     return arg0.cost - arg1.cost;
                 }
-            });
-            return cards;
+            };
+            Collections.sort(ret.baseCards, compar);
+            Collections.sort(ret.actionCards, compar);
+            return ret;
         } catch (ParserConfigurationException | SAXException | IOException | URISyntaxException e){
             
             e.printStackTrace();
@@ -330,7 +334,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     
     public static void main(String[] args) throws Exception {    
         DOMDeckReader dpr = new DOMDeckReader();
-        ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml");
+        ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml").actionCards;
         if(bc == null) return;
         for(BasicCard c : bc) {
             System.out.format("Card %s %s %s", c, c.description, c.fullDescription);

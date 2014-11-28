@@ -120,8 +120,10 @@ public class CardPickingPanel extends JPanel {
 		if(cards == null) return;
 		int cardWidth = (this.getWidth() - 50) / 5;
 		for(int i = 0; i < 5; i++) {
+		    if(cards.size() <= i + start) break;
 			printCardAt(g2, cards.get(i + start), 25 + (cardWidth + 5) * i, 50, cardWidth - 5, 200);
-			printCardAt(g2, cards.get(i + 5 + start), 25 + (cardWidth + 5) * i, 260, cardWidth - 5, 200);
+			if(cards.size() > i + 5 + start)
+			    printCardAt(g2, cards.get(i + 5 + start), 25 + (cardWidth + 5) * i, 260, cardWidth - 5, 200);
 		}
 	}
 	

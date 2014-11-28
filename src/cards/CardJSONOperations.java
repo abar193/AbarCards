@@ -54,6 +54,42 @@ public class CardJSONOperations {
 		return m;
 	}
 
+	public BasicCard cardFromString(String s) {
+        try { 
+            String[] splits = s.split("\t");
+            if(splits.length != 3) return null;
+            
+            String name = splits[0];
+            int cost = Integer.parseInt(splits[1]);
+            int deck = Integer.parseInt(splits[2]);
+            
+            if(name.startsWith("Dev:")) {
+                return new DevCard(name, "");
+            }
+            
+            ArrayList<BasicCard> myDeck = singleAllDeck().get(deck);
+            java.util.Iterator<BasicCard> i = myDeck.iterator();
+            
+            while(i.hasNext()) {
+                BasicCard c = i.next();
+                if(c.name.equals(name)) {
+                    if(c.cost == cost) 
+                        return c;
+                    else {
+                        System.err.format("Card %s has wrong cost. Expected %d, got %d", name, c.cost, cost);
+                    }
+                }
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        System.err.println("Can't create card: " + s.toString());
+        return null;
+    }
+	
+	public String stringFromCard(BasicCard c) {
+        return String.format("%s\t%s\t%s", c.name, c.cost, c.deckNum);
+    }
 	
 	static ArrayList<ArrayList<BasicCard>> allDecks = null;
 	public static synchronized ArrayList<ArrayList<BasicCard>> singleAllDeck() {
@@ -61,7 +97,7 @@ public class CardJSONOperations {
 			allDecks = new ArrayList<ArrayList<BasicCard>>(links.length);
 			DOMDeckReader dpr = new DOMDeckReader();
 			for(String s : links) {
-			    ArrayList<BasicCard> cards = dpr.parseFile(s);
+			    ArrayList<BasicCard> cards = dpr.parseFile(s).actionCards;
 			    cards.addAll(dpr.lastParseHiddenCards);
 				allDecks.add(cards);
 			}

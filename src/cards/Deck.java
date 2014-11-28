@@ -20,7 +20,6 @@ public class Deck {
 	@SuppressWarnings("unchecked")
 	/** 
 	 * Initialises deck with a list of cards and with default DECK_SIZE.
-	 * @param newcards cards to use
 	 */
 	public Deck(ArrayList<BasicCard> newUcards, ArrayList<BasicCard> newBcards) {
 		unitCards = (ArrayList<BasicCard>)newUcards.clone();

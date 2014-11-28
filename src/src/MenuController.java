@@ -9,6 +9,7 @@ import ui.SwingVS;
 import cards.BasicCard;
 import cards.Deck;
 import decks.DOMDeckReader;
+import decks.DeckArrays;
 
 public class MenuController {
 
@@ -40,11 +41,11 @@ public class MenuController {
     }
     
     public void launchGame(String filename, PossibleOpponents opp) {
-        ArrayList<BasicCard> cards = new ArrayList<BasicCard>(15);
-        DeckBuilder.loadDeck(new File(filename), cards, null);
+        DeckArrays cards = new DeckArrays();
+        DeckBuilder.loadSelectedCards(filename, cards);
         
         if(opp == PossibleOpponents.SinglePassiveBot || opp == PossibleOpponents.SingleEasyBot) {
-            singleplayerGame(new Deck(cards, null), opp);
+            singleplayerGame(new Deck(cards.actionCards, cards.baseCards), opp);
         } else {
             parent.reciveWaitSignal();
             String opponent = ""; 
@@ -62,7 +63,8 @@ public class MenuController {
         Game g = new Game();
         SwingVS vs = new SwingVS(g);
         players.RealPlayer r = new players.RealPlayer(vs);
-        Deck d2 = new Deck(dpr.parseFile("BotImbaDeck.xml"), null);
+        DeckArrays botDeck = dpr.parseFile("BotImbaDeck.xml");
+        Deck d2 = new Deck(botDeck.actionCards, botDeck.baseCards);
         d2.shuffleCards();
         switch(opp) {
             case SingleEasyBot: 

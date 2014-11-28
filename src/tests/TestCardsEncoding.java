@@ -29,6 +29,7 @@ public class TestCardsEncoding {
         BasicCard c = (UnitCard)inst.cardFromMap(m);
         assertNotNull(c);
         assertEquals("Smart Lamp", c.name);
+        System.out.println(m.toString());
         
         m = new LinkedHashMap<String, String>();
         m.put("Name", "Cyborg");

@@ -75,7 +75,7 @@ public class CardPickingFrame extends JPanel implements ActionListener {
             }
         });
 
-        input.setText("Deck Name");
+        input.setText(parent.deckSaveName);
 
         saveButton.setText("Save");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -122,6 +122,11 @@ public class CardPickingFrame extends JPanel implements ActionListener {
         deckPanel.setBackground(new java.awt.Color(255, 0, 0));
 
         switcherButton.setText("Base/Action");
+        switcherButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                parent.toggleSelection();
+            }
+        });
 
         containerPanel.setBackground(java.awt.Color.GRAY);
         containerPanel.setMinimumSize(new Dimension(100, 26 * 16));

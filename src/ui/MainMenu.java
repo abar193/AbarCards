@@ -367,9 +367,12 @@ public class MainMenu extends JFrame implements ActionListener {
     
     private void updateDecks() {
         buildDecks.removeAll();
-        buildDecks.add(new JLabel("Choose existing deck, or build a new:"));
-        ArrayList<String> names = DeckBuilder.availableFiles(false);
+        buildDecks.add(new JLabel("Choose existing deck:"));
+        ArrayList<String> names = new ArrayList<String>(5);
+        int decks = DeckBuilder.availableFiles(false, names);
+        int j = 0;
         for(String i : names) {
+            if(j++ == decks) buildDecks.add(new JLabel("Build new deck:"));
             JButton butt = new JButton(i);
             butt.addActionListener(this);
             buildDecks.add(butt);
@@ -416,7 +419,8 @@ public class MainMenu extends JFrame implements ActionListener {
         group.add(rb);
         
         playDecks.add(new JLabel("Choose a deck to play with:"));
-        names = DeckBuilder.availableFiles(true);
+        names = new ArrayList<String>(5);
+        DeckBuilder.availableFiles(true, names);
         for(String i : names) {
             JButton butt = new JButton(i);
             butt.addActionListener(this);

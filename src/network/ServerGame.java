@@ -23,6 +23,7 @@ import javax.websocket.*;
 import org.json.simple.*;
 import org.json.*;
 
+import decks.DeckArrays;
 import effects.AbstractSpell;
 import effects.AuraEffect;
 import players.PlayerData;
@@ -175,9 +176,9 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean validateDeck(ArrayList<BasicCard> c, String enemy) {
+	public boolean validateDeck(DeckArrays c, String enemy) {
 		JSONArray jarr = new JSONArray();
-		Iterator<BasicCard> i = c.iterator();
+		Iterator<BasicCard> i = c.actionCards.iterator();
 		while(i.hasNext()) {
 			jarr.add(jsonop.mapFromCard(i.next()));
 		}

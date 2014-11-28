@@ -8,25 +8,36 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 import ui.CardPickingFrame;
 import cards.*;
 import decks.DOMDeckReader;
+import decks.DeckArrays;
+import cards.CardJSONOperations;
 
 public class DeckBuilder {
 	
 	private static final int CARDS_IN_A_ROW = 5;
 	
 	private static final String ext = ".deck";  
-	private static final String[] names = {"Machines", "Aliens"};
-	private static final String[] links = {"MachinesDeck.xml", "AliensDeck.xml"};
+	public static final String[] availableRaces = {"Machines", "Aliens"};
+	public static final String[] links = {"MachinesDeck.xml", "AliensDeck.xml"};
 	
-	public ArrayList<BasicCard> selectedCards;
-	public ArrayList<BasicCard> fullDeck;
+	public DeckArrays selectedCards;
+	public ArrayList<BasicCard> actionCards;
+	public ArrayList<BasicCard> baseCards;
+	
+	// link to either actionCards or baseCards depending on what's chosen
+	private ArrayList<BasicCard> activeArray; 
+	private ArrayList<BasicCard> activeSelectedArray;
+	
 	public String deckRace;
 	public String deckSaveName;
 	
@@ -35,29 +46,51 @@ public class DeckBuilder {
 	private CardPickingFrame frame;
 	private final MenuController controller;
 	
+	private boolean showingBaseCards = false;
+	
+	public void toggleSelection() {
+	    startPos = 0;
+	    if(!showingBaseCards) {
+	        showingBaseCards = true;
+	        activeArray = baseCards;
+	        activeSelectedArray = selectedCards.baseCards;
+	    } else {
+	        showingBaseCards = false;
+            activeArray = actionCards;
+            activeSelectedArray = selectedCards.actionCards;
+	    }
+	    frame.setSelectedCards(activeSelectedArray);
+	    drawCards();
+	}
+	
 	public void drawCards() {
-		frame.setDrawnCards(fullDeck, startPos);
+	    if(!showingBaseCards)
+	        frame.setDrawnCards(actionCards, startPos);
+	    else 
+	        frame.setDrawnCards(baseCards, startPos);
 		frame.repaint();
 	}
 	
 	public void removeSelecteCard(int i) {
-		if(i < selectedCards.size()) {
-			selectedCards.remove(i);
+		if(i < activeSelectedArray.size()) {
+			activeSelectedArray.remove(i);
 			frame.removeSelectedCard(i);
 			drawCards();
 		}
 	}
 	
 	public void selectCard(BasicCard c) {
-		if(selectedCards.size() < Deck.UNIT_DECK_SIZE) { 
-			selectedCards.add(c);
+		if(activeArray.size() < 
+		        ((showingBaseCards) ? Deck.BASE_DECK_SIZE : Deck.UNIT_DECK_SIZE)) 
+		{ 
+			activeSelectedArray.add(c);
 			frame.addSelectedCard(c);
 			drawCards();
 		}
 	}
 	
 	public void incPage() {
-		startPos = Math.min(fullDeck.size() - 10, startPos + 10);
+		startPos = Math.min(activeArray.size() - 10, startPos + 10);
 		drawCards();
 	}
 	
@@ -71,7 +104,7 @@ public class DeckBuilder {
 	 * @return deck, or null if selected cards cannot build valid deck
 	 */
 	public Deck validDeck() {
-		Deck d = new Deck(selectedCards, null);
+		Deck d = new Deck(selectedCards.actionCards, selectedCards.baseCards);
 		if(d.validateCards()) {
 			return d;
 		}
@@ -87,15 +120,20 @@ public class DeckBuilder {
 	public void saveDeck() {
 		BufferedWriter writer = null;
 		try {
-		    writer = new BufferedWriter(new OutputStreamWriter(
-		          new FileOutputStream(deckSaveName + ext), "utf-8"));
-		    writer.write(String.format("%s\n", names[playerChoose]));
+		    FileOutputStream fos = new FileOutputStream(deckSaveName + ext); 
+		    writer = new BufferedWriter(new OutputStreamWriter(fos, "utf-8"));
 		    
-		    for(BasicCard c : selectedCards) {
-		    	writer.write(String.format("%s %d\n", c.name, c.cost));
+		    writer.write(String.format("%s\n", availableRaces[playerChoose]));
+		    ArrayList<BasicCard> bothDecks = new ArrayList<BasicCard>();
+		    bothDecks.addAll(selectedCards.actionCards);
+		    bothDecks.addAll(selectedCards.baseCards);
+		    
+		    for(BasicCard c : bothDecks) {
+		        String map = CardJSONOperations.instance.stringFromCard(c); 
+		        writer.write(String.format("%s\n", map));
 		    }
 		} catch (IOException ex) {
-			System.out.println("Could not save your deck, sorry man.");
+			System.err.println("Could not save your deck, sorry man.");
 		} finally {
 		   try {writer.close();} catch (Exception ex) {}
 		}
@@ -119,66 +157,60 @@ public class DeckBuilder {
 	    }
 	}
 	
+	/**
+	 * Load and fills local arrays actionCards and baseCards with available cards.
+	 * @param deckNumber number of deck to load from links array
+	 */
+	public void fillCardsArrays(int deckNumber) {
+	    DeckArrays da = new DOMDeckReader().parseFile(links[deckNumber]);
+	    this.actionCards = da.actionCards;
+	    this.baseCards = da.baseCards;
+	    playerChoose = deckNumber;
+	}
+	
 	/** 
-	 * Reads deck from file, and stores cards to selectedCards.
-	 * @param file - file to read
-	 * @param selectedCards - ArrayList to fill with player's selected cards
-	 * @param fullDeck - array to fill with all deck cards
-	 * @return returns integer value representing deck name's index in names array */
-	public static int loadDeck(File file, ArrayList<BasicCard> selectedCards, ArrayList<BasicCard> fullDeck) {
+	 * Loads selected cards from file and returns deck number of that file.
+	 * @param file File name. May be *.deck or name of race - in second case actionCards and 
+	 *     baseCards will remain untouched, but deck number will be returned
+	 * @param actionCards initialized ArrayList to fill with actionCards (units and spells)
+	 * @param baseCards initialized ArrayList to fill with baeCards (buildings and energy cards?)
+	 * @return deck number from availableNames
+	 */
+	public static int loadSelectedCards(String fileName, DeckArrays selectedSet) {
 		BufferedReader reader = null;
+		// Check if that is just a race name
+		for(int i = 0; i < availableRaces.length; i++) {
+            if(fileName.equals(availableRaces[i])) {
+                return i;
+            }
+        }
 		try {
-		    int choose = -1;
-		    reader = new BufferedReader(new InputStreamReader(
-		          new FileInputStream(file), "utf-8"));
+		    File file = new File(fileName);
+		    int chose = -1;
+		    FileInputStream fis = new FileInputStream(file);
+		    reader = new BufferedReader(new InputStreamReader(fis, "utf-8"));
 		    String s;
 		    s = reader.readLine();
-		    // Read race name
-		    for(int i = 0; i < names.length; i++) {
-		        if(s.startsWith(names[i])) {
-		            choose = i;
-		            if(fullDeck != null) {
-    		            ArrayList<BasicCard> classCards = new DOMDeckReader().parseFile(links[i]);
-    	                fullDeck.addAll(0, classCards);
-		            } else {
-		                DOMDeckReader dpr = new DOMDeckReader();
-		                fullDeck = dpr.parseFile("NeutralsDeck.xml");
-		                ArrayList<BasicCard> classCards = dpr.parseFile(links[i]);
-                        fullDeck.addAll(0, classCards);
-		            }
-	                break;
+
+		    for(int i = 0; i < availableRaces.length; i++) {
+		        if(s.startsWith(availableRaces[i])) {
+		            chose = i;
 		        }
 		    }
 		    
-		    if(selectedCards == null) return choose;
-		    
 		    // Load deck
             int count = 0;
+
 		    while((s = reader.readLine()) != null) {
-		        if(++count > Deck.UNIT_DECK_SIZE) break;
+		        if(++count > Deck.UNIT_DECK_SIZE + Deck.BASE_DECK_SIZE) break;
 		        
-		    	String[] splits = new String[2];
-		    	int lastpost = s.lastIndexOf(" ");
-		    	splits[0] = s.substring(0, lastpost);
-		    	splits[1] = s.substring(lastpost + 1);
-		    	try{ 
-		    		int cost = Integer.parseInt(splits[1]);
-		    		boolean found = false;
-		    		for(BasicCard c : fullDeck) {
-		    			if(c.name.equals(splits[0]) && c.cost == cost) { 
-		    				selectedCards.add(c);
-		    				found = true;
-		    				break;
-		    			}
-		    		}
-		    		if(!found) {
-		    		    System.err.format("Not found %s card at %d cost\n", splits[0], cost);
-		    		}
-		    	} catch (NumberFormatException e) {
-		    		System.err.println("Contaminated file, at line " + splits[0]);
-		    	}
+		    	BasicCard bc = CardJSONOperations.instance.cardFromString(s);
+		    	if((bc instanceof UnitCard) || (bc instanceof SpellCard)) {
+		    	    selectedSet.actionCards.add(bc);
+		    	} else 
+		    	    selectedSet.baseCards.add(bc);
 		    }
-		    return choose;
+		    return chose;
 		} catch (IOException ex) {
 			System.err.println("Could not read your deck, sorry man.");
 		} finally {
@@ -207,22 +239,21 @@ public class DeckBuilder {
 	/**
 	 * Returns ArrayList of race names and save files names.
 	 * @param playDeck if set to true, then returns only save files 
+	 * @param availableFiles initialised array to fill with file names
 	 */
-	public static ArrayList<String> availableFiles(boolean playDeck) {
+	public static int availableFiles(boolean playDeck, ArrayList<String> availableFiles) {
 	    ArrayList<File> files = deckFiles();
-	    int size = files.size() + ((!playDeck) ? names.length : 0);
-	    ArrayList<String> retnames = new ArrayList<String>(size);
-	    
+	    	    
 	    for(File f : files) {
-	        retnames.add(f.getName());
+	        availableFiles.add(f.getName());
 	    }
 	    
-	    if(playDeck) return retnames;
+	    if(playDeck) return files.size();
 	    
-	    for(String s : names) {
-	        retnames.add(s);
+	    for(String s : availableRaces) {
+	        availableFiles.add(s);
 	    }
-	    return retnames;
+	    return files.size();
 	}
 	
 	/** 
@@ -231,31 +262,19 @@ public class DeckBuilder {
 	 */
 	public DeckBuilder(String raceName, MenuController controller) {
 	    this.controller = controller;
-	    DOMDeckReader dpr = new DOMDeckReader();
-	    fullDeck = dpr.parseFile("NeutralsDeck.xml");
-	    selectedCards = new ArrayList<BasicCard>(Deck.UNIT_DECK_SIZE);
-	    boolean b = false;
 	    deckSaveName = raceName;
+	    if(deckSaveName.endsWith(ext)) 
+	        deckSaveName = deckSaveName.substring(0, deckSaveName.length() - ext.length());
 	    
-	    for(int i = 0; i < names.length; i++) {
-	        if(raceName.equals(names[i])) {
-	            ArrayList<BasicCard> classCards = dpr.parseFile(links[i]);
-                fullDeck.addAll(0, classCards);
-                playerChoose = i;
-                b = true;
-                break;
-	        }
-	    }
+	    selectedCards = new DeckArrays();
 	    
-	    if(!b) {
-	        int pos = deckSaveName.lastIndexOf(ext);
-	        deckSaveName = deckSaveName.substring(0, pos);
-	        playerChoose = loadDeck(new File(raceName), selectedCards, fullDeck);
-	        deckRace = names[playerChoose];
-	    }
+	    fillCardsArrays(loadSelectedCards(raceName, selectedCards));
+	    
+	    activeArray = actionCards;
+	    activeSelectedArray = selectedCards.actionCards;
 	    
 	    frame = new CardPickingFrame(this);
-	    frame.setSelectedCards(selectedCards);
+	    frame.setSelectedCards(selectedCards.actionCards);
 	    
 	    new Thread(new Runnable() {
             @Override
