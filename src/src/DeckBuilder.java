@@ -76,11 +76,11 @@ public class DeckBuilder {
 			activeSelectedArray.remove(i);
 			frame.removeSelectedCard(i);
 			drawCards();
-		}
+		} 
 	}
 	
 	public void selectCard(BasicCard c) {
-		if(activeArray.size() < 
+		if(activeSelectedArray.size() < 
 		        ((showingBaseCards) ? Deck.BASE_DECK_SIZE : Deck.UNIT_DECK_SIZE)) 
 		{ 
 			activeSelectedArray.add(c);
@@ -202,13 +202,14 @@ public class DeckBuilder {
             int count = 0;
 
 		    while((s = reader.readLine()) != null) {
-		        if(++count > Deck.UNIT_DECK_SIZE + Deck.BASE_DECK_SIZE) break;
+		        if(++count > (Deck.UNIT_DECK_SIZE + Deck.BASE_DECK_SIZE)) break;
 		        
 		    	BasicCard bc = CardJSONOperations.instance.cardFromString(s);
-		    	if((bc instanceof UnitCard) || (bc instanceof SpellCard)) {
-		    	    selectedSet.actionCards.add(bc);
-		    	} else 
+		    	if(bc instanceof BuildingCard) {
 		    	    selectedSet.baseCards.add(bc);
+		    	} else {
+		    	    selectedSet.actionCards.add(bc);
+		    	}
 		    }
 		    return chose;
 		} catch (IOException ex) {

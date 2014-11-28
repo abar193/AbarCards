@@ -241,9 +241,10 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 	
 	public void setSelectedCards(ArrayList<BasicCard> cards) {
 	    containerPanel.removeAll();
+	    buttons = new ArrayList<>();
 	    for(BasicCard c : cards) {
     	    JButton nb = new JButton();
-            nb.setActionCommand("_" + containerPanel.getComponentCount());
+            nb.setActionCommand("_");
             nb.setText(c.name);
             nb.addActionListener(this);
             buttons.add(nb);
@@ -266,11 +267,13 @@ public class CardPickingFrame extends JPanel implements ActionListener {
 	
 	@Override
 	public void actionPerformed(final ActionEvent arg0) {
-		if(arg0.getActionCommand().length() <= 3 
-		        && arg0.getActionCommand().charAt(0) == '_') 
+		if(arg0.getActionCommand().startsWith("_")) 
 		{
-			int p = Integer.parseInt(arg0.getActionCommand().substring(1));
-			parent.removeSelecteCard(p);
+			JButton butt = (JButton)arg0.getSource();
+			for(int i = 0; i < containerPanel.getComponentCount(); i++) {
+			    if(butt.equals(containerPanel.getComponent(i))) 
+			        parent.removeSelecteCard(i);
+			}
 		} 
 	}	
 	

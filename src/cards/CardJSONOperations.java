@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import decks.DOMDeckReader;
+import decks.DeckArrays;
 
 public class CardJSONOperations {
 
@@ -97,7 +98,9 @@ public class CardJSONOperations {
 			allDecks = new ArrayList<ArrayList<BasicCard>>(links.length);
 			DOMDeckReader dpr = new DOMDeckReader();
 			for(String s : links) {
-			    ArrayList<BasicCard> cards = dpr.parseFile(s).actionCards;
+			    DeckArrays set = dpr.parseFile(s);
+			    ArrayList<BasicCard> cards = set.actionCards;
+			    cards.addAll(set.baseCards);
 			    cards.addAll(dpr.lastParseHiddenCards);
 				allDecks.add(cards);
 			}
