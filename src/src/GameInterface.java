@@ -56,4 +56,9 @@ public interface GameInterface {
 	 * @param player players number
 	 */
 	public void useBuildingCard(int building, int player);
+	
+	/**
+	 * Requests game to pull base card.
+	 */
+	public void pullBaseCard(int player);
 }

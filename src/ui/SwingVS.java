@@ -105,19 +105,34 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         right.setPreferredSize(new Dimension(RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT));
         enemyDeck = new JLabel();
         if(opponent != null)
-        	enemyDeck.setText(Integer.toString(opponent.deckSize));
+        	enemyDeck.setText(String.format("%s/%s", opponent.actionSetSize, opponent.baseSetSize));
         myDeck = new JLabel();
         if(me != null)
-        	myDeck.setText(Integer.toString(me.getDeckSize()));
+        	myDeck.setText(String.format("%s/%s", me.getDeckSize(false), me.getDeckSize(true)));
         JButton butt = new JButton();
         butt.setText("End turn");
         butt.addActionListener(this);
+        
         right.add(enemyDeck);
+        
         right.add(butt);
+        
+        butt = new JButton();
+        butt.setText("Pull base card");
+        butt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pullButtonPressed();
+            }
+        });
+        right.add(butt);
+        
         butt = new JButton();
         butt.setText("Quit");
         butt.addActionListener(this);
+        
         right.add(butt);
+        
         right.add(myDeck);
         add(right, BorderLayout.LINE_END);
         
@@ -174,8 +189,8 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		} 
 		
 		if(enemyDeck != null) {
-			enemyDeck.setText(Integer.toString(p2.deckSize));
-			myDeck.setText(Integer.toString(p1.getDeckSize()));
+		    enemyDeck.setText(String.format("%s/%s", opponent.actionSetSize, opponent.baseSetSize));
+		    myDeck.setText(String.format("%s/%s", me.getDeckSize(false), me.getDeckSize(true)));
 		} 
 	}
 
@@ -340,6 +355,10 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		    src.MenuController.instance().quitGame();
 		}
 		
+	}
+	
+	public void pullButtonPressed() {
+	    parent.pullBaseCard(this.playerNumber);
 	}
 
 	@Override

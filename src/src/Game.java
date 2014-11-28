@@ -5,7 +5,6 @@ import ui.SwingVS;
 import units.Building;
 import units.FieldObject;
 import units.Unit;
-import units.Quality;
 import units.UnitFactory;
 import units.TriggeringCondition;
 import units.UnitPower;
@@ -521,5 +520,11 @@ public class Game implements GameInterface, ProviderGameInterface {
     @Override
     public void playerQuits(int player) {
         endGame(player);
+    }
+
+    @Override
+    public void pullBaseCard(int player) {
+        playersData[player].pullCard(1, true);
+        updateInfoForAll();
     }
 }

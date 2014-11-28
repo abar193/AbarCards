@@ -31,7 +31,7 @@ public class PlayerData {
 	public static int MAXHANDLIMIT = 10;
 	
 	private Deck myDeck;
-	private int myDeckSize;
+	private int myActionDeckSize, myBaseDeckSize;
 	private ArrayList<BasicCard> myHand;
 	
 	private int totalMana;
@@ -240,9 +240,9 @@ public class PlayerData {
 		return totalMana;
 	}
 	
-	public int getDeckSize() {
-		if(myDeck == null) return myDeckSize;
-		else return myDeck.getSize(false);
+	public int getDeckSize(boolean isBaseSet) {
+		if(myDeck == null) return (isBaseSet) ? myBaseDeckSize : myActionDeckSize;
+		else return (isBaseSet) ? myDeck.getSize(true) : myDeck.getSize(false);
 	}
 	
 	public int getHandSize() {
@@ -258,7 +258,8 @@ public class PlayerData {
 		m.put("TotalMana", Integer.toString(getTotalMana()));
 		m.put("AvailableMana", Integer.toString(this.getAvailableMana()));
 		m.put("Health", Integer.toString(getHealth()));
-		m.put("DeckSize", Integer.toString(this.getDeckSize()));
+		m.put("ActionDeckSize", Integer.toString(this.getDeckSize(false)));
+		m.put("BaseDeckSize", Integer.toString(this.getDeckSize(true)));
 		m.put("PlayerNumber", Integer.toString(this.playerNumber));
 		JSONArray jarr = new JSONArray();
 		cards.CardJSONOperations op = new cards.CardJSONOperations();
@@ -272,7 +273,8 @@ public class PlayerData {
 	@SuppressWarnings("unchecked")
 	public PlayerData(Map m, src.ProviderGameInterface cG) {
 		int pn = Integer.parseInt((String) m.get("PlayerNumber"));
-		int ds = Integer.parseInt((String) m.get("DeckSize"));
+		int ads = Integer.parseInt((String) m.get("ActionDeckSize"));
+		int bds = Integer.parseInt((String) m.get("BaseDeckSize"));
 		int h  = Integer.parseInt((String) m.get("Health"));
 		int am = Integer.parseInt((String) m.get("AvailableMana"));
 		int tm = Integer.parseInt((String) m.get("TotalMana"));
@@ -291,7 +293,8 @@ public class PlayerData {
 			myHand.add(op.cardFromMap(i.next()));
 		}
 		this.playerNumber = pn;
-		this.myDeckSize = ds;
+		this.myActionDeckSize = ads;
+		this.myBaseDeckSize = bds;
 		representingUnit = new PlayerUnit(new cards.UnitCard(0, h, 0, "Hero", ""), 0, cG);
 		this.availableMana = am;
 		this.totalMana = tm;
@@ -316,7 +319,8 @@ public class PlayerData {
 		pod.health = this.representingUnit.getCurrentHealth();
 		pod.totalMana = this.totalMana;
 		pod.availableMana = this.availableMana;
-		pod.deckSize = this.getDeckSize();
+		pod.baseSetSize = this.getDeckSize(true);
+		pod.actionSetSize = this.getDeckSize(false);
 		pod.handSize = this.getHandSize();
 		pod.playerNumber = this.playerNumber;
 	}

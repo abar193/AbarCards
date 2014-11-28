@@ -421,5 +421,11 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
     public void passEventAboutUnit(units.FieldObject u, TriggeringCondition e) {
         System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
     }
+
+    @Override
+    public void pullBaseCard(int player) {
+        // TODO Auto-generated method stub
+        
+    }
 	
 }

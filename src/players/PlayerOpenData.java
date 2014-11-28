@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class PlayerOpenData {
 	public int health, totalMana, availableMana;
-	public int deckSize, handSize;
+	public int actionSetSize, baseSetSize, handSize;
 	public int playerNumber;	
 	
 	public Map<String, String> toMap() {
@@ -18,7 +18,8 @@ public class PlayerOpenData {
 		m.put("TotalMana", Integer.toString(totalMana));
 		m.put("AvailableMana", Integer.toString(availableMana));
 		m.put("Health", Integer.toString(health));
-		m.put("DeckSize", Integer.toString(deckSize));
+		m.put("ActionSetSize", Integer.toString(actionSetSize));
+		m.put("BaseSetSize", Integer.toString(baseSetSize));
 		m.put("PlayerNumber", Integer.toString(playerNumber));
 		m.put("HandSize", Integer.toString(handSize));
 		return m;
@@ -30,7 +31,8 @@ public class PlayerOpenData {
 	public PlayerOpenData(Map<String, String> m) {
 		handSize 		= Integer.parseInt((String) m.get("HandSize"));
 		playerNumber 	= Integer.parseInt((String) m.get("PlayerNumber"));
-		deckSize 		= Integer.parseInt((String) m.get("DeckSize"));
+		actionSetSize	= Integer.parseInt((String) m.get("ActionSetSize"));
+		baseSetSize		= Integer.parseInt((String) m.get("BaseSetSize"));
 		health 			= Integer.parseInt((String) m.get("Health"));
 		availableMana 	= Integer.parseInt((String) m.get("AvailableMana"));
 		totalMana 		= Integer.parseInt((String) m.get("TotalMana"));	
