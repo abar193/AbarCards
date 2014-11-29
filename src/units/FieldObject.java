@@ -94,6 +94,10 @@ public abstract class FieldObject {
     }
 
     /* * * Input * * */
+    public boolean canBeTargetedByBuff(effects.Buff b) {
+        return true;
+    }
+    
     public void applyBuff(effects.Buff b) {
         switch (b.type) {
             case AddDamage:
@@ -107,6 +111,7 @@ public abstract class FieldObject {
                 setQuality(b.value);
                 break;
             case Silence:
+            case Sabotage:
                 currentHealth = Math.min(card.getHealth(), currentHealth);
                 maxHealth = card.getHealth();
                 currentDamage = card.getDamage();
@@ -120,12 +125,16 @@ public abstract class FieldObject {
                 currentHealth = b.value;
                 break;
             case Hurt: 
+            case Damage:
+            case Ram:
                 damage(b.value);
                 break;
             case Heal:
+            case Repair:
                 heal(b.value);
                 break;
             case Kill:
+            case Demolish:
                 damage(getCurrentHealth());
                 break;
             case ModDmg:

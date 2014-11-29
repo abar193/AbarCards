@@ -31,6 +31,13 @@ public class TestSpellEffects {
     }
 	 
 	@Test
+	public void testBuffCreation() {
+	    assertEquals(BuffType.AddDamage, BuffType.fromString("AddDamage"));
+	    assertEquals(BuffType.AddHealth, BuffType.fromString("AddHealth"));
+	    assertNull(BuffType.fromString("Azaza"));
+	}
+	
+	@Test
 	public void testAll() {
 		BuffSpell bs = new BuffSpell(new Buff(BuffType.Hurt, "1"));
 		TargedetSpell ts = new TargedetSpell(new effects.AllUnitsTargeter(1, false), bs);

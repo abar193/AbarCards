@@ -56,6 +56,33 @@ public class Unit extends FieldObject {
 		return m;
 	}
 	
+	@Override
+    public boolean canBeTargetedByBuff(effects.Buff b) {
+        switch (b.type) {
+            case Sabotage:
+            case Repair:
+            case Ram:
+            case Demolish: 
+                return false;
+            default:
+                return true; 
+        }
+    }
+    
+    @Override
+    public void applyBuff(effects.Buff b) {
+        switch (b.type) {
+            case Sabotage:
+            case Repair:
+            case Ram:
+            case Demolish: 
+                break;
+            default:
+                super.applyBuff(b);
+                break;
+        }
+    }
+	
 	@SuppressWarnings("unchecked")
 	public Unit(Map m, src.ProviderGameInterface currentGame) {
 		try { 

@@ -1,5 +1,7 @@
 package units;
 
+import effects.BuffType;
+
 /**
  * Enum, describing when should UnitPowers be triggered.
  * @author Abar
@@ -10,30 +12,11 @@ public enum TriggeringCondition {
 	OnAllyDeath, BeforeCreate, Always;
 	
 	public static TriggeringCondition fromString(String c) {
-		switch(c) {
-		case "OnCreate":
-			return OnCreate;
-		case "OnTurnStart":
-			return OnTurnStart;
-		case "OnTurnEnd":
-			return OnTurnEnd;
-		case "OnDamage":
-			return OnDamage;
-		case "OnAllySpawn":
-			return OnAllySpawn;
-		case "OnAllyDamage":
-			return OnAllyDamage;
-		case "OnDeath": 
-			return OnDeath;
-		case "OnAllyDeath":
-			return OnAllyDeath;
-		case "Always":
-			return Always;
-		case "BeforeCreate":
-			return BeforeCreate;
-		default: 
-			System.out.println("Unknown condition " + c);
-			return null;
-		}
+	    try{
+            return TriggeringCondition.valueOf(c);
+        } catch (IllegalArgumentException e) {
+            System.err.println("No triggeringCondition with name: " + c);
+            return null;
+        }
 	}
 }

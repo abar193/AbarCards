@@ -44,6 +44,33 @@ public class Building extends FieldObject {
     public void endTurn() {
 
     }
+    
+    @Override
+    public boolean canBeTargetedByBuff(effects.Buff b) {
+        switch (b.type) {
+            case Silence:
+            case Heal:
+            case Hurt:
+            case Kill: 
+                return false;
+            default:
+                return true; 
+        }
+    }
+    
+    @Override
+    public void applyBuff(effects.Buff b) {
+        switch (b.type) {
+            case Silence:
+            case Heal:
+            case Hurt:
+            case Kill: 
+                break;
+            default:
+                super.applyBuff(b);
+                break;
+        }
+    }
 
     @Override
     public Map<String, String> toMap() {
