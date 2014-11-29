@@ -80,11 +80,13 @@ public class RandomTargeter implements Targeter {
 	@Override
 	public boolean hasTargets(int player, FieldObject u, src.ProviderGameInterface currentGame) {
 		FieldSituation fs = currentGame.provideFieldSituation();
-		
+		int targetsCount = (repeats) ? 0 : this.maxCount - 1;
 		if(aceptPlayers == -1)
-			return fs.allObjects(aceptBuildings).size() > 0;
-		else 
-			return fs.allObjectsFromOneSide((player + aceptPlayers) % 2, aceptBuildings).size() > 0;
+			return fs.allObjects(aceptBuildings).size() > targetsCount;
+		else {
+		    
+			return fs.allObjectsFromOneSide((player + aceptPlayers) % 2, aceptBuildings).size() > targetsCount;
+		}
 	}
 
 	@Override

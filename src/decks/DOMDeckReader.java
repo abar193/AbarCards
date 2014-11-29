@@ -46,6 +46,9 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                 Targeter t = TargeterBuilder.fromDOMElements(targ, n);
                 TargedetSpell ts = new TargedetSpell(t, null);
                 
+                if(n.hasAttribute("required")) {
+                    ts.required = n.getAttribute("required").equals("1"); 
+                }
                 for(int i = 0; i < n.getChildNodes().getLength(); i++) {
                     Node s = n.getChildNodes().item(i); 
                     if(s.getNodeType() == Node.ELEMENT_NODE) {
@@ -64,6 +67,9 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
             }
             case "SpellContainer": {
                 SpellContainer sc = new SpellContainer(new ArrayList<AbstractSpell>());
+                if(n.hasAttribute("required")) {
+                    sc.required = n.getAttribute("required").equals("1"); 
+                }
                 for(int i = 0; i < n.getChildNodes().getLength(); i++) {
                     Node s = n.getChildNodes().item(i); 
                     if(s.getNodeType() == Node.ELEMENT_NODE) {
@@ -107,16 +113,26 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                 BuffSpell bs = new BuffSpell(null);
                 String type = n.getAttribute("type");
                 bs.buff = new Buff(type, n.getAttribute("v"));
+                if(n.hasAttribute("required")) {
+                    bs.required = n.getAttribute("required").equals("1"); 
+                }
                 return bs;
             } 
             case "PlayerValueSpell": {
                 int value = Integer.parseInt(n.getAttribute("value"));
                 int filter = Integer.parseInt(n.getAttribute("acept"));
-                return new PlayerValueSpell(n.getAttribute("type"), value, filter);
+                PlayerValueSpell pvs = new PlayerValueSpell(n.getAttribute("type"), value, filter);
+                if(n.hasAttribute("required")) {
+                    pvs.required = n.getAttribute("required").equals("1"); 
+                }
+                return pvs;
             }
             case "CreateUnitSpell": {
                 int side = Integer.parseInt(n.getAttribute("side"));
                 CreateUnitSpell cus = new CreateUnitSpell(null, n.getAttribute("count"), side);
+                if(n.hasAttribute("required")) {
+                    cus.required = n.getAttribute("required").equals("1"); 
+                }
                 for(int i = 0; i < n.getChildNodes().getLength(); i++) {
                     Node s = n.getChildNodes().item(i); 
                     if(s.getNodeType() == Node.ELEMENT_NODE) {
@@ -224,6 +240,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                 Element e = (Element)s;
                 if(e.getNodeName().contains("Spell")) {
                     sc.spell = parseSpell(e);
+                    sc.spell.required = true;
                 } else if(e.getNodeName().contains("Fulldesc")) {
                     sc.fullDescription = e.getAttribute("txt");
                 } else if(e.getNodeName().contains("Filter")) {
@@ -312,7 +329,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                     } else if(e.getNodeName().equals("Building")) { 
                         ret.baseCards.add(parseBuilingCard(e));
                     } else {
-                        System.out.println(e.getNodeName());
+                        System.err.println(e.getNodeName());
                     }
                 }   
             }

@@ -18,12 +18,30 @@ public class TargedetSpell extends AbstractSpell {
 	@Override
 	public boolean validate(int player, src.ProviderGameInterface currentGame) {
 		this.playerNum = player;
-		return targeter.hasTargets(playerNum, target, currentGame);
+		if(targeter.hasTargets(playerNum, target, currentGame)) {
+		    if(spell.required) {
+    		    Targeter mytarg;
+    		    if(targeter instanceof RandomTargeter) {
+    		        mytarg = new AllUnitsTargeter(((RandomTargeter) targeter).aceptPlayers, 
+    		                ((RandomTargeter) targeter).aceptBuildings);
+    		    } else if(targeter instanceof PlayerTargeter) {
+    		        return targeter.hasTargets(player, target, currentGame);
+    		    } else mytarg = targeter;
+    		    for(FieldObject u : mytarg.selectTargets(player, target, currentGame)) {
+    		        spell.target = u;
+    		        if(spell.validate(player, currentGame)) return true;
+    		    }
+		    } else return true;
+		} 
+		return !required;
 	}
 
 	@Override
 	public void exequte(int playerNum, src.ProviderGameInterface currentGame) {
 		this.playerNum = playerNum;
+		if(!targeter.hasTargets(playerNum, target, currentGame)) {
+		    return;
+		}
 		ArrayList<FieldObject> units = targeter.selectTargets(playerNum, target, currentGame);
 		if(units != null) {
 			for(FieldObject u : units) {

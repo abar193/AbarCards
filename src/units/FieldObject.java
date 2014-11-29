@@ -209,10 +209,13 @@ public abstract class FieldObject {
                 currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
         }
         for(UnitPower p : powersMatchingCondition(e)) {
-            if(p.filter == null || otherU.matchesFilter(p.filter)) {
-                if(e != TriggeringCondition.Always)
-                    currentGame.informAll(String.format("%s invokes his power", 
-                            card.name));
+            if((p.filter == null || otherU.matchesFilter(p.filter)) 
+                    && p.validate(player, currentGame)) 
+            {
+                if(e != TriggeringCondition.Always) {
+                    currentGame.informAll(
+                            String.format("%s invokes his power", card.name));
+                }
                 p.exequte(this, player, currentGame);
             }
         }

@@ -22,7 +22,7 @@ public class PlayerValueSpell extends AbstractSpell {
 	
 	@Override
 	public boolean validate(int player, src.ProviderGameInterface currentGame) {
-		return true;
+		return !required || !currentGame.provideFieldSituation().heroDead((player + filter) % 2);
 	}
 
 	@Override

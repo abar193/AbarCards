@@ -17,6 +17,7 @@ public abstract class AbstractSpell {
 	public FieldObject target;
 	int playerNum;
 	private UnitFilter filter;
+	public boolean required; 
 	
 	public AbstractSpell() {
 	}

@@ -30,6 +30,7 @@
  <!ELEMENT CreateUnitSpell (HelperUnit)>
  <!ATTLIST CreateUnitSpell count CDATA #REQUIRED>
  <!ATTLIST CreateUnitSpell side CDATA #REQUIRED>
+ <!ATTLIST CreateUnitSpell required CDATA #IMPLIED>
  
  <!ELEMENT HelperUnit (Fulldesc? | Aura? | Qualities? | Power?)>
  <!ATTLIST HelperUnit Name CDATA #REQUIRED>
@@ -47,8 +48,9 @@
  <!ATTLIST TargedetSpell targets CDATA #IMPLIED>
  <!ATTLIST TargedetSpell targets CDATA #IMPLIED>
  <!ATTLIST TargedetSpell repeats (0|1) #IMPLIED>
- <!ATTLIST TargedetSpell hero (0|1) #IMPLIED>
+ <!ATTLIST TargedetSpell buildings (0|1) #IMPLIED>
  <!ATTLIST TargedetSpell o CDATA #IMPLIED>
+ <!ATTLIST TargedetSpell required CDATA #IMPLIED>
  
  <!ELEMENT SpellContainer (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
  	| PlayerValueSpell | ConditionSpell)+>
@@ -62,22 +64,24 @@
  
  <!ELEMENT BuffSpell EMPTY>
  
- <!ATTLIST BuffSpell type (AddHealth | AddDamage | AddQuality | Silence | HealthSetTo |
-  DamageSetTo | Hurt | Heal | Kill | ModDmg | ModHealth | ModQuality) #REQUIRED>
+ <!ATTLIST BuffSpell type (Silence | Sabotage | Heal | Repair | Hurt | Ram | Damage | Kill | Demolish | 
+	AddHealth | AddDamage | AddQuality | HealthSetTo | DamageSetTo | 
+	ModDmg | ModHealth | ModQuality) #REQUIRED>
  <!ATTLIST BuffSpell v CDATA #REQUIRED> 
+ <!ATTLIST BuffSpell required CDATA #IMPLIED>
  
  <!ELEMENT PlayerValueSpell EMPTY>
  <!ATTLIST PlayerValueSpell type (AddAvailMana | AddUnavailMana | AddHealth
  	 | RemoveHealth | PullCard) #REQUIRED>
  <!ATTLIST PlayerValueSpell value CDATA #REQUIRED>
  <!ATTLIST PlayerValueSpell acept CDATA #REQUIRED>
+ <!ATTLIST PlayerValueSpell required CDATA #IMPLIED>
  
  <!ELEMENT Spell ((Fulldesc | Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
  	| PlayerValueSpell | ConditionSpell)*)>
  <!ATTLIST Spell Name CDATA #REQUIRED>
  <!ATTLIST Spell Description CDATA #REQUIRED>
  <!ATTLIST Spell Cost CDATA #REQUIRED>
- 
  
  <!ELEMENT Filter EMPTY>
  <!ATTLIST Filter type (ClassEquals | HealthMore | HealthLess | DamageMore | DamageLess) #REQUIRED>

@@ -23,7 +23,10 @@ public class SpellContainer extends AbstractSpell {
 	
 	@Override
 	public boolean validate(int player, src.ProviderGameInterface currentGame) {
-		return true;
+		for(AbstractSpell as : spells) {
+		    if(as.validate(player, currentGame)) return true;
+		}
+		return false;
 	}
 
 	@Override

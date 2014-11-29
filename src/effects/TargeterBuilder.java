@@ -52,20 +52,20 @@ public class TargeterBuilder {
 	public static Targeter fromDOMElements(String s, Element e) {
         switch(s) {
             case "player": {
-                boolean aceptHero = (e.getAttribute("hero") == null) ? false : 
-                    e.getAttribute("hero").equals("1");
-                return new PlayerTargeter(aceptHero);
+                boolean aceptBuildings = (e.getAttribute("buildings") == null) ? false : 
+                    e.getAttribute("buildings").equals("1");
+                return new PlayerTargeter(aceptBuildings);
             }
             case "neighbor":
                 int offset = Integer.parseInt(e.getAttribute("o"));
                 return new NeighborTargeter(offset);
             case "random": {
                 int acept = Integer.parseInt(e.getAttribute("acept"));
-                boolean aceptHero = (e.getAttribute("hero") == null) ? false : 
-                    e.getAttribute("hero").equals("1");
+                boolean aceptBuildings = (e.getAttribute("buildings") == null) ? false : 
+                    e.getAttribute("buildings").equals("1");
                 int targets = Integer.parseInt(e.getAttribute("targets"));
                 int repeats = Integer.parseInt(e.getAttribute("repeats"));
-                return new RandomTargeter(acept, targets, (repeats == 1), aceptHero);
+                return new RandomTargeter(acept, targets, (repeats == 1), aceptBuildings);
             }
             case "all": {
                 int acept = Integer.parseInt(e.getAttribute("acept"));

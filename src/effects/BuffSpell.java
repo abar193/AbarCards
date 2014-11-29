@@ -10,7 +10,7 @@ public class BuffSpell extends AbstractSpell {
 
 	@Override
 	public boolean validate(int player, src.ProviderGameInterface currentGame) {
-		return target != null;
+		return !required || target.canBeTargetedByBuff(buff);
 	}
 
 	@Override

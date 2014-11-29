@@ -90,28 +90,28 @@
 	</Spell>
 	<Spell Name="Shock" Description="2 dmg" Cost="1">
 		<Fulldesc txt="Deals 2 damage to selected unit"/>
-		<TargedetSpell targeter="player">
-			<BuffSpell type="Hurt" v="2"/>
+		<TargedetSpell targeter="player" acept="1" buildings="1">
+			<BuffSpell type="Hurt" v="2" required="1"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Overcharge" Description="+2+W" Cost="1">
 		<Fulldesc txt="Adds +2 damage and provides windfury for unit"/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
-				<BuffSpell type="AddDamage" v="2"/>
-				<BuffSpell type="AddQuality" v="1"/>
+				<BuffSpell type="AddDamage" v="2" required="1"/>
+				<BuffSpell type="AddQuality" v="1" required="1"/>
 			</SpellContainer>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Analysis" Description="h=1" Cost="0">
 		<Fulldesc txt="Set unit's health to 1"/>
 		<TargedetSpell targeter="player">
-			<BuffSpell type="HealthSetTo" v="1"/>
+			<BuffSpell type="HealthSetTo" v="1" required="1"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Spark" Description="3/5 dmg" Cost="3">
 		<Fulldesc txt="Deals 3 damage to selected unit or 5 if you have at least 1 machine on field"/>
-		<TargedetSpell targeter="player">
+		<TargedetSpell targeter="player" buildings="1">
 			<ConditionSpell>
 				<Condition type="AllyHasMoreThanXMachines" count="0"/>
 				<BuffSpell type="Hurt" v="5"/>
@@ -121,15 +121,15 @@
 	</Spell>
 	<Spell Name="R-Hit" Description="2rt x 3dmg" Cost="2">
 		<Fulldesc txt="Deal 3 damage to 2 random targets"/>
-		<TargedetSpell targeter="random" acept="1" targets="2" repeats="0" hero="0">
-			 <BuffSpell type="Hurt" v="3"/>
+		<TargedetSpell targeter="random" acept="1" targets="2" repeats="0" buildings="0">
+			 <BuffSpell type="Hurt" v="3" required="1"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Bomb" Description="252" Cost="3">
 		<Fulldesc txt="Deals 5 damage to selected unit and 2 to adjusted ones."/>
 		<TargedetSpell targeter="player">
 			<SpellContainer>
-				<BuffSpell type="Hurt" v="5"/>
+				<BuffSpell type="Hurt" v="5" required="1"/>
 				<TargedetSpell targeter="neighbor" o="-1">
 					<BuffSpell type="Hurt" v="2"/>
 				</TargedetSpell>

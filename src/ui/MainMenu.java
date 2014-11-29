@@ -77,9 +77,7 @@ public class MainMenu extends JFrame implements ActionListener {
         {  
                 public void componentResized(ComponentEvent evt) {
                     Component c = (Component)evt.getSource();
-                    System.out.println("Resized");
                     if(state == MenuState.Playing || state == MenuState.Building) {
-                        System.out.println("Resized1");
                         gamePanel.setBounds(getContentPane().getBounds());
                         gamePanel.getComponent(0).setBounds(gamePanel.getBounds());
                     }

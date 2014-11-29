@@ -18,7 +18,8 @@ public class CreateUnitSpell extends AbstractSpell {
 
 	@Override
 	public boolean validate(int player, src.ProviderGameInterface currentGame) {
-		return true;
+		return !required || currentGame.provideFieldSituation()
+		        .isSpaceAvailable(player, myUnit instanceof cards.BuildingCard);
 	}
 
 	@Override
