@@ -105,7 +105,7 @@ public class DeckBuilder {
 	 */
 	public Deck validDeck() {
 		Deck d = new Deck(selectedCards.actionCards, selectedCards.baseCards);
-		if(d.validateCards()) {
+		if(d.validateCards(true)) {
 			return d;
 		}
 		return null;

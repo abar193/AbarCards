@@ -6,7 +6,7 @@ package cards;
  *
  */
 public enum CardType {
-	Spell, Unit, Building, Developer;
+	Spell, Unit, Building, Developer, Energy;
 	
 	public String toString() {
 		switch(this) {
@@ -18,6 +18,9 @@ public enum CardType {
 			}
 			case Building: {
 				return "Bc";
+			}
+			case Energy: {
+			    return "En";
 			}
 			default: return "";
 		}

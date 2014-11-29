@@ -24,7 +24,7 @@ public class CardsDrawer extends Panel {
 	private static final long serialVersionUID = -4212993318911101034L;
 
 	private ArrayList<BasicCard> cards;
-	private int mana, maxmana;
+	private int mana;
 	int lastClick = 0;
 	
 	public CardsDrawer() {
@@ -65,9 +65,6 @@ public class CardsDrawer extends Panel {
 			}
 	    	g2.drawString(dstr, cardSize * i + 7, this.getHeight() - 15);
 	    }
-	    
-	    g2.drawString(String.format("%d/%d", mana, maxmana), this.getWidth() * 2 / 3, 15);
-	    
 	}
 	
 	public void setLastClick(final int lc) {
@@ -81,10 +78,9 @@ public class CardsDrawer extends Panel {
 		repaint();
 	}
 	
-	public void setCards(ArrayList<BasicCard> c, int mana, int maxmana) {
+	public void setCards(ArrayList<BasicCard> c, int mana) {
 		cards = c;
 		this.mana = mana;
-		this.maxmana = maxmana;
 		repaint();
 	}
 	

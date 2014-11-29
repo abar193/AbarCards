@@ -97,7 +97,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         
         fieldDrawer = new FieldDrawer();
         fieldDrawer.parent = this;
-        if(latestSituation != null) fieldDrawer.setSituation(latestSituation, playerNumber);
+        if(latestSituation != null) fieldDrawer.setSituation(latestSituation, me, playerNumber);
         add(fieldDrawer, BorderLayout.CENTER);
         
         Panel right = new Panel();
@@ -118,7 +118,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         right.add(butt);
         
         butt = new JButton();
-        butt.setText("Pull base card");
+        butt.setText("Draw BC");
         butt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -139,7 +139,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         cardsDrawer = new CardsDrawer();
         cardsDrawer.parent = this;
         cardsDrawer.setPreferredSize(new Dimension(width, CARDS_DRAWER_HEIGHT));
-        if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana(), me.getTotalMana());
+        if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana());
         add(cardsDrawer, BorderLayout.PAGE_END);
         setVisible(true);
         System.out.println("CaSG: ended");
@@ -179,13 +179,13 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		}
 
 		if(cardsDrawer != null) {
-			cardsDrawer.setCards(p1.getHand(), p1.getAvailableMana(), p1.getTotalMana());
+			cardsDrawer.setCards(p1.getHand(), p1.getAvailableMana());
 		} else {
 			cards = p1.getHand();
 		}
 		
 		if(fieldDrawer != null) {
-			fieldDrawer.setSituation(field, p1.playerNumber);
+			fieldDrawer.setSituation(field, p1, p1.playerNumber);
 		} 
 		
 		if(enemyDeck != null) {

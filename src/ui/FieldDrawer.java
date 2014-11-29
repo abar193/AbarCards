@@ -9,6 +9,7 @@ import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.util.ArrayList;
 
+import players.PlayerData;
 import cards.BasicCard;
 import cards.CardType;
 import cards.UnitCard;
@@ -30,6 +31,7 @@ public class FieldDrawer extends Panel {
 	private static final long serialVersionUID = 3562732874731857165L;
 	
 	private FieldSituation fs;
+	private PlayerData myData;
 	private int selectedSide = 0, selectedUnit = 0;
 	private int playerNumber = 0;
 	
@@ -157,6 +159,13 @@ public class FieldDrawer extends Panel {
         calculateRow(g2, units, (int)(5 * ballSize / 2), false);
         units = fs.allBuildingsFromOneSide(playerNumber);
         calculateRow(g2, units, (int)(7 * ballSize / 2), true);
+        
+        g2.setColor(new Color(0, 46, 184));
+        g2.drawString(String.format("%d/%d$", myData.getAvailableMana(), myData.getTotalMana()), 
+                this.getWidth() - 40, this.getHeight() - 20);
+        g2.setColor(new Color(0, 142, 0));
+        g2.drawString(String.format("%d/%dE", myData.getAvailableEnergy(), myData.getTotalEnergy()), 
+                this.getWidth() - 40, this.getHeight() - 10);
 	}
 	
 	public void setLastClick(int side, int unit) {
@@ -166,9 +175,10 @@ public class FieldDrawer extends Panel {
 		repaint();
 	}
 	
-	public void setSituation(FieldSituation fs, int pn) {
+	public void setSituation(FieldSituation fs, PlayerData pd, int pn) {
 		this.fs = fs;
 		playerNumber = pn;
+		myData = pd;
 		repaint();
 	}
 

@@ -9,14 +9,16 @@ import java.util.Map;
  * @author Abar
  */
 public class PlayerOpenData {
-	public int health, totalMana, availableMana;
+	public int health, totalMana, availableMana, totalEnergy, availableEnergy;
 	public int actionSetSize, baseSetSize, handSize;
-	public int playerNumber;	
+	public int playerNumber;
 	
 	public Map<String, String> toMap() {
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		m.put("TotalMana", Integer.toString(totalMana));
 		m.put("AvailableMana", Integer.toString(availableMana));
+		m.put("TotalEnergy", Integer.toString(totalEnergy));
+        m.put("AvailableEnergy", Integer.toString(availableEnergy));
 		m.put("Health", Integer.toString(health));
 		m.put("ActionSetSize", Integer.toString(actionSetSize));
 		m.put("BaseSetSize", Integer.toString(baseSetSize));
@@ -36,6 +38,8 @@ public class PlayerOpenData {
 		health 			= Integer.parseInt((String) m.get("Health"));
 		availableMana 	= Integer.parseInt((String) m.get("AvailableMana"));
 		totalMana 		= Integer.parseInt((String) m.get("TotalMana"));	
+		availableEnergy = Integer.parseInt((String) m.get("AvailableEnergy"));
+        totalEnergy     = Integer.parseInt((String) m.get("TotalEnergy"));
 	}
 	
 }

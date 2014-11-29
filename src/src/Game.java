@@ -272,6 +272,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 			return playersData[player].canPlayCard(c) 
 			        & ((SpellCard)c).spell.validate(player, this);
 		else if(c.type == CardType.Developer && devMode) return true;
+		else if(c.type == CardType.Energy) return true;
 		else return false;
 	}
 	
@@ -387,6 +388,9 @@ public class Game implements GameInterface, ProviderGameInterface {
                         default:
                             break;   
     			    }
+    			} else if(c.type == CardType.Energy) {
+    			    playersData[player].recieveEnergySpell(c);
+    			    
     			}
     		}		
 	    }

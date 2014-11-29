@@ -59,6 +59,7 @@ public class MenuController {
     
     private void singleplayerGame(Deck d, PossibleOpponents opp) {
         DOMDeckReader dpr = new DOMDeckReader();
+        if(!d.validateCards(true)) return;
         d.shuffleCards();
         Game g = new Game();
         SwingVS vs = new SwingVS(g);

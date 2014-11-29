@@ -2,6 +2,7 @@ package players;
 
 import cards.Deck;
 import cards.BasicCard;
+import cards.EnergyCard;
 import players.PlayerInterface;
 import units.PlayerUnit;
 import effects.AbstractSpell;
@@ -29,13 +30,15 @@ public class PlayerData {
 	public static final int NOCARDPENALTY = 1;
 	/** Max cards in hand (if exceeded, then the card is dropped */
 	public static int MAXHANDLIMIT = 10;
+	public static int MAXENERGY = 5;
 	
 	private Deck myDeck;
 	private int myActionDeckSize, myBaseDeckSize;
 	private ArrayList<BasicCard> myHand;
 	
-	private int totalMana;
+	private int totalMana, totalEnergy;
 	private int availableMana;
+	private float availableEnergy;
 	
 	public PlayerUnit representingUnit;
     public int playerNumber;
@@ -67,6 +70,8 @@ public class PlayerData {
 		myPlayer = player;
 		auras = new AuraStorage();
 		this.currentGame = currentGame;
+		totalEnergy = 1;
+		availableEnergy = 1.0f;
 	}
 	
 	/**
@@ -84,6 +89,8 @@ public class PlayerData {
 		MAXHANDLIMIT = maxHandCards;
 		myPlayer = player;
 		auras = new AuraStorage(); 
+		totalEnergy = 1;
+        availableEnergy = 1.0f;
 	}
 	
 	/**
@@ -95,6 +102,7 @@ public class PlayerData {
 		if(!devModeMana) {
     		totalMana = Math.min(10, totalMana + 1);
     		availableMana = totalMana;
+            availableEnergy = Math.min(totalEnergy, availableEnergy + totalEnergy / 2);
 		}
 	}
 	
@@ -103,6 +111,7 @@ public class PlayerData {
 	 */
 	public void endTurn() {
 		auras.removeOutdatedAuras();
+		availableEnergy = Math.min(totalEnergy, availableEnergy + totalEnergy / 2);
 	}
 	
 	public void reciveSpell(AbstractSpell spell) {
@@ -131,6 +140,16 @@ public class PlayerData {
 				default:
 			}
 		}
+	}
+	
+	public void recieveEnergySpell(BasicCard es) {
+	    myHand.remove(es);
+	    if(totalEnergy >= MAXENERGY) {
+	        availableEnergy = totalEnergy;
+	    } else {
+	        totalEnergy += 1;
+	        availableEnergy += 1;
+	    }
 	}
 	
 	/**
@@ -240,6 +259,14 @@ public class PlayerData {
 		return totalMana;
 	}
 	
+	public int getAvailableEnergy() {
+        return (int)availableEnergy;
+    }
+    
+    public int getTotalEnergy() {
+        return totalEnergy;
+    }
+	
 	public int getDeckSize(boolean isBaseSet) {
 		if(myDeck == null) return (isBaseSet) ? myBaseDeckSize : myActionDeckSize;
 		else return (isBaseSet) ? myDeck.getSize(true) : myDeck.getSize(false);
@@ -319,6 +346,8 @@ public class PlayerData {
 		pod.health = this.representingUnit.getCurrentHealth();
 		pod.totalMana = this.totalMana;
 		pod.availableMana = this.availableMana;
+		pod.totalEnergy = this.totalEnergy;
+        pod.availableEnergy = (int)this.availableEnergy;
 		pod.baseSetSize = this.getDeckSize(true);
 		pod.actionSetSize = this.getDeckSize(false);
 		pod.handSize = this.getHandSize();

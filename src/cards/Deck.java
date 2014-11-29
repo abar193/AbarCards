@@ -14,6 +14,7 @@ import java.util.Random;
 public class Deck {
 	public static final int UNIT_DECK_SIZE = 16;
 	public static final int BASE_DECK_SIZE = 10;
+	public static final int ENERGY_CARDS = 5;
 	
 	private ArrayList<BasicCard> unitCards = null;
 	private ArrayList<BasicCard> baseCards = null;
@@ -71,13 +72,19 @@ public class Deck {
 	 * Checks if card list matches games rules.
 	 * @return true if it matches.
 	 */
-	public boolean validateCards() {
+	public boolean validateCards(boolean appendEnergyCards) {
 		if(unitCards == null || unitCards.size() != UNIT_DECK_SIZE) {
 			return false;
 		}
 		if(baseCards == null || baseCards.size() != BASE_DECK_SIZE) {
             return false;
         }
+		
+		if(appendEnergyCards) {
+		    for(int i = 0; i < ENERGY_CARDS; i++) {
+		        baseCards.add(new EnergyCard("", ""));
+		    }
+		}
 		return true;
 	}
 	
