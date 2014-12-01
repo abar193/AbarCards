@@ -36,8 +36,8 @@ public class DevCard extends BasicCard {
         setType(name);
     }
 
-    public DevCard(String name, String desc, int cost, CardType type) {
-        super(name, desc, cost, type);
+    public DevCard(String name, String desc, int cost, int energyCost, CardType type) {
+        super(name, desc, cost, energyCost, type);
         setType(name);
     }
 

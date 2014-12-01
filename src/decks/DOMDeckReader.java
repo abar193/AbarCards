@@ -212,7 +212,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     }
     
     public UnitPower parsePower(Element n) {
-        UnitPower up = new UnitPower(TriggeringCondition.fromString(n.getAttribute("condition")));
+        UnitPower up = new UnitPower(new TriggeringCondition(n.getAttribute("condition")));
         for(int i = 0; i < n.getChildNodes().getLength(); i++) {
             Node s = n.getChildNodes().item(i); 
             if(s.getNodeType() == Node.ELEMENT_NODE) {
@@ -278,6 +278,8 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                     bc.fullDescription = e.getAttribute("txt");
                 } else if(e.getNodeName().contains("Qualities")) {
                     bc.qualities = Integer.parseInt(e.getAttribute("v"));
+                } else if(e.getNodeName().contains("Power")) {
+                    bc.power = parsePower(e);
                 } else if(e.getNodeName().contains("Aura")) {
                     if(bc.auraEffects == null) {
                         bc.auraEffects = new AuraEffect[1];
@@ -351,9 +353,9 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     
     public static void main(String[] args) throws Exception {    
         DOMDeckReader dpr = new DOMDeckReader();
-        ArrayList<BasicCard> bc = dpr.parseFile("MachinesDeck.xml").actionCards;
+        DeckArrays bc = dpr.parseFile("MachinesDeck.xml");
         if(bc == null) return;
-        for(BasicCard c : bc) {
+        for(BasicCard c : bc.actionCards) {
             System.out.format("Card %s %s %s", c, c.description, c.fullDescription);
             if(c instanceof SpellCard) {
                 System.out.println(((SpellCard)c).spell);

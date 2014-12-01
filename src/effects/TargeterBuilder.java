@@ -69,13 +69,17 @@ public class TargeterBuilder {
             }
             case "all": {
                 int acept = Integer.parseInt(e.getAttribute("acept"));
-                boolean aceptHero = (e.getAttribute("hero") == null) ? false : 
-                    e.getAttribute("hero").equals("1"); 
+                boolean aceptHero = (e.getAttribute("buildings") == null) ? false : 
+                    e.getAttribute("buildings").equals("1"); 
                 boolean excludeSelf = (e.getAttribute("excludeSelf") == null) ? false : 
                     e.getAttribute("excludeSelf").equals("1");
                 AllUnitsTargeter tmp = new AllUnitsTargeter(acept, aceptHero);
                 tmp.excludeSelf = excludeSelf;
                 return tmp;
+            } 
+            case "self": {
+                SelfTargeter st = new SelfTargeter();
+                return st;
             }
             default: 
                 return null;

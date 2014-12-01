@@ -8,7 +8,7 @@ package effects;
 public enum BuffType {
     Silence, Sabotage, Heal, Repair, Hurt, Ram, Damage, Kill, Demolish, 
 	AddHealth, AddDamage, AddQuality, HealthSetTo, DamageSetTo, 
-	ModDmg, ModHealth, ModQuality;
+	ModDmg, ModHealth, ModQuality, ShadowDmg;
 	
 	public static BuffType fromString(String s) {
 	    try{

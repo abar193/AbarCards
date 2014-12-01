@@ -90,11 +90,13 @@ public class FieldDrawer extends Panel {
 	    	            ballSize - 8, 45, 45);
 	    	    g2.drawRoundRect(ballSize * x + 4, center - ballSize / 2 + 4, ballSize - 7,
                         ballSize - 7, 45, 45);
-	    	    int rectSize = (ballSize - 10) / b.getMaxProgress(); 
-	    	    for(int i = 1; i <= b.getMaxProgress(); i++) {
-	    	        if(i <= b.getProgress()) g2.setColor(Color.GREEN);
-	    	        else g2.setColor(Color.YELLOW);
-	    	        g2.fillRect(ballSize * x + 5 + rectSize * (i-1), center - 10, rectSize - 2, 5);
+	    	    if(b.getMaxProgress() != 0) {
+    	    	    int rectSize = (ballSize - 10) / b.getMaxProgress(); 
+    	    	    for(int i = 1; i <= b.getMaxProgress(); i++) {
+    	    	        if(i <= b.getProgress()) g2.setColor(Color.GREEN);
+    	    	        else g2.setColor(Color.YELLOW);
+    	    	        g2.fillRect(ballSize * x + 5 + rectSize * (i-1), center - 10, rectSize - 2, 5);
+    	    	    }
 	    	    }
 		    }
 	    	

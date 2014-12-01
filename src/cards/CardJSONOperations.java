@@ -84,7 +84,7 @@ public class CardJSONOperations {
         } catch (NumberFormatException | NullPointerException e) {
             e.printStackTrace();
         }
-        System.err.println("Can't create card: " + s.toString());
+        System.err.println("Can't create card from string: " + s.toString());
         return null;
     }
 	

@@ -116,6 +116,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 		int i = 0;
 		this.gameRunning = true;
 		while(playersData[0].getHealth() > 0 && playersData[1].getHealth() > 0 && gameRunning) {
+		    field.globalEvent(units.TriggeringCondition.GlobalCondition.TurnStart);
 			/* * * Init * * */
 		    int player = i % 2;
 		    int opponent = (i + 1) % 2;
@@ -150,6 +151,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 				
 			}
 			playerThread.interrupt();
+			field.globalEvent(units.TriggeringCondition.GlobalCondition.TurnEnd);
 			/* * * End turn * * */
 			
 			playingCard = false;
@@ -212,14 +214,12 @@ public class Game implements GameInterface, ProviderGameInterface {
 		attacker.attackUnit(target);
 		if(target.isDead()) {
 			informAll(target.card.name + " is dead");
-			target.respondToEvent(TriggeringCondition.OnDeath, null);
-			passEventAboutUnit(target, TriggeringCondition.OnAllyDeath);
+			this.triggerUnitEvents(target, units.TriggeringCondition.Condition.Die);
 			field.removeObjectOfPlayer(target, target.player); 
 		}
 		if(attacker.isDead()) {
 			informAll(attacker.card.name + " is dead"); 
-			attacker.respondToEvent(TriggeringCondition.OnDeath, null);
-			passEventAboutUnit(attacker, TriggeringCondition.OnAllyDeath);
+			this.triggerUnitEvents(attacker, units.TriggeringCondition.Condition.Die);
 			field.removeObjectOfPlayer(attacker, attacker.player); 
 		}
 		recalculateFieldModifiers();
@@ -282,7 +282,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * @param player player's number
 	 * @return null if nothing was placed, or created unit 
 	 */
-	public FieldObject createObject(BasicCard bc, int player, boolean fromSpell) {
+	public FieldObject createObject(BasicCard bc, int player) {
 	    FieldObject o;
 		if(bc instanceof BuildingCard) { 
 		    o = factory.createBuilding((BuildingCard)bc, player, this);
@@ -294,10 +294,9 @@ public class Game implements GameInterface, ProviderGameInterface {
 		}
 		try {
 			if(field.canObjectBeAdded(o, player)) {
-				o.respondToEvent(TriggeringCondition.BeforeCreate, null);
+				o.respondToEvent(new TriggeringCondition(TriggeringCondition.Condition.BeforeSpawn), null);
 				field.addObject(o, player);
-				if(fromSpell) 
-				    triggerCreatingEvents(o);
+			    this.triggerUnitEvents(o, units.TriggeringCondition.Condition.Spawn);
 			}
 		} catch (IllegalArgumentException e) {
 			return null;
@@ -306,7 +305,6 @@ public class Game implements GameInterface, ProviderGameInterface {
 		return o;
 	}
 	
-
     @Override
     public boolean canUseBuilding(int building, int player) {
         if(player != playerTurn || playingCard || !gameRunning) return false;
@@ -328,6 +326,7 @@ public class Game implements GameInterface, ProviderGameInterface {
         
         if(field.allBuildingsFromOneSide(player).size() > building) {
             if(field.allBuildingsFromOneSide(player).get(building) instanceof Building) {
+                field.globalEvent(units.TriggeringCondition.GlobalCondition.CardPlayed);
                 Building b = (Building)field.allBuildingsFromOneSide(player).get(building);
                 BasicCard c = b.takeProduct();
                 playersData[player].forceReceive(c);
@@ -344,29 +343,22 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public void playCard(BasicCard c, int player) {
 	    synchronized(playersData[player]) {
     		if(canPlayCard(c, player)) {
-    		    
+    		    field.globalEvent(units.TriggeringCondition.GlobalCondition.CardPlayed);
     		    playingCard = true;
     			// Drawing
     			players.get(player).reciveAction("Playing " + c.name);
     			players.get((player + 1) % 2).reciveAction("Opponent plays " + c.name);
     			
-    			if(c.type == CardType.Building) {
-    			    Building b = (Building)createObject((UnitCard)c, player, false); 
-                    if(b == null) 
+    			if(c.type == CardType.Building || c.type == CardType.Unit) {
+    			    FieldObject fo = createObject(c, player);
+    			    
+                    if(fo == null) 
                         players.get(player).reciveAction("Can't add that");
                     else {
                         playersData[player].playCard(c);
-                        triggerCreatingEvents(b);
                     }
-    			} else if(c.type == CardType.Unit) {
-    			    Unit u = (Unit)createObject((UnitCard)c, player, false); 
-    				if(u == null) 
-    					players.get(player).reciveAction("Can't add that");
-    				else {
-    					playersData[player].playCard(c);
-    					triggerCreatingEvents(u);
-    				}
     			} else if (c.type == CardType.Spell) {
+    			    field.globalEvent(units.TriggeringCondition.GlobalCondition.SpellUsed);
     				SpellCard card = (SpellCard)c;	
     				if(card.validate(player, this)) {
     					card.exequte(player, this);
@@ -390,7 +382,6 @@ public class Game implements GameInterface, ProviderGameInterface {
     			    }
     			} else if(c.type == CardType.Energy) {
     			    playersData[player].recieveEnergySpell(c);
-    			    
     			}
     		}		
 	    }
@@ -401,12 +392,15 @@ public class Game implements GameInterface, ProviderGameInterface {
 	}
 	
 	/**
-	 * Called for freshly created unit, to trigger "OnCreate" and "OnAllySpawn" events.
-	 * @param u new units
+	 * Triggers you-condition for FieldObject and otherUnit-condition for all remaining objects. 
+	 * @param u unit
+	 * @param c condition
 	 */
-	private void triggerCreatingEvents(FieldObject u) {
-	    u.respondToEvent(TriggeringCondition.OnCreate, null);
-        this.passEventAboutUnit(u, TriggeringCondition.OnAllySpawn);
+	public void triggerUnitEvents(FieldObject u, TriggeringCondition.Condition c) {
+	    TriggeringCondition youc = new TriggeringCondition(c);
+	    u.respondToEvent(youc, null);
+	    TriggeringCondition ouc = TriggeringCondition.otherFromYouCondition(youc, u);
+	    field.passEventAboutObject(u, ouc);
 	}
 	
 	/**
@@ -457,9 +451,8 @@ public class Game implements GameInterface, ProviderGameInterface {
 				if(u.isDead()) {
 					informAll(u.card.name + " is dead");
 					field.removeObjectOfPlayer(u, i);
-					u.respondToEvent(TriggeringCondition.OnDeath, null);
-					field.passEventAboutRemovedObjectFromSide(u, 
-							TriggeringCondition.OnAllyDeath);
+					this.triggerUnitEvents(u, units.TriggeringCondition.Condition.Die);
+					
 					if(playersData[i].auras.unitDies(u)) { 
 						recalculateFieldModifiers();
 						return;
@@ -469,9 +462,10 @@ public class Game implements GameInterface, ProviderGameInterface {
 				}
 			}
 			objects = field.allObjectsFromOneSide(i, true);
+			TriggeringCondition alw = new TriggeringCondition(units.TriggeringCondition.GlobalCondition.Always);
             for(int j = 0; j < objects.size(); j++) { // Iteration 2: trigger UnitPowers with condition "always"
 			    FieldObject u = objects.get(j);
-				u.respondToEvent(TriggeringCondition.Always, null);
+				u.respondToEvent(alw, null);
 			}
 		}
 	}

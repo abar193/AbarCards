@@ -18,11 +18,11 @@ import effects.AuraEffect;
 public interface ProviderGameInterface {
 
     public FieldSituation provideFieldSituation();
-    public FieldObject createObject(BasicCard uc, int player, boolean fromSpell);
+    public FieldObject createObject(BasicCard uc, int player);
     public FieldObject askPlayerForTarget(int player);
     public void applySpellToPlayer(int player, AbstractSpell spell);
     public void informAll(String m);
     public void addAuraForPlayer(int player, AuraEffect ae);
     public void informLostCards(ArrayList<BasicCard> cards, int player);
-    public void passEventAboutUnit(FieldObject u, TriggeringCondition e);
+    public void triggerUnitEvents(FieldObject u, TriggeringCondition.Condition c);
 }

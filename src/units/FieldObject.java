@@ -129,6 +129,9 @@ public abstract class FieldObject {
             case Ram:
                 damage(b.value);
                 break;
+            case ShadowDmg:
+                currentHealth -= b.value;
+                break;
             case Heal:
             case Repair:
                 heal(b.value);
@@ -169,10 +172,11 @@ public abstract class FieldObject {
             removeQuality(Quality.Shield);
         } else {
             currentHealth -= d;
-            if(currentGame != null)
+            if(currentGame != null) {
                 currentGame.informAll(String.format("%s takes %d damage", 
                     this.card.name, d));
-            this.respondToEvent(TriggeringCondition.OnDamage, this);
+                currentGame.triggerUnitEvents(this, units.TriggeringCondition.Condition.TakeDamage);
+            }
         }
     }
     
@@ -204,17 +208,13 @@ public abstract class FieldObject {
     }
     
     public void respondToEvent(TriggeringCondition e, FieldObject otherU) {
-        if(e == TriggeringCondition.OnDamage) {
-            if(currentGame != null)
-                currentGame.passEventAboutUnit(this, TriggeringCondition.OnAllyDamage);
-        }
+        
         for(UnitPower p : powersMatchingCondition(e)) {
             if((p.filter == null || otherU.matchesFilter(p.filter)) 
                     && p.validate(player, currentGame)) 
             {
-                if(e != TriggeringCondition.Always) {
-                    currentGame.informAll(
-                            String.format("%s invokes his power", card.name));
+                if(!e.isAlwaysCondition()) {
+                    currentGame.informAll(String.format("%s invokes his power", card.name));
                 }
                 p.exequte(this, player, currentGame);
             }

@@ -7,7 +7,7 @@ package cards;
  */
 public abstract class BasicCard {
 	
-	public int cost;
+	public int cost, energyCost;
 	public CardType type;
 	public String name; 
 	public String description;
@@ -29,11 +29,12 @@ public abstract class BasicCard {
 		this.cost = cost;
 	}
 	
-	public BasicCard(String name, String desc, int cost, CardType type) {
+	public BasicCard(String name, String desc, int cost, int energyCost, CardType type) {
 		this.name = name;
 		this.description = desc;
 		this.cost = cost;
 		this.type = type;
+		this.energyCost = energyCost;
 	}
 	
 	public int getBasicCost() {

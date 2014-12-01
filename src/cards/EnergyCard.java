@@ -12,8 +12,8 @@ public class EnergyCard extends BasicCard {
         type = CardType.Energy;
     }
 
-    public EnergyCard(String name, String desc, int cost, CardType type) {
-        super("Energy", "    Card", cost, type);
+    public EnergyCard(String name, String desc, int cost, int energyCost, CardType type) {
+        super("Energy", "    Card", cost, energyCost, type);
         type = CardType.Energy;
     }
 

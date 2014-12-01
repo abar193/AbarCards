@@ -24,7 +24,7 @@ public class UnitPower {
 	}
 	
 	public boolean matchesCondition(TriggeringCondition c) {
-		return tc == c;
+		return tc.equals(c);
 	}
 	
 	public boolean validate(int player, src.ProviderGameInterface cG) {
@@ -32,7 +32,7 @@ public class UnitPower {
 	}
 	
 	public void exequte(FieldObject u, int player, src.ProviderGameInterface cG) {
-		spell.target = (Unit)u;
+		spell.target = u;
 		spell.exequte(player, cG);
 	}
 	

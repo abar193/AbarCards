@@ -127,12 +127,10 @@ public class Unit extends FieldObject {
 	public void startTurn() {
 		canAttack = true;
 		attackedAlready = 0;
-		this.respondToEvent(TriggeringCondition.OnTurnStart, this);
 	}
 	
 	@Override
 	public void endTurn() {
-		this.respondToEvent(TriggeringCondition.OnTurnEnd, this);
 	}
 	
 	public void attackUnit(FieldObject u) {

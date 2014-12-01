@@ -24,8 +24,7 @@
  
  <!ELEMENT Power (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
  	| PlayerValueSpell)*>
- <!ATTLIST Power condition (OnCreate | OnTurnStart | OnTurnEnd | OnDamage | 
- 	OnAllySpawn | OnAllyDamage | OnDeath | OnAllyDeath | BeforeCreate | Always) #REQUIRED>
+ <!ATTLIST Power condition CDATA #REQUIRED>
  	
  <!ELEMENT CreateUnitSpell (HelperUnit)>
  <!ATTLIST CreateUnitSpell count CDATA #REQUIRED>
@@ -66,7 +65,7 @@
  
  <!ATTLIST BuffSpell type (Silence | Sabotage | Heal | Repair | Hurt | Ram | Damage | Kill | Demolish | 
 	AddHealth | AddDamage | AddQuality | HealthSetTo | DamageSetTo | 
-	ModDmg | ModHealth | ModQuality) #REQUIRED>
+	ModDmg | ModHealth | ModQuality | ShadowDmg) #REQUIRED>
  <!ATTLIST BuffSpell v CDATA #REQUIRED> 
  <!ATTLIST BuffSpell required CDATA #IMPLIED>
  

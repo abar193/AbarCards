@@ -16,6 +16,7 @@ import src.MenuController;
 import src.ProviderGameInterface;
 import units.FieldObject;
 import units.TriggeringCondition;
+import units.TriggeringCondition.Condition;
 import units.Unit;
 
 import javax.websocket.*;
@@ -386,7 +387,7 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
     }
 
     @Override
-    public FieldObject createObject(BasicCard uc, int player, boolean fromSpell) {
+    public FieldObject createObject(BasicCard uc, int player) {
         System.err.println("On serverGame should not triggered ProviderGameInterface methods");
         return null;
     }
@@ -418,12 +419,13 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
     }
 
     @Override
-    public void passEventAboutUnit(units.FieldObject u, TriggeringCondition e) {
-        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
+    public void pullBaseCard(int player) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override
-    public void pullBaseCard(int player) {
+    public void triggerUnitEvents(FieldObject u, Condition c) {
         // TODO Auto-generated method stub
         
     }

@@ -112,7 +112,7 @@ public class FieldSituation {
             i = jarr.iterator();
             while(i.hasNext()) {
                 Map<String, String> fo = i.next();
-                if(fo.toString().contains("\\\"Name\\\":\\\"Hero\\\"")) {
+                if(fo.toString().contains("\"Name\":\"Hero\"")) {
                     Unit u = new Unit(fo, cG);
                     objs.add(u);
                     heroes[j] = u;
@@ -366,6 +366,10 @@ public class FieldSituation {
 	 */
 	public void passEventAboutObject(FieldObject u, TriggeringCondition e) {
 		ArrayList<FieldObject> side = allObjectsFromOneSide(u.player, true);
+		if(e.isYouCondition()) {
+		    System.out.println("Converting.");
+		    e = TriggeringCondition.otherFromYouCondition(e, u);
+		}
 		
 		if(side != null) {
 			for(FieldObject i : side) {
@@ -373,9 +377,24 @@ public class FieldSituation {
 					i.respondToEvent(e, u);
 				}
 			}
+			
+			side = allObjectsFromOneSide((u.player + 1) % 2, true);
+			TriggeringCondition rev = TriggeringCondition.mirrorUnitCondition(e);
+			for(FieldObject i : side) {
+                i.respondToEvent(rev, u);
+            }
+			
 		} else {
 		    System.err.println("No side found for unit: " + u.toString());
 		}
+	}
+	
+	public void globalEvent(TriggeringCondition.GlobalCondition gc) {
+	    TriggeringCondition c = new TriggeringCondition(gc);
+	    ArrayList<FieldObject> side = allObjects(true);
+	    for(FieldObject fo : side) {
+	        fo.respondToEvent(c, null);
+	    }
 	}
 	
 	public void passEventAboutRemovedObjectFromSide(FieldObject u, TriggeringCondition e) {

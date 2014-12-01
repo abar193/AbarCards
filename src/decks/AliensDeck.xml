@@ -3,13 +3,13 @@
 <Deck num="4">
 	<Spell Name="Reinforce" Description="+3Dmg" Cost="1">
 		<Fulldesc txt="Adds 3 damgae to choosen unit"/>
-		<TargedetSpell targeter="player" hero="0">
+		<TargedetSpell targeter="player" buildings="0">
 			<BuffSpell v="3" type="AddDamage"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Killer laser" Description="3dmg+card" Cost="4">
 		<Fulldesc txt="Deals 3 damage and draws a card"/>
-		<TargedetSpell targeter="player" hero="1">
+		<TargedetSpell targeter="player" buildings="1">
 			<SpellContainer>
 				<BuffSpell v="3" type="Hurt"/>
 				<PlayerValueSpell type="PullCard" value="1" acept="0"/>
@@ -69,7 +69,7 @@
 	</Spell>
 	<Unit Name="Defender" Description="Gives shield" Damage="2" Health="2" Cost="2">
 		<Fulldesc txt="OnCreate gives selected unit divine shield"/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<TargedetSpell targeter="player" hero="0">
 				<BuffSpell v="32" type="AddQuality"/>
 			</TargedetSpell>
@@ -77,14 +77,14 @@
 	</Unit>
 	<Unit Name="Guardian" Description="Heals hero 6" Damage="5" Health="6" Cost="7">
 		<Fulldesc txt="OnCreate heals ally for 6 health"/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<PlayerValueSpell type="AddHealth" value="6" acept="0"/>
 		</Power>
 	</Unit>
 	<Unit Name="Carrier" Description="D+T+Summon 5/3" Damage="6" Health="6" Cost="8">
 		<Fulldesc txt="OnDeath summons 5/3"/>
 		<Qualities v="36"/>
-		<Power condition="OnDeath">
+		<Power condition="You|Die">
 			<CreateUnitSpell side="0" count="1">
 				<HelperUnit Name="Laser" Description="" Damage="5" Health="3" Cost="0">
 				</HelperUnit>

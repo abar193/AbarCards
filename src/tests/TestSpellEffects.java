@@ -34,7 +34,6 @@ public class TestSpellEffects {
 	public void testBuffCreation() {
 	    assertEquals(BuffType.AddDamage, BuffType.fromString("AddDamage"));
 	    assertEquals(BuffType.AddHealth, BuffType.fromString("AddHealth"));
-	    assertNull(BuffType.fromString("Azaza"));
 	}
 	
 	@Test

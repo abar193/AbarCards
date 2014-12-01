@@ -68,7 +68,7 @@
 	<Unit Name="Sniper" Description="" Damage="0" Health="2" Cost="3">
 		<Fulldesc txt="Stealth, deals 2 damage to random enemy at the end of a turn"/>
 		<Qualities v="2"/>
-		<Power condition="OnTurnEnd">
+		<Power condition="Global|TurnEnd">
 			<TargedetSpell targeter="random" acept="1" targets="1" repeats="1">
 				<BuffSpell type="Hurt" v="2"/>
 			</TargedetSpell>
@@ -85,7 +85,7 @@
 	<!--  Silencers -->
 	<Unit Name="Maniac" Description="Stu" Damage="2" Health="1" Cost="2">
 		<Fulldesc txt="OnSpawn: Silences targedet unit."/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<TargedetSpell targeter="player">
 				<BuffSpell type="Silence" v="0"/>
 			</TargedetSpell>
@@ -93,7 +93,7 @@
 	</Unit>
 	<Unit Name="Cameramen" Description="Stu" Damage="4" Health="4" Cost="4">
 		<Fulldesc txt="OnSpawn: Silences targedet unit"/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<TargedetSpell targeter="player">
 				<BuffSpell type="Silence" v="0"/>
 			</TargedetSpell>
@@ -102,7 +102,7 @@
 	<!-- Summoners -->
 	<Unit Name="Cat lady" Description="" Damage="1" Health="1" Cost="2">
 		<Fulldesc txt="OnSpawn: Creates 2x 1-1 cats"/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<CreateUnitSpell count="2" side="0">
 				<HelperUnit Name="Cat" Description="" Damage="1" Health="1" Cost="0">
 				</HelperUnit>
@@ -111,7 +111,7 @@
 	</Unit>
 	<Unit Name="Russian+SB" Description="" Damage="4" Health="4" Cost="5">
 		<Fulldesc txt="OnSpawn: Creates 1x  2-2 small bear."/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<CreateUnitSpell count="1" side="0">
 				<HelperUnit Name="Small bear" Description="" Damage="2" Health="2" Cost="0">
 				</HelperUnit>
@@ -120,7 +120,7 @@
 	</Unit>
 	<Unit Name="Imp master" Description="" Damage="1" Health="5" Cost="3">
 		<Fulldesc txt="OnTurnEnd: Takes 1 dmg and creates 1-1 imp."/>
-		<Power condition="OnTurnEnd">
+		<Power condition="Global|TurnEnd">
 			<SpellContainer>
 				<BuffSpell type="Hurt" v="1"/>
 				<CreateUnitSpell count="1" side="0">
@@ -152,7 +152,7 @@
 	<Unit Name="Med PhD" Description="" Damage="5" Health="5" Cost="7">
 		<Fulldesc txt="OnSpawn: heals all allies for 2. Aura +1 health for all units." />
 		<Aura type="2" value="1"/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<TargedetSpell targeter="all" acept="0">
 				<BuffSpell type="Heal" v="2"/>
 			</TargedetSpell>
@@ -161,7 +161,7 @@
 	<!-- Healers -->
 	<Unit Name="Volonteer" Description="Stu" Damage="2" Health="1" Cost="2">
 		<Fulldesc txt="OnSpawn: heals targedet unit."/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<TargedetSpell targeter="player">
 				<BuffSpell type="Heal" v="2"/>
 			</TargedetSpell>
@@ -170,7 +170,7 @@
 	<Unit Name="RCActivist" Description="" Damage="0" Health="1" Cost="1">
 		<Fulldesc txt="Stealth, OnTurnEnd: add 1 health to a random ally."/>
 		<Qualities v="2"/>
-		<Power condition="OnTurnEnd">
+		<Power condition="Global|TurnEnd">
 			<TargedetSpell targeter="random" acept="0" targets="1" repeats="1">
 				<BuffSpell type="AddHealth" v="1"/>
 			</TargedetSpell>
@@ -179,7 +179,7 @@
 	<Unit Name="Field doc" Description="" Damage="5" Health="2" Cost="5">
 		<Fulldesc txt="OnSpawn: heal all +2. Charge" />
 		<Qualities v="8"/>
-		<Power condition="OnCreate">
+		<Power condition="You|Spawn">
 			<TargedetSpell targeter="all" acept="0">
 				<BuffSpell type="Heal" v="2"/>
 			</TargedetSpell>
@@ -188,7 +188,7 @@
 	<!-- Stat gainers -->
 	<Unit Name="Warlord" Description="" Damage="4" Health="4" Cost="5">
 		<Fulldesc txt="OnSpawn: Gain 1/1 for each ally on field"/>
-		<Power condition="BeforeCreate">
+		<Power condition="You|BeforeSpawn">
 			<SpellContainer>
 				<BuffSpell type="AddHealth" v="AllyUnitsCount"/>
 				<BuffSpell type="AddDamage" v="AllyUnitsCount"/>
