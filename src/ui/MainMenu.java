@@ -272,6 +272,8 @@ public class MainMenu extends JFrame implements ActionListener {
                 .setStartSide(SLSide.RIGHT, gamePanel)
                 .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                     state = MenuState.Building;
+                    gamePanel.repaint();
+                    gamePanel.validate();
                 }}))
             .play();
         } else if(state == MenuState.PickingPlayDeck) {
@@ -360,6 +362,8 @@ public class MainMenu extends JFrame implements ActionListener {
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Playing;
                 vs.repaint();
+                gamePanel.repaint();
+                gamePanel.validate();
             }}));
         
         if(state == MenuState.Waiting) frame.setEndSide(SLSide.TOP, waitingPanel);
