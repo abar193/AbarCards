@@ -266,6 +266,11 @@ public class PlayerData {
     public int getTotalEnergy() {
         return totalEnergy;
     }
+    
+    public void drainResource(boolean energy, int value) {
+        if(energy) availableEnergy = Math.min(0, availableEnergy - value);
+        else availableMana = Math.min(0, availableMana - value); 
+    }
 	
 	public int getDeckSize(boolean isBaseSet) {
 		if(myDeck == null) return (isBaseSet) ? myBaseDeckSize : myActionDeckSize;

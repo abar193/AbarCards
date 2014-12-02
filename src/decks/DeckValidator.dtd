@@ -23,7 +23,7 @@
  <!ATTLIST Qualities v CDATA #REQUIRED>
  
  <!ELEMENT Power (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell)*>
+ 	| PlayerValueSpell | EnergySpell)*>
  <!ATTLIST Power condition CDATA #REQUIRED>
  	
  <!ELEMENT CreateUnitSpell (HelperUnit)>
@@ -62,7 +62,6 @@
  	| PlayerValueSpell | ConditionSpell)+)>
  
  <!ELEMENT BuffSpell EMPTY>
- 
  <!ATTLIST BuffSpell type (Silence | Sabotage | Heal | Repair | Hurt | Ram | Damage | Kill | Demolish | 
 	AddHealth | AddDamage | AddQuality | HealthSetTo | DamageSetTo | 
 	ModDmg | ModHealth | ModQuality | ShadowDmg) #REQUIRED>
@@ -76,8 +75,13 @@
  <!ATTLIST PlayerValueSpell acept CDATA #REQUIRED>
  <!ATTLIST PlayerValueSpell required CDATA #IMPLIED>
  
+ <!ELEMENT EnergySpell (CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
+ 	| PlayerValueSpell | ConditionSpell)>
+ <!ATTLIST EnergySpell price (0|1|2|3|4|5) #REQUIRED>
+ <!ATTLIST EnergySpell required (0|1) #IMPLIED>
+ 
  <!ELEMENT Spell ((Fulldesc | Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell | ConditionSpell)*)>
+ 	| PlayerValueSpell | ConditionSpell | EnergySpell)*)>
  <!ATTLIST Spell Name CDATA #REQUIRED>
  <!ATTLIST Spell Description CDATA #REQUIRED>
  <!ATTLIST Spell Cost CDATA #REQUIRED>

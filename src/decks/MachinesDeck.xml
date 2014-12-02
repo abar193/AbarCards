@@ -5,12 +5,14 @@
 	<Building Name="Secret.M1" Description=".2D" Damage="0" Health="3" Cost="2" Production="0" Progress="0">
 		<Fulldesc txt="OnAllyBuildingDamage deal 2 damage to all enemies and loose 1 life."/>
 		<Power condition="Ally|Building|TakeDamage">
-			<SpellContainer>
-				<BuffSpell v="1" type="ShadowDmg"/>
-				<TargedetSpell targeter="all" acept="1" buildings="1">
-					<BuffSpell v="2" type="Damage"/>
-				</TargedetSpell>
-			</SpellContainer>
+			<EnergySpell price="1">
+				<SpellContainer>
+					<BuffSpell v="1" type="ShadowDmg"/>
+					<TargedetSpell targeter="all" acept="1" buildings="1">
+						<BuffSpell v="2" type="Damage"/>
+					</TargedetSpell>
+				</SpellContainer>
+			</EnergySpell>
 		</Power>
 	</Building>
 	<Building Name="Barracks" Description="1-1 unit" Damage="1" Health="7" Cost="2" Production="1" Progress="1">

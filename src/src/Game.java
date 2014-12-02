@@ -525,4 +525,25 @@ public class Game implements GameInterface, ProviderGameInterface {
         playersData[player].pullCard(1, true);
         updateInfoForAll();
     }
+
+    @Override
+    public int getResourceForPlayer(int player, boolean energy) {
+        return (energy) ? playersData[player].getAvailableEnergy() : playersData[player].getAvailableMana();
+    }
+
+    @Override
+    public boolean drainResourceForPlayer(int player, boolean energy, int value) {
+        if(energy) {
+            if(playersData[player].getAvailableEnergy() >= value) {
+                playersData[player].drainResource(true, value);
+                return true;
+            } 
+        } else {
+            if(playersData[player].getAvailableMana() >= value) {
+                playersData[player].drainResource(false, value);
+                return true;
+            }
+        }
+        return false;
+    }
 }

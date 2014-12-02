@@ -75,13 +75,13 @@ public class MainMenu extends JFrame implements ActionListener {
         
         this.addComponentListener(new ComponentAdapter() 
         {  
-                public void componentResized(ComponentEvent evt) {
-                    Component c = (Component)evt.getSource();
-                    if(state == MenuState.Playing || state == MenuState.Building) {
-                        gamePanel.setBounds(getContentPane().getBounds());
-                        gamePanel.getComponent(0).setBounds(gamePanel.getBounds());
-                    }
+            public void componentResized(ComponentEvent evt) {
+                Component c = (Component)evt.getSource();
+                if(state == MenuState.Playing || state == MenuState.Building) {
+                    gamePanel.setBounds(getContentPane().getBounds());
+                    gamePanel.getComponent(0).setBounds(gamePanel.getBounds());
                 }
+            }
         });
     }
 
@@ -100,7 +100,7 @@ public class MainMenu extends JFrame implements ActionListener {
         button3.addActionListener(this);
         
         buildDecks = new JPanel();
-        buildDecks.setBackground(java.awt.Color.GRAY);
+        buildDecks.setBackground(java.awt.Color.GREEN);
         buildDecks.setLayout(new BoxLayout(buildDecks, BoxLayout.Y_AXIS));
                 
         playDecks = new JPanel();
@@ -169,6 +169,10 @@ public class MainMenu extends JFrame implements ActionListener {
         SLAnimator.start();
         
         setVisible(true);
+    }
+    
+    public void deleteDeck(String name) {
+        System.out.println(name);
     }
     
     // For that code below I should punish myself.
@@ -365,15 +369,16 @@ public class MainMenu extends JFrame implements ActionListener {
     
     private void updateDecks() {
         buildDecks.removeAll();
+
         buildDecks.add(new JLabel("Choose existing deck:"));
         ArrayList<String> names = new ArrayList<String>(5);
         int decks = DeckBuilder.availableFiles(false, names);
         int j = 0;
         for(String i : names) {
             if(j++ == decks) buildDecks.add(new JLabel("Build new deck:"));
-            JButton butt = new JButton(i);
-            butt.addActionListener(this);
-            buildDecks.add(butt);
+                JButton butt = new JButton(i);
+                butt.addActionListener(this);
+                buildDecks.add(butt);
         }
         
         playDecks.removeAll();

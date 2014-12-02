@@ -163,7 +163,9 @@ public class DeckBuilder {
 	 */
 	public void fillCardsArrays(int deckNumber) {
 	    DeckArrays da = new DOMDeckReader().parseFile(links[deckNumber]);
+	    DeckArrays dan = new DOMDeckReader().parseFile("NeutralsDeck.xml");
 	    this.actionCards = da.actionCards;
+	    this.actionCards.addAll(dan.actionCards);
 	    this.baseCards = da.baseCards;
 	    playerChoose = deckNumber;
 	}

@@ -86,6 +86,26 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                 }
                 return sc;
             }
+            case "EnergySpell": {
+                int price = Integer.parseInt(n.getAttribute("price"));
+                EnergySpell es = new EnergySpell(price);
+                if(n.hasAttribute("required")) {
+                    es.required = n.getAttribute("required").equals("1"); 
+                }
+                for(int i = 0; i < n.getChildNodes().getLength(); i++) {
+                    Node s = n.getChildNodes().item(i); 
+                    if(s.getNodeType() == Node.ELEMENT_NODE) {
+                        Element e = (Element)s;
+                        if(e.getNodeName().contains("Spell")) {
+                            es.spell = parseSpell(e);
+                        } else {
+                            System.err.println("Unknown element " + e.getNodeName() 
+                                    + " inside " + n.getNodeName());
+                        } 
+                    }
+                }
+                return es;
+            }
             case "ConditionSpell": {
                 ConditionSpell cs = new ConditionSpell();
                 for(int i = 0; i < n.getChildNodes().getLength(); i++) {

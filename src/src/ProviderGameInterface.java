@@ -25,4 +25,6 @@ public interface ProviderGameInterface {
     public void addAuraForPlayer(int player, AuraEffect ae);
     public void informLostCards(ArrayList<BasicCard> cards, int player);
     public void triggerUnitEvents(FieldObject u, TriggeringCondition.Condition c);
+    public int getResourceForPlayer(int player, boolean energy);
+    public boolean drainResourceForPlayer(int player, boolean energy, int value);
 }
