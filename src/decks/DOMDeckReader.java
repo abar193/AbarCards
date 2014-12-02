@@ -169,6 +169,12 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
                 
                 return cus;
             }
+            case "PremadeSpell": {
+                switch(n.getAttribute("spell")) {
+                    case "Robotise": return new spells.premade.RobotiseSpell();
+                    default: return null;
+                }
+            }
             default: {
                 System.err.println("Unknown spell-tag <" + n.getNodeName() + ">");
                 return null;

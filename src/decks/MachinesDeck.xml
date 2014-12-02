@@ -15,14 +15,14 @@
 			</EnergySpell>
 		</Power>
 	</Building>
-	<Building Name="Barracks" Description="1-1 unit" Damage="1" Health="7" Cost="2" Production="1" Progress="1">
-		<Fulldesc txt="Creates 1-1 unit"/>
-		<Spell Name=":1-1U" Description="" Cost="2">
-			<CreateUnitSpell count="1" side="0">
-				<HelperUnit Name="Recrut" Description="" Damage="1" Health="1" Cost="1">
-				</HelperUnit>
-			</CreateUnitSpell>
-		</Spell>
+	<Building Name="Optimiser" Description="+C -> M" Damage="1" Health="7" Cost="2" Production="0" Progress="0">
+		<Fulldesc txt="Grants charge for all allied machines."/>
+		<Power condition="Always">
+			<TargedetSpell targeter="all" acept="0">
+				<Filter type="ClassEquals" v="Machine"/>
+				<BuffSpell type="ModQuality" v="8"/>
+			</TargedetSpell>
+		</Power>
 	</Building>		
 	<!-- Normal cards -->
 	<Unit Name="Smart Lamp" Description="" Damage="1" Health="1" Cost="1" Class="Machine">
@@ -63,15 +63,6 @@
 			<Filter type="ClassEquals" v="Machine"/>
 			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
 		</Power>
-	</Unit>
-	<Unit Name="Optimiser" Description="+C" Damage="2" Health="4" Cost="4" Class="Machine">
-		<Fulldesc txt="Grants charge for all allied machines."/>
-		<Power condition="Always">
-			<TargedetSpell targeter="all" acept="0">
-				<Filter type="ClassEquals" v="Machine"/>
-				<BuffSpell type="ModQuality" v="8"/>
-			</TargedetSpell>
-		</Power>
 	</Unit>	
 	<Unit Name="Spambot" Description="" Damage="6" Health="5" Cost="6" Class="Machine">
 		<Fulldesc txt="OnDeath: Summon 2x2/2 spammers."/>
@@ -85,6 +76,12 @@
 	<Unit Name="G-Car" Description="C" Damage="8" Health="8" Cost="9" Class="Machine">
 		<Qualities v="8"/>
 	</Unit>
+	<Spell Name="Robotise" Description="B -> U" Cost="1">
+		<Fulldesc txt="Destroys building, and creates new machine Unit with the same stats"/>
+		<TargedetSpell targeter="player" buildings="1">
+			<PremadeSpell spell="Robotise"/>
+		</TargedetSpell>
+	</Spell> 
 	<Spell Name="Tosters!!!" Description="1/1xEnUn" Cost="3">
 		<Fulldesc txt="Summons 1/1 machines with chardge for each enemy unit"/>
 		<CreateUnitSpell count="EnemyUnitsCount" side="0">

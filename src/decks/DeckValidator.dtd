@@ -40,7 +40,7 @@
  <!ATTLIST HelperUnit Class (Machine | Russian) #IMPLIED>
  
  <!ELEMENT TargedetSpell (Filter | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell |  ConditionSpell)*>
+ 	| PlayerValueSpell |  ConditionSpell | PremadeSpell)*>
  <!ATTLIST TargedetSpell targeter CDATA #REQUIRED>
  <!ATTLIST TargedetSpell acept CDATA #IMPLIED>
  <!ATTLIST TargedetSpell excludeSelf CDATA #IMPLIED>
@@ -52,14 +52,17 @@
  <!ATTLIST TargedetSpell required CDATA #IMPLIED>
  
  <!ELEMENT SpellContainer (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell | ConditionSpell)+>
+ 	| PlayerValueSpell | ConditionSpell | PremadeSpell)+>
  	
+ <!ELEMENT PremadeSpell EMPTY>
+ <!ATTLIST PremadeSpell spell (Robotise) #REQUIRED>
+ 
  <!ELEMENT Condition EMPTY>
  <!ATTLIST Condition type (AllyHasMoreThanXMachines | AllyHasLessThanXMachines) #REQUIRED>
  <!ATTLIST Condition count CDATA #REQUIRED>	
  
  <!ELEMENT ConditionSpell (Condition+, (Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell | ConditionSpell)+)>
+ 	| PlayerValueSpell | ConditionSpell | PremadeSpell)+)>
  
  <!ELEMENT BuffSpell EMPTY>
  <!ATTLIST BuffSpell type (Silence | Sabotage | Heal | Repair | Hurt | Ram | Damage | Kill | Demolish | 
@@ -76,12 +79,12 @@
  <!ATTLIST PlayerValueSpell required CDATA #IMPLIED>
  
  <!ELEMENT EnergySpell (CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell | ConditionSpell)>
+ 	| PlayerValueSpell | ConditionSpell | PremadeSpell)>
  <!ATTLIST EnergySpell price (0|1|2|3|4|5) #REQUIRED>
  <!ATTLIST EnergySpell required (0|1) #IMPLIED>
  
  <!ELEMENT Spell ((Fulldesc | Filter | CreateUnitSpell | TargedetSpell | SpellContainer | BuffSpell 
- 	| PlayerValueSpell | ConditionSpell | EnergySpell)*)>
+ 	| PlayerValueSpell | ConditionSpell | EnergySpell | PremadeSpell)*)>
  <!ATTLIST Spell Name CDATA #REQUIRED>
  <!ATTLIST Spell Description CDATA #REQUIRED>
  <!ATTLIST Spell Cost CDATA #REQUIRED>
