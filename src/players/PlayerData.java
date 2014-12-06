@@ -31,6 +31,8 @@ public class PlayerData {
 	/** Max cards in hand (if exceeded, then the card is dropped */
 	public static int MAXHANDLIMIT = 10;
 	public static int MAXENERGY = 5;
+	/** How many cards may user pull, until double pulling is enabled */
+	public static int DOUBLEPULL = 4;
 	
 	private Deck myDeck;
 	private int myActionDeckSize, myBaseDeckSize;
@@ -39,6 +41,8 @@ public class PlayerData {
 	private int totalMana, totalEnergy;
 	private int availableMana;
 	private float availableEnergy;
+	private int pulledBaseCards = 0, pulledBaseCardsTurn = 0;
+	
 	
 	public PlayerUnit representingUnit;
     public int playerNumber;
@@ -99,6 +103,7 @@ public class PlayerData {
 	public void newTurn() {
 		if(myPlayer != null) 
 			myPlayer.reciveAction("Your turn");
+		pulledBaseCardsTurn = 0;
 		if(!devModeMana) {
     		totalMana = Math.min(10, totalMana + 1);
     		availableMana = totalMana;
@@ -160,6 +165,14 @@ public class PlayerData {
 	 * @return null if card was added or there were no cards, card, if MAXHANDLIMIT is reached 
 	 */
 	public ArrayList<BasicCard> pullCard(int n, boolean isBaseCard) {
+	    if(isBaseCard) {
+	        if((pulledBaseCards > PlayerData.DOUBLEPULL) && (pulledBaseCardsTurn > 0)) { 
+	            return null;
+	        } else if((pulledBaseCards < DOUBLEPULL) && pulledBaseCardsTurn > 1) {
+	            return null;
+	        }
+	    }
+	    
 		if(myPlayer != null) 
 			myPlayer.reciveAction("You pull " + n + " card(s)");
 		boolean cantPullInformed = false;
@@ -174,10 +187,16 @@ public class PlayerData {
 					cantPullInformed = true;
 				}
 			} else {
-				if(myHand.size() < MAXHANDLIMIT) 
+				if(myHand.size() < MAXHANDLIMIT) { 
 					myHand.add(bc);
-				else 
+				} else {
 					ar.add(bc);
+				}
+				
+				if(isBaseCard) {
+				    pulledBaseCards++;
+				    pulledBaseCardsTurn++;
+				}
 			}
 		}
 		return (ar.size() == 0) ? null : ar;
