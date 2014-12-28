@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Panel;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 
 import cards.BasicCard;
@@ -32,7 +33,9 @@ public class CardsDrawer extends Panel {
 		this.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 float x = evt.getPoint().x;
-                setLastClick((int) (x / (getWidth()/10)));
+                boolean isRight = (evt.getModifiers() & InputEvent.BUTTON3_MASK)
+                        == InputEvent.BUTTON3_MASK;
+                setLastClick((int) (x / (getWidth()/10)), isRight);
             }
 		});
 	}
@@ -76,7 +79,14 @@ public class CardsDrawer extends Panel {
 	    }
 	}
 	
-	public void setLastClick(final int lc) {
+	public void setLastClick(final int lc, boolean isRight) {
+	    if(isRight) {
+	        if(cards.size() > lc)
+	            parent.displayCard(cards.get(lc));
+	        else 
+	            parent.displayCard(null);
+	        return;
+	    }
 		lastClick = lc;
 		new Thread(new Runnable() {
 			@Override

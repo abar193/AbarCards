@@ -225,11 +225,15 @@ public class FieldSituation {
 	 * @return unit or null, if that does not exists.
 	 */
 	public FieldObject objectForPlayer(int u, int p) {
-		if(u < 0) {
-		    return playerBuildings.get(p).get(Math.abs(u) - 1);
-		} else {
-		    return playerUnits.get(p).get(u);
-		}
+	    try { 
+    		if(u < 0) {
+    		    return playerBuildings.get(p).get(Math.abs(u) - 1);
+    		} else {
+    		    return playerUnits.get(p).get(u);
+    		}
+	    } catch (java.lang.IndexOutOfBoundsException e) {
+	        return null;
+	    }
 	}
 	
 	/** Returns all unit for both players  */

@@ -4,19 +4,25 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import players.PlayerData;
 import players.PlayerOpenData;
+import cards.CardJSONOperations;
 import cards.SpellCard;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
 
 import src.FieldSituation;
 import src.GameInterface;
@@ -59,6 +65,9 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	private final static int MESSAGES_WIDTH = 150;
 	private final static int RIGHT_PANEL_WIDTH = 85;
 	private final static int CARDS_DRAWER_HEIGHT = 100;
+	JLabel icon;
+	
+	JLayeredPane rootPanel;
 	
 	public SwingVS(GameInterface g) {
 		parent = g;
@@ -74,35 +83,52 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		
 	}
 	
+	public void resizeComponents() {
+	    final int width = this.getWidth();
+        final int height = this.getHeight();
+	    enemyHand.setBounds(0, 0, this.getWidth(), this.getHeight() - MIDDLE_AREA_HEIGHT - CARDS_DRAWER_HEIGHT);
+	    enemyHand.setPreferredSize(new Dimension(width, height - MIDDLE_AREA_HEIGHT
+                - CARDS_DRAWER_HEIGHT));
+	}
+	
 	public void createAndShowGUI() {
 	    final int width = this.getWidth();
 	    final int height = this.getHeight();
+	    rootPanel = new JLayeredPane();
+	    rootPanel.setSize(this.getSize());
+	    add(rootPanel);
 	    
 	    System.out.println("CaSG: started");
 		setLayout(new BorderLayout());
         enemyHand = new EnemySideDrawer();
         enemyHand.setPreferredSize(new Dimension(width, height - MIDDLE_AREA_HEIGHT
                 - CARDS_DRAWER_HEIGHT));
+        enemyHand.setBounds(0, 0, width, height - MIDDLE_AREA_HEIGHT - CARDS_DRAWER_HEIGHT);
         enemyHand.setVisible(true);
         if(opponent != null) {
 			enemyHand.setCards(opponent.handSize);
 		}
-        add(enemyHand, BorderLayout.PAGE_START);
+        rootPanel.add(enemyHand, new Integer(0));
         
         outputMessages = new JTextArea();
         outputMessages.setEditable(false);
         outputMessages.setPreferredSize(new Dimension(MESSAGES_WIDTH, MIDDLE_AREA_HEIGHT));
+        outputMessages.setBounds(0, enemyHand.getPreferredSize().height, MESSAGES_WIDTH, MIDDLE_AREA_HEIGHT);
         outputMessages.setText(messages);
-        add(outputMessages, BorderLayout.LINE_START);
+        rootPanel.add(outputMessages, new Integer(1));
         
         fieldDrawer = new FieldDrawer();
         fieldDrawer.parent = this;
         if(latestSituation != null) fieldDrawer.setSituation(latestSituation, me, playerNumber);
-        add(fieldDrawer, BorderLayout.CENTER);
+        fieldDrawer.setBounds(MESSAGES_WIDTH, enemyHand.getPreferredSize().height, 
+                this.getWidth() - MESSAGES_WIDTH - RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT);
+        rootPanel.add(fieldDrawer, new Integer(3));
         
         Panel right = new Panel();
         right.setLayout(new BoxLayout(right, BoxLayout.PAGE_AXIS));
         right.setPreferredSize(new Dimension(RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT));
+        right.setBounds(width - RIGHT_PANEL_WIDTH, enemyHand.getHeight(), RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT);
+        right.setLocation(this.getWidth() - RIGHT_PANEL_WIDTH, enemyHand.getPreferredSize().height);
         enemyDeck = new JLabel();
         if(opponent != null)
         	enemyDeck.setText(String.format("%s/%s", opponent.actionSetSize, opponent.baseSetSize));
@@ -130,20 +156,26 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         butt = new JButton();
         butt.setText("Quit");
         butt.addActionListener(this);
-        
         right.add(butt);
         
         right.add(myDeck);
-        add(right, BorderLayout.LINE_END);
+        rootPanel.add(right, new Integer(1));
         
         cardsDrawer = new CardsDrawer();
         cardsDrawer.parent = this;
         cardsDrawer.setPreferredSize(new Dimension(width, CARDS_DRAWER_HEIGHT));
+        cardsDrawer.setLocation(0, this.getHeight() - CARDS_DRAWER_HEIGHT);
+        cardsDrawer.setBounds(0, this.getHeight() - CARDS_DRAWER_HEIGHT, width, CARDS_DRAWER_HEIGHT);
         if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana());
-        add(cardsDrawer, BorderLayout.PAGE_END);
+        rootPanel.add(cardsDrawer, 1);
         setVisible(true);
         System.out.println("CaSG: ended");
         
+        icon = new JLabel(new ImageIcon(DrawingOperations.generateCard(
+                CardJSONOperations.singleAllDeck().get(2).get(10))));
+        icon.setBounds(40, 150, 130, 200);
+        icon.setVisible(false);
+        rootPanel.add(icon, new Integer(7));
         initialised = true;
 	}
 
@@ -192,6 +224,15 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		    enemyDeck.setText(String.format("%s/%s", opponent.actionSetSize, opponent.baseSetSize));
 		    myDeck.setText(String.format("%s/%s", me.getDeckSize(false), me.getDeckSize(true)));
 		} 
+	}
+	
+	public void displayCard(BasicCard card) {
+	    if(card != null) {
+    	    icon.setIcon(new ImageIcon(DrawingOperations.generateCard(card)));
+    	    icon.setVisible(true);
+	    } else {
+	        icon.setVisible(false);
+	    }
 	}
 
 	@Override
@@ -251,6 +292,15 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	public int selectedUnit = 0;
 	FieldObject pickedUnit;
 	boolean pickingUnit = false;
+	
+	public void displayUnitInfo(int side, int unit) {
+	    FieldObject u = latestSituation.objectForPlayer(unit, (side + me.playerNumber) %2);
+	    if(u != null) {
+	        displayCard(u.card);
+	    } else {
+	        icon.setVisible(false);
+	    }
+	}
 	
 	public void receiveUnitClick(int side, int unit) {
 		if(turnEnded) return;

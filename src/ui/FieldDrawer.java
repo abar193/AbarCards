@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.Panel;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 
 import players.PlayerData;
@@ -42,19 +43,21 @@ public class FieldDrawer extends Panel {
                 float x = evt.getPoint().x;
                 float y = evt.getPoint().y;
                 int side = (int)(y / (getHeight() / 4));
+                boolean isRight = (evt.getModifiers() & InputEvent.BUTTON3_MASK)
+                            == InputEvent.BUTTON3_MASK;
                 switch(side) {
                     case 0: 
-                        setLastClick(1, ((int)(-x / (getWidth() / fs.MAXFIELDUNITS))) - 1);
+                        setLastClick(1, ((int)(-x / (getWidth() / fs.MAXFIELDUNITS))) - 1, isRight);
                         break;
                     case 1:
-                        setLastClick(1, (int)(x / (getWidth() / fs.MAXFIELDUNITS)));
+                        setLastClick(1, (int)(x / (getWidth() / fs.MAXFIELDUNITS)), isRight);
                         break;
                     case 2: 
-                        setLastClick(0, (int)(x / (getWidth() / fs.MAXFIELDUNITS)));
+                        setLastClick(0, (int)(x / (getWidth() / fs.MAXFIELDUNITS)), isRight);
                         break;
                     case 3:
                     default:
-                        setLastClick(0, ((int)(-x / (getWidth() / fs.MAXFIELDUNITS))) - 1);
+                        setLastClick(0, ((int)(-x / (getWidth() / fs.MAXFIELDUNITS))) - 1, isRight);
                         break;
                 }
             }
@@ -170,11 +173,15 @@ public class FieldDrawer extends Panel {
                 this.getWidth() - 40, this.getHeight() - 10);
 	}
 	
-	public void setLastClick(int side, int unit) {
-		selectedSide = side;
-		selectedUnit = unit;
-		parent.receiveUnitClick(side, unit);
-		repaint();
+	public void setLastClick(int side, int unit, boolean isRight) {
+	    if(isRight) {
+	        parent.displayUnitInfo(side, unit);
+	    } else {
+    		selectedSide = side;
+    		selectedUnit = unit;
+    		parent.receiveUnitClick(side, unit);
+    		repaint();
+	    }
 	}
 	
 	public void setSituation(FieldSituation fs, PlayerData pd, int pn) {

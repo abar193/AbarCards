@@ -80,6 +80,9 @@ public class MainMenu extends JFrame implements ActionListener {
                 if(state == MenuState.Playing || state == MenuState.Building) {
                     gamePanel.setBounds(getContentPane().getBounds());
                     gamePanel.getComponent(0).setBounds(gamePanel.getBounds());
+                    if(gamePanel.getComponent(0) instanceof SwingVS) {
+                        ((SwingVS)gamePanel.getComponent(0)).resizeComponents();
+                    }
                 }
             }
         });
@@ -167,7 +170,7 @@ public class MainMenu extends JFrame implements ActionListener {
         
         Tween.registerAccessor(MainMenu.class, new PanelAccessor());
         SLAnimator.start();
-        
+
         setVisible(true);
     }
     
