@@ -9,6 +9,7 @@
  <!ATTLIST Unit Damage CDATA #REQUIRED>
  <!ATTLIST Unit Health CDATA #REQUIRED>
  <!ATTLIST Unit Cost CDATA #REQUIRED>
+ <!ATTLIST Unit ECost CDATA #IMPLIED>
  <!ATTLIST Unit Class (Machine | Russian) #IMPLIED>
  <!ATTLIST Unit SpecID CDATA #IMPLIED>
  
@@ -88,6 +89,7 @@
  <!ATTLIST Spell Name CDATA #REQUIRED>
  <!ATTLIST Spell Description CDATA #REQUIRED>
  <!ATTLIST Spell Cost CDATA #REQUIRED>
+ <!ATTLIST Spell ECost CDATA #IMPLIED>
  
  <!ELEMENT Filter EMPTY>
  <!ATTLIST Filter type (ClassEquals | HealthMore | HealthLess | DamageMore | DamageLess) #REQUIRED>

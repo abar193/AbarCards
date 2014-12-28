@@ -215,11 +215,11 @@ public class CardPickingFrame extends JPanel implements ActionListener {
     }
 	
     private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        parent.decPage();
+        parent.decPage(picker.cardsPerPage * 2);
     }
 
     private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        parent.incPage();
+        parent.incPage(picker.cardsPerPage * 2);
     }
 
 	

@@ -193,6 +193,9 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
         int dmg = Integer.parseInt(n.getAttribute("Damage"));
         int health = Integer.parseInt(n.getAttribute("Health"));
         int cost = Integer.parseInt(n.getAttribute("Cost"));
+        int ecost = 0;
+        if(n.getAttribute("ECost") != "")
+            ecost = Integer.parseInt(n.getAttribute("ECost"));
         UnitCard tmp;
         if(n.getAttribute("SpecID") != "") {
             SpecialUnitCard uc = new SpecialUnitCard(dmg, health, cost, name, d);
@@ -203,6 +206,7 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
             tmp = new UnitCard(dmg, health, cost, name, d);
         }
         
+        tmp.energyCost = ecost;
         tmp.cardClass = n.getAttribute("Class");
         tmp.deckNum = deckNum;
         
@@ -259,6 +263,11 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
     public SpellCard parseSpellCard(Element n) {
         int cost = Integer.parseInt(n.getAttribute("Cost"));
         SpellCard sc = new SpellCard(n.getAttribute("Name"), n.getAttribute("Description"), cost, null);
+        int ecost = 0;
+        if(n.getAttribute("ECost") != "")
+            ecost = Integer.parseInt(n.getAttribute("ECost"));
+        sc.energyCost = ecost;
+        
         sc.deckNum = deckNum;
         for(int i = 0; i < n.getChildNodes().getLength(); i++) {
             Node s = n.getChildNodes().item(i); 
@@ -283,9 +292,13 @@ public class DOMDeckReader implements DeckXMLReaderInterface {
         if(!n.getAttribute("Damage").equals("")) 
             dmg = Integer.parseInt(n.getAttribute("Damage"));
         int health = Integer.parseInt(n.getAttribute("Health"));
+        int ecost = 0;
+        if(n.getAttribute("ECost") != "")
+            ecost = Integer.parseInt(n.getAttribute("ECost"));
         
         BuildingCard bc = new BuildingCard(dmg, health, cost, n.getAttribute("Name"), 
                 n.getAttribute("Description"));
+        bc.energyCost = ecost;
         bc.deckNum = deckNum;
         bc.productionTime = Integer.parseInt(n.getAttribute("Production"));
         bc.turnProgress = Integer.parseInt(n.getAttribute("Progress"));

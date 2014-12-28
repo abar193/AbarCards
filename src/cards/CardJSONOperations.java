@@ -108,4 +108,12 @@ public class CardJSONOperations {
 		
 		return allDecks;
 	}
+	
+	public static void main(String[] args) {
+	    for(ArrayList<BasicCard> arr : singleAllDeck()) {
+	        for(BasicCard bc : arr) {
+	            System.out.println(bc.name);
+	        }
+	    }
+	}
 }

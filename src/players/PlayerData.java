@@ -244,7 +244,9 @@ public class PlayerData {
 	 * @return true if card can be played
 	 */	
 	public boolean canPlayCard(BasicCard bc) {
-		if(availableMana + auras.getModifiers()[0] >= bc.cost) {
+		if(availableMana + auras.getModifiers()[0] >= bc.cost
+		        && availableEnergy >= bc.energyCost) 
+		{
 			if(myHand.contains(bc)) {
 				return true;
 			}

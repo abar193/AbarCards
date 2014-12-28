@@ -186,7 +186,6 @@ public class MainMenu extends JFrame implements ActionListener {
                         .setStartSide(SLSide.RIGHT, playDecks)
                         .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                             state = MenuState.PickingPlayDeck;
-                            System.out.println("Animation finished");
                         }}))
                     .play();
             } else if(state == MenuState.PickingPlayDeck) {
@@ -249,7 +248,6 @@ public class MainMenu extends JFrame implements ActionListener {
                     "Check again later", "Special for TLMH", "Made by Abar", "Go and play!" };
             button3.setText(responses[new java.util.Random().nextInt(responses.length)]);
         } else if(e.getSource().equals(buttonCancel)) {
-            System.out.println("Press");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -347,7 +345,6 @@ public class MainMenu extends JFrame implements ActionListener {
         gamePanel.removeAll();
         vs.setBackground(java.awt.Color.white);
         if(vs == null) System.err.println("Null");
-        else System.out.println("Vs recived");
         gamePanel.add(vs);
         
         SLTransition trans;

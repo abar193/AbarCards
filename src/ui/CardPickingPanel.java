@@ -33,9 +33,7 @@ public class CardPickingPanel extends JPanel {
 	public CardPickingFrame frameparent;
 	private ArrayList<BasicCard> cards;
 	int start;
-	private Font font1 = new Font("SansSerif", Font.BOLD, 12);
-	private Font font1a = new Font("SansSerif", Font.PLAIN, 12);
-	private Font font2 = new Font("SansSerif", Font.BOLD, 14);
+	public int cardsPerPage = 0;
 	
 	public CardPickingPanel() {
 		this.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -43,8 +41,8 @@ public class CardPickingPanel extends JPanel {
                 float x = evt.getPoint().x;
                 float y = evt.getPoint().y;
                 int side = (int)(y / (getHeight() / 2));
-                int card = (int)(x / (getWidth() / 5));
-                click((side) * 5 + card);
+                int card = (int)(x / (getWidth() / cardsPerPage));
+                click((side) * cardsPerPage + card);
             }
 		});
 	}
@@ -61,49 +59,6 @@ public class CardPickingPanel extends JPanel {
         map.put(TextAttribute.FAMILY, "Serif");
         map.put(TextAttribute.SIZE, new Float(18.0));
     }  
-
-	
-	public void printCardAt(Graphics2D g2, BasicCard card, int startX, int startY, int width, 
-	        int height) 
-	{
-		g2.drawRoundRect(startX, startY, width, height, 45, 45);
-		g2.setColor(java.awt.Color.gray);
-		g2.drawRoundRect(startX+1, startY+1, width-1, height-1, 45, 45);
-		g2.drawLine(startX, startY+45, startX+width, startY + 45);
-		g2.drawLine(startX, startY + 46, startX+width-25, startY + 46);
-		g2.drawLine(startX+2, startY+45, startX+2, startY+height-65);
-		g2.drawLine(startX+width-1, startY+45, startX+width-1, startY+height-65);
-		g2.setColor(java.awt.Color.black);
-		g2.setFont(font1);
-		g2.drawString(card.name, startX + 10, startY + 20);
-		g2.setFont(font1a);
-		DrawingOperations.drawCenteredStringAt(g2, card.description, startX, width, startY + 35);
-		String type;
-		if(card.type == CardType.Unit) {
-			UnitCard bc = (UnitCard)card;
-			if(bc.cardClass != null && bc.cardClass != "") {
-			    DrawingOperations.drawCenteredStringAt(g2, String.format("*%s*", bc.cardClass),
-			            startX, width, startY + height - 50);
-			}
-			type = String.format("%2dD / %2dH", bc.getDamage(), bc.getHealth());
-		} else {
-			type = "SPELL";
-		}
-		g2.setFont(font2);
-		DrawingOperations.drawCenteredStringAt(g2, type, startX, width, startY + height - 30); 
-		g2.drawString(card.cost + "$", startX + width - 25, startY + height - 15); 
-		g2.setColor(java.awt.Color.gray);
-        g2.drawLine(startX, startY+height-65, startX+width, startY+height-65);
-        g2.setColor(java.awt.Color.black);
-		g2.setFont(font1a);
-		if(card.fullDescription != null) {
-		    String[] splits = splitLines(card.fullDescription, g2.getFontMetrics(), width);
-		    for(int i = 0; i < splits.length; i++) {
-		        g2.drawString(splits[i], startX + 5, startY + 65 + i * 15);
-		    }
-		}
-
-	}
 	
 	public void click(int c) {
 		frameparent.cardClicked(cards.get(c + start));
@@ -111,48 +66,20 @@ public class CardPickingPanel extends JPanel {
 	
 	public void paint (Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setFont(font1);
+		
 		g2.setColor(java.awt.Color.white);
 		
 		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
 		g2.setColor(java.awt.Color.BLACK);
 		if(cards == null) return;
-		int cardWidth = (this.getWidth() - 50) / 5;
-		for(int i = 0; i < 5; i++) {
+		cardsPerPage = (this.getWidth() - 50) / 130;
+		for(int i = 0; i < cardsPerPage; i++) {
 		    if(cards.size() <= i + start) break;
-			printCardAt(g2, cards.get(i + start), 25 + (cardWidth + 5) * i, 50, cardWidth - 5, 200);
-			if(cards.size() > i + 5 + start)
-			    printCardAt(g2, cards.get(i + 5 + start), 25 + (cardWidth + 5) * i, 260, cardWidth - 5, 200);
+			g2.drawImage(DrawingOperations.generateCard(cards.get(i+start)), 25 + 135 * i, 50, null);
+			if(cards.size() > i + cardsPerPage + start)
+			    g2.drawImage(DrawingOperations.generateCard(cards.get(i+cardsPerPage+start)), 
+			            25 + 135 * i, 260, null);
 		}
 	}
-	
-	/** Splits line in fullDescription word by word, cuts words longer than width into smaller ones.
-     * @param fullDescription String to cut
-     * @param fm font metrics for calculation
-     * @param width required width
-     * @return divided lines
-     */
-    public String[] splitLines(String fullDescription, FontMetrics fm, float width) {
-        String[] splits;
-        
-        if(fullDescription != null) {
-            ArrayList<String>arr = new ArrayList<String>(Arrays.asList(fullDescription.split(" ")));
-            for(int j = 0; j < arr.size() - 1;) {
-                String both = arr.get(j) + " " + arr.get(j + 1);
-                if(fm.stringWidth(both) < width - 10) {
-                    arr.remove(j + 1);
-                    arr.remove(j);
-                    arr.add(j, both);
-                } else {  
-                    j++;
-                }
-            }
-            
-            splits = arr.toArray(new String[arr.size()]);
-        } else {
-            splits = new String[0];
-        }    
-        return splits;
-    }
 }

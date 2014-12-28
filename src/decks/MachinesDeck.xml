@@ -2,7 +2,7 @@
 <!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 <Deck num="2">
 	<!-- Base cards -->
-	<Building Name="Secret.M1" Description=".2D" Damage="0" Health="3" Cost="2" Production="0" Progress="0">
+	<Building Name="Secret.M1" Description=".2D" Damage="0" Health="3" Cost="1" ECost="2" Production="0" Progress="0">
 		<Fulldesc txt="OnAllyBuildingDamage deal 2 damage to all enemies and loose 1 life."/>
 		<Power condition="Ally|Building|TakeDamage">
 			<EnergySpell price="1">
@@ -15,7 +15,7 @@
 			</EnergySpell>
 		</Power>
 	</Building>
-	<Building Name="Optimiser" Description="+C -> M" Damage="1" Health="7" Cost="2" Production="0" Progress="0">
+	<Building Name="Optimiser" Description="+C -> M" Damage="1" Health="7" Cost="2" ECost="3" Production="0" Progress="0">
 		<Fulldesc txt="Grants charge for all allied machines."/>
 		<Power condition="Always">
 			<TargedetSpell targeter="all" acept="0">

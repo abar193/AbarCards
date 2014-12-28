@@ -49,12 +49,17 @@ public class CardsDrawer extends Panel {
 	    	g2.setColor(Color.BLACK);
 	    	
 	    	g2.drawString(copycards.get(i).name, cardSize * i + 7, 20);
-	    	g2.drawString(copycards.get(i).description, cardSize * i + 7, 40);
+	    	//g2.drawString(copycards.get(i).description, cardSize * i + 7, 35);
 	    	String dstr = "";
 	    	BasicCard bc = copycards.get(i);
 	    	if(bc.type == CardType.Unit) {
-				dstr = (String.format("%2dd/%2dh%2d$", ((UnitCard) bc).getDamage(),
-						((UnitCard) bc).getHealth(), bc.cost));
+	    	    if(bc.energyCost == 0) {
+	    	        dstr = (String.format("%2dd/%2dh%2d$", ((UnitCard) bc).getDamage(),
+	    	                ((UnitCard) bc).getHealth(), bc.cost));
+	    	    } else {
+	    	        dstr = (String.format("%2dd/%2dh%2d$+%dE", ((UnitCard) bc).getDamage(),
+                            ((UnitCard) bc).getHealth(), bc.cost, bc.energyCost));
+	    	    }
 			} else if(bc.type == CardType.Spell) {
 				dstr =  String.format("Spell  %2d$", bc.cost);
 			} else if(bc.type == CardType.Building) {
@@ -62,10 +67,12 @@ public class CardsDrawer extends Panel {
     			    dstr = (String.format("Product: %2d$", ((BuildingCard) bc).product.cost));
     			    g2.drawString(dstr, cardSize * i + 7, this.getHeight() - 25);
 			    }
-			    dstr = (String.format("%2dd/%2dh%2d$", ((BuildingCard) bc).getDamage(),
-                        ((BuildingCard) bc).getHealth(), bc.cost));
+			    dstr = (String.format("%2dd/%2dh%2d$+%dE", ((BuildingCard) bc).getDamage(),
+                        ((BuildingCard) bc).getHealth(), bc.cost, bc.energyCost));
 			}
-	    	g2.drawString(dstr, cardSize * i + 7, this.getHeight() - 15);
+	    	g2.drawString(dstr, cardSize * i + 7, 35);
+	    	g2.drawImage(DrawingOperations.generateCardImg(bc.name, bc.cost, bc.type), 
+	    	        cardSize * i + ((cardSize - 50) / 2), 40, null);
 	    }
 	}
 	

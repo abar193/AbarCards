@@ -89,13 +89,13 @@ public class DeckBuilder {
 		}
 	}
 	
-	public void incPage() {
-		startPos = Math.min(activeArray.size() - 10, startPos + 10);
+	public void incPage(int n) {
+		startPos = Math.min(activeArray.size() - n, startPos + n);
 		drawCards();
 	}
 	
-	public void decPage() {
-		startPos = Math.max(0, startPos - 10);
+	public void decPage(int n) {
+		startPos = Math.max(0, startPos - n);
 		drawCards();
 	}
 	

@@ -264,10 +264,10 @@ public class Game implements GameInterface, ProviderGameInterface {
 	public boolean canPlayCard(BasicCard c, int player) {
 	    if(player != playerTurn || playingCard || !gameRunning) return false;
 	    
-	    if(c.type == CardType.Building) {
-	        return playersData[player].canPlayCard(c) && field.isSpaceAvailable(player, true);
-	    } else if(c.type == CardType.Unit)
-			return playersData[player].canPlayCard(c) && field.isSpaceAvailable(player, false);
+	    if(c.type == CardType.Building || c.type == CardType.Unit) {
+	        return playersData[player].canPlayCard(c) 
+	                && field.isSpaceAvailable(player, c.type == CardType.Building);
+	    } 
 		else if(c.type == CardType.Spell) 
 			return playersData[player].canPlayCard(c) 
 			        & ((SpellCard)c).spell.validate(player, this);

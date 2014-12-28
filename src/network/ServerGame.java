@@ -426,8 +426,19 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 
     @Override
     public void triggerUnitEvents(FieldObject u, Condition c) {
+        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
+    }
+
+    @Override
+    public int getResourceForPlayer(int player, boolean energy) {
+        // TODO
+        return 0;
+    }
+
+    @Override
+    public boolean drainResourceForPlayer(int player, boolean energy, int value) {
         // TODO Auto-generated method stub
-        
+        return false;
     }
 	
 }
