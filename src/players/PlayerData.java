@@ -228,6 +228,7 @@ public class PlayerData {
 			if(myHand.remove(bc)) {
 			    if(!devModeMana) {
 			        availableMana -= bc.cost;
+			        availableEnergy -= bc.energyCost;
 			    }
 				return;
 			}

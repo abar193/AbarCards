@@ -178,17 +178,13 @@ public class DrawingOperations extends Frame {
         int rad = 25 - (cost / 3);
         int center = bi.getWidth() / 2;
         g2.setColor(prices[cost % 11]);
-        g2.fillOval(center - rad, center - rad, 2*rad-1, 2*rad-1);
-        
-        for(int i = 0; i < s.length(); i += 3) {
-            int angle = r.nextInt(360);
-            float an = (float) (angle * Math.PI / 180);
-            int size = 5;
-            int d = r.nextInt(rad / 2) + rad / 2 - size * 2;
-            int posY = (int)(Math.sin(an) * d);
-            int posX = (int)(Math.cos(an) * d);
+        //g2.fillOval(center - rad, center - rad, 2*rad-1, 2*rad-1);
+        int max = Math.min(s.length(), 10);
+        for(int i = 0; i < max; i++) {
+            int x = (bi.getWidth() / 27) * (Math.abs(s.charAt(i) - 'a') % 27);
+            int y = i * bi.getHeight() / max;
             g2.setColor(colors[Math.abs(s.charAt(i) - 'a') % colors.length]);
-            g2.fillOval(center + posX - size, center + posY - size, 2*size, 2*size);
+            g2.fillRect(x, y, 5, 5);
         }
 	}
 	

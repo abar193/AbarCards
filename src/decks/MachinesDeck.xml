@@ -76,7 +76,7 @@
 	<Unit Name="G-Car" Description="C" Damage="8" Health="8" Cost="9" Class="Machine">
 		<Qualities v="8"/>
 	</Unit>
-	<Spell Name="Robotise" Description="B -> U" Cost="1">
+	<Spell Name="Robotize" Description="B -> U" Cost="1">
 		<Fulldesc txt="Destroys building, and creates new machine Unit with the same stats"/>
 		<TargedetSpell targeter="player" buildings="1">
 			<PremadeSpell spell="Robotise"/>
