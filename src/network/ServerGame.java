@@ -38,7 +38,7 @@ import src.FieldSituation;
  */
 
 @ClientEndpoint
-public class ServerGame implements GameInterface, ProviderGameInterface {
+public class ServerGame implements GameInterface {
 	
 	private static ServerGame instance;
 	private static boolean initialising = false;
@@ -354,8 +354,8 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
 				pli.reciveAction((String)jobj.get("message"));
 				break;
 			case "reciveInfo": {
-				PlayerData pd = new PlayerData((Map)jobj.get("yourData"), this);
-				FieldSituation fs = new FieldSituation((Map)jobj.get("field"), this);
+				PlayerData pd = new PlayerData((Map)jobj.get("yourData"), null);
+				FieldSituation fs = new FieldSituation((Map)jobj.get("field"), null);
 				latestSituation = fs;
 				PlayerOpenData pod = new PlayerOpenData((Map)jobj.get("enemyData"));
 				pli.reciveInfo(pd, fs, pod);
@@ -379,70 +379,8 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
         jobj.put("player", Integer.toString(player));
         sendMessage(JSONValue.toJSONString(jobj));
     }
-	
-    @Override
-    public FieldSituation provideFieldSituation() {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
-        return latestSituation;
-    }
-
-    @Override
-    public FieldObject createObject(BasicCard uc, int player) {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
-        return null;
-    }
-
-    @Override
-    public Unit askPlayerForTarget(int player) {
-        System.err.println("On serverGame should not triggered ProviderGameInterface methods");
-        return null;
-    }
-
-    @Override
-    public void applySpellToPlayer(int player, AbstractSpell spell) {
-        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
-    }
-
-    @Override
-    public void informAll(String m) {
-        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
-    }
-
-    @Override
-    public void addAuraForPlayer(int player, AuraEffect ae) {
-        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
-    }
-
-    @Override
-    public void informLostCards(ArrayList<BasicCard> cards, int player) {
-        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
-    }
-
     @Override
     public void pullBaseCard(int player) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void triggerUnitEvents(FieldObject u, Condition c) {
-        System.err.println("On serverGame should not be triggered ProviderGameInterface methods");
-    }
-
-    @Override
-    public int getResourceForPlayer(int player, boolean energy) {
-        // TODO
-        return 0;
-    }
-
-    @Override
-    public boolean drainResourceForPlayer(int player, boolean energy, int value) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void removeObjectAura(FieldObject o) {
         // TODO Auto-generated method stub
         
     }

@@ -138,7 +138,7 @@ public class PlayerData {
 					break;
 				case PullCard: {
 					ArrayList<BasicCard> cards = this.pullCard(ps.value, false);
-					if(cards != null) 
+					if(cards != null && currentGame != null) 
 						currentGame.informLostCards(cards, this.playerNumber);
 					break;
 				}
