@@ -45,6 +45,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	private InputInterface input;
 	
 	private CardsDrawer cardsDrawer;
+	private Panel right;
 	private JTextArea outputMessages;
 	private FieldDrawer fieldDrawer; 
 	private JLabel enemyDeck, myDeck;
@@ -73,8 +74,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 		parent = g;
 		
 		System.out.println("Constructed");
-		
-		setSize(790, 570);
+		setSize(800, 600);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -86,9 +86,18 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	public void resizeComponents() {
 	    final int width = this.getWidth();
         final int height = this.getHeight();
-	    enemyHand.setBounds(0, 0, this.getWidth(), this.getHeight() - MIDDLE_AREA_HEIGHT - CARDS_DRAWER_HEIGHT);
-	    enemyHand.setPreferredSize(new Dimension(width, height - MIDDLE_AREA_HEIGHT
-                - CARDS_DRAWER_HEIGHT));
+        rootPanel.setSize(this.getSize());
+        
+	    enemyHand.setBounds((width - 795) / 2, 0, 795, CARDS_DRAWER_HEIGHT);
+	    enemyHand.setPreferredSize(new Dimension(width, CARDS_DRAWER_HEIGHT));
+	    int mah = height - (CARDS_DRAWER_HEIGHT * 2);
+	    outputMessages.setPreferredSize(new Dimension(MESSAGES_WIDTH, mah));
+        outputMessages.setBounds(0, enemyHand.getPreferredSize().height, MESSAGES_WIDTH, mah);
+
+        fieldDrawer.setBounds(MESSAGES_WIDTH, enemyHand.getPreferredSize().height, 
+                this.getWidth() - MESSAGES_WIDTH - RIGHT_PANEL_WIDTH, mah);
+        right.setBounds(width - RIGHT_PANEL_WIDTH, enemyHand.getHeight(), RIGHT_PANEL_WIDTH, mah);
+        cardsDrawer.setBounds((width - 795) / 2, height - CARDS_DRAWER_HEIGHT, 795, CARDS_DRAWER_HEIGHT);
 	}
 	
 	public void createAndShowGUI() {
@@ -101,9 +110,6 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	    System.out.println("CaSG: started");
 		setLayout(new BorderLayout());
         enemyHand = new EnemySideDrawer();
-        enemyHand.setPreferredSize(new Dimension(width, height - MIDDLE_AREA_HEIGHT
-                - CARDS_DRAWER_HEIGHT));
-        enemyHand.setBounds(0, 0, width, height - MIDDLE_AREA_HEIGHT - CARDS_DRAWER_HEIGHT);
         enemyHand.setVisible(true);
         if(opponent != null) {
 			enemyHand.setCards(opponent.handSize);
@@ -112,22 +118,18 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         
         outputMessages = new JTextArea();
         outputMessages.setEditable(false);
-        outputMessages.setPreferredSize(new Dimension(MESSAGES_WIDTH, MIDDLE_AREA_HEIGHT));
-        outputMessages.setBounds(0, enemyHand.getPreferredSize().height, MESSAGES_WIDTH, MIDDLE_AREA_HEIGHT);
         outputMessages.setText(messages);
         rootPanel.add(outputMessages, new Integer(1));
         
         fieldDrawer = new FieldDrawer();
         fieldDrawer.parent = this;
         if(latestSituation != null) fieldDrawer.setSituation(latestSituation, me, playerNumber);
-        fieldDrawer.setBounds(MESSAGES_WIDTH, enemyHand.getPreferredSize().height, 
-                this.getWidth() - MESSAGES_WIDTH - RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT);
+        
         rootPanel.add(fieldDrawer, new Integer(3));
         
-        Panel right = new Panel();
+        right = new Panel();
         right.setLayout(new BoxLayout(right, BoxLayout.PAGE_AXIS));
         right.setPreferredSize(new Dimension(RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT));
-        right.setBounds(width - RIGHT_PANEL_WIDTH, enemyHand.getHeight(), RIGHT_PANEL_WIDTH, MIDDLE_AREA_HEIGHT);
         right.setLocation(this.getWidth() - RIGHT_PANEL_WIDTH, enemyHand.getPreferredSize().height);
         enemyDeck = new JLabel();
         if(opponent != null)
@@ -165,11 +167,12 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
         cardsDrawer.parent = this;
         cardsDrawer.setPreferredSize(new Dimension(width, CARDS_DRAWER_HEIGHT));
         cardsDrawer.setLocation(0, this.getHeight() - CARDS_DRAWER_HEIGHT);
-        cardsDrawer.setBounds(0, this.getHeight() - CARDS_DRAWER_HEIGHT, width, CARDS_DRAWER_HEIGHT);
         if(cards != null) cardsDrawer.setCards(cards, me.getAvailableMana());
         rootPanel.add(cardsDrawer, 1);
+        
+        resizeComponents();
+        
         setVisible(true);
-        System.out.println("CaSG: ended");
         
         icon = new JLabel(new ImageIcon(DrawingOperations.generateCard(
                 CardJSONOperations.singleAllDeck().get(2).get(10))));

@@ -161,7 +161,7 @@ public class MainMenu extends JFrame implements ActionListener {
         gamePanel = new JLayeredPane();
         //gamePanel = new JPanel();
         gamePanel.setBackground(java.awt.Color.BLUE);
-
+        gamePanel.setBounds(this.getContentPane().getBounds());
         configGame = new SLConfig((SLPanel) this.getContentPane());
         configGame.col(1f).row(1f).place(0, 0, gamePanel);
         
@@ -361,6 +361,10 @@ public class MainMenu extends JFrame implements ActionListener {
             .setStartSide(SLSide.RIGHT, gamePanel)
             .setCallback(new SLKeyframe.Callback() {@Override public void done() {
                 state = MenuState.Playing;
+                vs.setBounds(gamePanel.getBounds());
+                vs.setSize(gamePanel.getBounds().width, gamePanel.getBounds().height);
+                vs.invalidate();
+                vs.resizeComponents();
                 vs.repaint();
                 gamePanel.repaint();
                 gamePanel.validate();

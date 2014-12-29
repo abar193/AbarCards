@@ -174,14 +174,11 @@ public class DrawingOperations extends Frame {
 	private static void fillSpellImage(String s, BufferedImage bi, int cost) {
 	    Graphics2D g2 = bi.createGraphics();
         
-        Random r = new Random(s.charAt(0));
-        int rad = 25 - (cost / 3);
-        int center = bi.getWidth() / 2;
         g2.setColor(prices[cost % 11]);
-        //g2.fillOval(center - rad, center - rad, 2*rad-1, 2*rad-1);
         int max = Math.min(s.length(), 10);
         for(int i = 0; i < max; i++) {
-            int x = (bi.getWidth() / 27) * (Math.abs(s.charAt(i) - 'a') % 27);
+            int a = Math.abs(s.charAt(i) - 'a') % 27;
+            int x = ((bi.getWidth() * a) / (27));
             int y = i * bi.getHeight() / max;
             g2.setColor(colors[Math.abs(s.charAt(i) - 'a') % colors.length]);
             g2.fillRect(x, y, 5, 5);
@@ -196,7 +193,7 @@ public class DrawingOperations extends Frame {
 	    g2.setColor(Color.black);
 	    if(s.contains("."))
 	        s = s.substring(0, s.indexOf("."));
-	    s.toLowerCase(java.util.Locale.ENGLISH);
+	    s = s.toLowerCase(java.util.Locale.ENGLISH);
         
 	    g2.drawRect(0, 0, bi.getWidth() - 1, bi.getHeight() - 1);
 	    
