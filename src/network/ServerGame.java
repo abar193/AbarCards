@@ -440,5 +440,11 @@ public class ServerGame implements GameInterface, ProviderGameInterface {
         // TODO Auto-generated method stub
         return false;
     }
+
+    @Override
+    public void removeObjectAura(FieldObject o) {
+        // TODO Auto-generated method stub
+        
+    }
 	
 }

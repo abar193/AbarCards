@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE deck SYSTEM "DeckValidator.dtd">
 <Deck num="4">
+	<Unit Name="Test00" Description="" Damage="0" Health="1" Cost="0">
+		<Fulldesc txt="Taunt, Aura +1 damage for all units" />
+		<Aura type="1" value="1"/>
+		<Qualities v="4"/>
+		<Power condition="You|Spawn">
+			<PlayerValueSpell type="PullCard" value="2" acept="0"/>
+		</Power>
+	</Unit>
+	<Unit Name="Test01" Description="" Damage="0" Health="1" Cost="0">
+		<Fulldesc txt="Taunt, Aura +1 health for all units" />
+		<Aura type="2" value="1"/>
+		<Qualities v="4"/>
+		<Power condition="You|Spawn">
+			<PlayerValueSpell type="PullCard" value="2" acept="0"/>
+		</Power>
+	</Unit>
+	<Spell Name="Remove Test" Description="2dmg" Cost="1">
+		<Fulldesc txt="Deals 3 damage and draws a card"/>
+		<TargedetSpell targeter="player" buildings="1">
+			<SpellContainer>
+				<BuffSpell v="2" type="Hurt"/>
+			</SpellContainer>
+		</TargedetSpell>
+	</Spell>
+	<Spell Name="Test:AllSilence" Description="Silence all" Cost="0">
+		<TargedetSpell targeter="all" acept="-1" buildings="0">
+			<BuffSpell v="0" type="Silence"/>
+		</TargedetSpell>
+	</Spell>
+	<Building Name="Somebuilding" Description="Create unit" Damage="0" Health="3" Cost="1" ECost="2" Production="1" Progress="1">
+		<Fulldesc txt="OnAllyBuildingDamage deal 2 damage to all enemies and loose 1 life."/>
+		<Unit Name="Bot" Description="Azaza" Damage="1" Health="1" Cost="2">
+		</Unit> 
+	</Building>
 	<Spell Name="Reinforce" Description="+3Dmg" Cost="1">
 		<Fulldesc txt="Adds 3 damgae to choosen unit"/>
 		<TargedetSpell targeter="player" buildings="0">
@@ -18,19 +52,19 @@
 	</Spell>
 	<Spell Name="Psi-shield" Description="" Cost="1">
 		<Fulldesc txt="Covers unit with divine shiled"/>
-		<TargedetSpell targeter="player" hero="0">
+		<TargedetSpell targeter="player" buildings="0">
 			<BuffSpell v="32" type="AddQuality"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Healing laser" Description="Heal 6" Cost="2">
 		<Fulldesc txt="Heals 6"/>
-		<TargedetSpell targeter="player" hero="1">
+		<TargedetSpell targeter="player" buildings="1">
 			<BuffSpell v="6" type="Heal"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Supplies" Description="+4/4" Cost="4">
 		<Fulldesc txt="Adds 4/4 to targeted unit"/>
-		<TargedetSpell targeter="player" hero="1">
+		<TargedetSpell targeter="player" buildings="1">
 			<SpellContainer>
 				<BuffSpell v="4" type="AddDamage"/>
 				<BuffSpell v="4" type="AddHealth"/>
@@ -39,38 +73,38 @@
 	</Spell>
 	<Spell Name="Orbital flame" Description="" Cost="4">
 		<Fulldesc txt="Hurts every enemy for 2 damage"/>
-		<TargedetSpell targeter="all" acept="1" hero="1">
+		<TargedetSpell targeter="all" acept="1" buildings="1">
 			<BuffSpell v="2" type="Hurt"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Rearm" Description="" Cost="1">
 		<Fulldesc txt="Sets unit damage to 1"/>
-		<TargedetSpell targeter="player" hero="0">
+		<TargedetSpell targeter="player" buildings="0">
 			<BuffSpell v="1" type="DamageSetTo"/>
 		</TargedetSpell>
 	</Spell> 
 	<Spell Name="Multiplication" Description="x2 Dmg" Cost="5">
 		<Fulldesc txt="Doubles selected unit damage"/>
-		<TargedetSpell targeter="player" hero="0">
+		<TargedetSpell targeter="player" buildings="0">
 			<BuffSpell v="UnitHealth" type="AddDamage"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="Radiation" Description="All to 1 H" Cost="2">
 		<Fulldesc txt="Sets all unit's health to 1"/>
-		<TargedetSpell targeter="all" acept="-1" hero="0">
+		<TargedetSpell targeter="all" acept="-1" buildings="0">
 			<BuffSpell v="1" type="HealthSetTo"/>
 		</TargedetSpell>
 	</Spell>
 	<Spell Name="8 bombs" Description="" Cost="6">
 		<Fulldesc txt="Deals 8 damage to random units"/>
-		<TargedetSpell targeter="random" acept="1" hero="1" targets="8" repeats="1">
+		<TargedetSpell targeter="random" acept="1" buildings="1" targets="8" repeats="1">
 			<BuffSpell v="1" type="Hurt"/>
 		</TargedetSpell>
 	</Spell>
 	<Unit Name="Defender" Description="Gives shield" Damage="2" Health="2" Cost="2">
 		<Fulldesc txt="OnCreate gives selected unit divine shield"/>
 		<Power condition="You|Spawn">
-			<TargedetSpell targeter="player" hero="0">
+			<TargedetSpell targeter="player" buildings="0">
 				<BuffSpell v="32" type="AddQuality"/>
 			</TargedetSpell>
 		</Power>

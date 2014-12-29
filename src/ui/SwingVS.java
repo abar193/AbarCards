@@ -204,7 +204,7 @@ public class SwingVS extends JPanel implements VisualSystemInterface, ActionList
 	public void displayFieldState(PlayerData p1, FieldSituation field,
 			PlayerOpenData p2) 
 	{
-		me = p1;
+	    me = p1;
 		opponent = p2;
 		latestSituation = field;
 		playerNumber = p1.playerNumber;

@@ -31,6 +31,7 @@ public class AuraStorage {
 		for(int i = 0; i < auras.size(); i++) {
 			if(auras.get(i).shouldBeRemovedIfTurnBased()) {
 				auras.remove(i);
+				System.out.println("Outdated aura removed");
 				i--;
 			}
 		}
@@ -56,6 +57,7 @@ public class AuraStorage {
 			if(u.equals(i.next().fobj)) {
 				i.remove();
 				b = true;
+				System.out.println("Aura-creating unit died or has been removed.");
 			}
 		}
 		return b;

@@ -437,37 +437,40 @@ public class Game implements GameInterface, ProviderGameInterface {
 	 * Calculates cost- and health-modifiers based on players auras, and applies them to units.
 	 */
 	public synchronized void recalculateFieldModifiers() {
-		for(int i = 0; i < 2; i++) {
-		    playersData[i].auras.calculateModifiers();
-		    if(field.playerLost(i)) endGame(i);
-		    
-			int[] modifiers = playersData[i].auras.getModifiers();
-			ArrayList<FieldObject> objects = field.allObjectsFromOneSide(i, true);
-			for(int j = 0; j < objects.size(); j++) {
-			    FieldObject u = objects.get(j);
-				u.modDmg = modifiers[1];
-				u.modHealth = modifiers[2];
-				u.modQualities = 0;
-				if(u.isDead()) {
-					informAll(u.card.name + " is dead");
-					field.removeObjectOfPlayer(u, i);
-					this.triggerUnitEvents(u, units.TriggeringCondition.Condition.Die);
-					
-					if(playersData[i].auras.unitDies(u)) { 
-						recalculateFieldModifiers();
-						return;
-					}
-					j = 0;
-					objects = field.allObjectsFromOneSide(i, true);
-				}
-			}
-			objects = field.allObjectsFromOneSide(i, true);
-			TriggeringCondition alw = new TriggeringCondition(units.TriggeringCondition.GlobalCondition.Always);
-            for(int j = 0; j < objects.size(); j++) { // Iteration 2: trigger UnitPowers with condition "always"
-			    FieldObject u = objects.get(j);
-				u.respondToEvent(alw, null);
-			}
-		}
+	    boolean shouldRepeat = true;
+	    while(shouldRepeat) {
+	        shouldRepeat = false;
+    		for(int i = 0; i < 2; i++) {
+    		    playersData[i].auras.calculateModifiers();
+    		    if(field.playerLost(i)) endGame(i);
+    		        
+    			int[] modifiers = playersData[i].auras.getModifiers();
+    			ArrayList<FieldObject> objects = field.allObjectsFromOneSide(i, true);
+    			for(int j = 0; j < objects.size(); j++) {
+    			    FieldObject u = objects.get(j);
+    				if(u.isDead()) {
+    					informAll(u.card.name + " is dead");
+    					field.removeObjectOfPlayer(u, i);
+    					this.triggerUnitEvents(u, units.TriggeringCondition.Condition.Die);
+    					
+    					if(playersData[i].auras.unitDies(u)) { 
+    						recalculateFieldModifiers();
+    						return;
+    					}
+    					j = 0;
+    					objects = field.allObjectsFromOneSide(i, true);
+    				}
+    				u.applyNewModifiers(modifiers[2], modifiers[1]);
+                    u.modQualities = 0;
+    			}
+    			objects = field.allObjectsFromOneSide(i, true);
+    			TriggeringCondition alw = new TriggeringCondition(units.TriggeringCondition.GlobalCondition.Always);
+                for(int j = 0; j < objects.size(); j++) { // Iteration 2: trigger UnitPowers with condition "always"
+    			    FieldObject u = objects.get(j);
+    				u.respondToEvent(alw, null);
+    			}
+    		}
+	    }
 	}
 	
 	/** Provides current FieldSituation for spell targeters */
@@ -545,5 +548,12 @@ public class Game implements GameInterface, ProviderGameInterface {
             }
         }
         return false;
+    }
+    
+    public void removeObjectAura(FieldObject o) {
+        if(playersData[o.player].auras.unitDies(o)) { 
+            recalculateFieldModifiers();
+            return;
+        }
     }
 }

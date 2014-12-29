@@ -50,7 +50,7 @@ public abstract class FieldObject {
 
     /** Checks if the object should be removed from the field. */
     public boolean isDead() {
-        return currentHealth <= 0;
+        return this.getCurrentHealth() <= 0;
     }
     
     /* * * Qualities * * */
@@ -93,6 +93,15 @@ public abstract class FieldObject {
         return s;
     }
 
+    public void applyNewModifiers(int healthMod, int damageMod) {
+        modDmg = damageMod;
+        if(currentHealth + healthMod <= 0) {
+            currentHealth = Math.min(card.getHealth(), currentHealth + modHealth);
+        } else {
+            modHealth = healthMod;
+        }
+    }
+    
     /* * * Input * * */
     public boolean canBeTargetedByBuff(effects.Buff b) {
         return true;
@@ -117,6 +126,7 @@ public abstract class FieldObject {
                 currentDamage = card.getDamage();
                 powers = new ArrayList<UnitPower>();
                 qualities = 0;
+                currentGame.removeObjectAura(this);
                 break;
             case DamageSetTo:
                 currentDamage = b.value;

@@ -24,7 +24,7 @@ public class UnitFactory {
         if(uc.auraEffects != null) {
             for(AuraEffect ae : uc.auraEffects) {
                 AuraEffect e = new AuraEffect(ae.type, ae.value, o);
-                cG.addAuraForPlayer(o.player, ae);
+                cG.addAuraForPlayer(o.player, e);
             }
         }
         

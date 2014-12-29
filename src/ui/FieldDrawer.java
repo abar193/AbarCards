@@ -166,11 +166,13 @@ public class FieldDrawer extends Panel {
         calculateRow(g2, units, (int)(7 * ballSize / 2), true);
         
         g2.setColor(new Color(0, 46, 184));
-        g2.drawString(String.format("%d/%d$", myData.getAvailableMana(), myData.getTotalMana()), 
-                this.getWidth() - 40, this.getHeight() - 20);
-        g2.setColor(new Color(0, 142, 0));
-        g2.drawString(String.format("%d/%dE", myData.getAvailableEnergy(), myData.getTotalEnergy()), 
-                this.getWidth() - 40, this.getHeight() - 10);
+        if(myData != null) {
+            g2.drawString(String.format("%d/%d$", myData.getAvailableMana(), myData.getTotalMana()), 
+                    this.getWidth() - 40, this.getHeight() - 20);
+            g2.setColor(new Color(0, 142, 0));
+            g2.drawString(String.format("%d/%dE", myData.getAvailableEnergy(), myData.getTotalEnergy()), 
+                    this.getWidth() - 40, this.getHeight() - 10);
+        }
 	}
 	
 	public void setLastClick(int side, int unit, boolean isRight) {

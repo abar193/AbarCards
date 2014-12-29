@@ -27,4 +27,5 @@ public interface ProviderGameInterface {
     public void triggerUnitEvents(FieldObject u, TriggeringCondition.Condition c);
     public int getResourceForPlayer(int player, boolean energy);
     public boolean drainResourceForPlayer(int player, boolean energy, int value);
+    public void removeObjectAura(FieldObject o);
 }
