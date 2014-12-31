@@ -276,12 +276,20 @@ public class Game implements GameInterface, ProviderGameInterface {
 		else return false;
 	}
 	
-	/** Creates and places on field unit, performing all checks, and 
-	 * triggering spawn-relevant events
-	 * @param uc unit card for unit
-	 * @param player player's number
-	 * @return null if nothing was placed, or created unit 
-	 */
+	public FieldObject addObject(FieldObject o, int player) {
+	    try {
+            if(field.canObjectBeAdded(o, player)) {
+                o.respondToEvent(new TriggeringCondition(TriggeringCondition.Condition.BeforeSpawn), null);
+                field.addObject(o, player);
+                this.triggerUnitEvents(o, units.TriggeringCondition.Condition.Spawn);
+            }
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+        
+        return o;
+	}
+	
 	public FieldObject createObject(BasicCard bc, int player) {
 	    FieldObject o;
 		if(bc instanceof BuildingCard) { 
@@ -292,17 +300,7 @@ public class Game implements GameInterface, ProviderGameInterface {
 		    System.err.println("Can't create unit: Card is neither Building nor Unit");
 		    return null;
 		}
-		try {
-			if(field.canObjectBeAdded(o, player)) {
-				o.respondToEvent(new TriggeringCondition(TriggeringCondition.Condition.BeforeSpawn), null);
-				field.addObject(o, player);
-			    this.triggerUnitEvents(o, units.TriggeringCondition.Condition.Spawn);
-			}
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
-		
-		return o;
+		return addObject(o, player);
 	}
 	
     @Override

@@ -28,8 +28,8 @@ public class RobotiseSpell extends AbstractSpell {
         if(target instanceof units.Building) {
             Unit u = new UnitFactory().createUnit(target.card, player, currentGame);
             u.card.cardClass = "Machine";
-            target.applyBuff(new effects.Buff(effects.BuffType.Demolish, 0));
-            currentGame.provideFieldSituation().addObject(u, player);
+            target.applyBuff(new effects.Buff(effects.BuffType.ShadowDmg, 100));
+            currentGame.addObject(u, player);
         }
     }
 

@@ -27,6 +27,7 @@ public class TargedetSpell extends AbstractSpell {
     		    } else if(targeter instanceof PlayerTargeter) {
     		        return targeter.hasTargets(player, target, currentGame);
     		    } else mytarg = targeter;
+    		    
     		    for(FieldObject u : mytarg.selectTargets(player, target, currentGame)) {
     		        spell.target = u;
     		        if(spell.validate(player, currentGame)) return true;
