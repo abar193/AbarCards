@@ -3,7 +3,7 @@
 <Deck num="2">
 	<!-- Base cards -->
 	<Building Name="Secret.M1" Description=".2D" Damage="0" Health="3" Cost="1" ECost="2" Production="0" Progress="0">
-		<Fulldesc txt="OnAllyBuildingDamage deal 2 damage to all enemies and loose 1 life."/>
+		<Fulldesc txt="Deal 2 damage to all enemies and loose 1 life when allied building is damaged."/>
 		<Power condition="Ally|Building|TakeDamage">
 			<EnergySpell price="1">
 				<SpellContainer>
@@ -35,7 +35,7 @@
 		</Power>
 	</Unit>
 	<Unit Name="Cyborg" Description="+2/2+Taunt" Damage="4" Health="3" Cost="4">
-		<Fulldesc txt="OnSpawn: Gives machine +2/+2 and Taunt."/>
+		<Fulldesc txt="On spawn: Gives machine +2/+2 and Taunt."/>
 		<Power condition="You|Spawn">
 			<TargedetSpell targeter="player">
 				<Filter type="ClassEquals" v="Machine"/>
@@ -48,7 +48,7 @@
 		</Power>
 	</Unit>
 	<Unit Name="Cleaner" Description="2/1/death" Damage="1" Health="2" Cost="2" Class="Machine">
-		<Fulldesc txt="OnAllyDeath: Gains 2/1."/>
+		<Fulldesc txt="Gains 2/1 when allied machine dies."/>
 		<Power condition="Ally|Unit|Die">
 			<Filter type="ClassEquals" v="Machine"/>
 			<SpellContainer>
@@ -58,14 +58,14 @@
 		</Power>
 	</Unit>
 	<Unit Name="Provider" Description="1 card" Damage="2" Health="1" Cost="2" Class="Machine">
-		<Fulldesc txt="OnAllySpawn: Pull 1 card."/>
+		<Fulldesc txt="Pull 1 card when allied machine spawns."/>
 		<Power condition="Ally|Unit|Spawn">
 			<Filter type="ClassEquals" v="Machine"/>
 			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
 		</Power>
 	</Unit>	
 	<Unit Name="Spambot" Description="" Damage="6" Health="5" Cost="6" Class="Machine">
-		<Fulldesc txt="OnDeath: Summon 2x2/2 spammers."/>
+		<Fulldesc txt="On death: Summon 2x2/2 spammers."/>
 		<Power condition="You|Die">
 			<CreateUnitSpell count="2" side="0">
 				<HelperUnit Name="Spammer" Description="" Damage="2" Health="2" Cost="0" Class="Machine">
@@ -77,7 +77,7 @@
 		<Qualities v="8"/>
 	</Unit>
 	<Spell Name="Robotize" Description="B -> U" Cost="1">
-		<Fulldesc txt="Destroys building, and creates new machine Unit with the same stats"/>
+		<Fulldesc txt="Destroys building, and creates new machine with the same stats"/>
 		<TargedetSpell targeter="player" buildings="1">
 			<PremadeSpell spell="Robotise"/>
 		</TargedetSpell>
