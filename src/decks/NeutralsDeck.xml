@@ -195,4 +195,23 @@
 			</SpellContainer>
 		</Power>
 	</Unit>
+	<!--  Card drawers -->
+	<Unit Name="Sharper" Description="" Damage="2" Health="1" Cost="2">
+		<Fulldesc txt="Draws 1 card on death"/>
+		<Power condition="You|Die">
+			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
+		</Power>
+	</Unit>
+	<Unit Name="Draw 1-1" Description="" Damage="1" Health="1" Cost="1">
+		<Fulldesc txt="Draws 1 card on spawn"/>
+		<Power condition="You|Spawn">
+			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
+		</Power>
+	</Unit>
+	<Unit Name="Debtor" Description="" Damage="1" Health="3" Cost="3">
+		<Fulldesc txt="Draws a card each time he takes damage"/>
+		<Power condition="You|TakeDamage">
+			<PlayerValueSpell type="PullCard" value="1" acept="0"/>
+		</Power>
+	</Unit>
 </Deck>
